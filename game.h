@@ -2,22 +2,29 @@ class Game
 {
 public:
 	char board[5][5];
+	Chess movableChs[2];
 	int chsNumA, chsNumB;
 	Chess playerA[6], playerB[6];
 	Chess* currentPlayer;
 	bool turn;
 
- 	// coor(get,set)
-	Game();	//includes initializing the positions
+	//Includes initializing the positions
+	Game();
 	~Game();
 
 	bool isLegalMove(int x, int y);
+	//Synchronize the chess and the board
 	void setBoard(char chs);
+	//Get the symbol of the chess originally on the board
 	char getChessOnBoard(Chess chs);
+	//Player move a chess
 	char moveChess(Chess chessToGo);
 	
-	int rollDice();
+	//Roll the dice, and return how many chess the player can move
+	int nextMove();
+	//Recieve the eaten chess and update the existence, and return 0(game over), 1(A wins), 2(B wins)
 	int updatePlayer(char c);
+	//Rotate the board and change the pointer of the player
 	void switchPlayer();
 
 	void printBoard();	
