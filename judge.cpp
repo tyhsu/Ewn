@@ -3,7 +3,7 @@ using namespace std;
 
 int currentPlayer[6] = {0,0,1,0,1,0};
 
-int rollDice() {
+int nextMove() {
 
 	srand(time(NULL));
 	int a[2] = {0,0};
@@ -16,7 +16,7 @@ int rollDice() {
 		return 1;
 	}
 	else {
-
+		int move = 2;
 		// search for maybe other two.
 		for (int i = 1; i < result; i++) {
 			currentPlayer[i-1] == 1? a[0] = i: 0;
@@ -27,48 +27,50 @@ int rollDice() {
 		}
 
 		for (int i = 0; i < 2; i++) {
-			if (a[i] == 0) a[i] = a[1-i];
+			if (a[i] == 0) {
+				a[i] = a[1-i];
+				move--;
+			}
 		}
-		// return 1;
+		return move;
 	}
 	// printf("num: %d, ", result);
 	// for (int i = 0; i < 2; i++) {
 	// 	printf("%d ", a[i]);
 	// }
 	// printf("\n");
-	return 0;
 }
 
-int update(char c){
+// int updatePlayer(char c){
 
-	// to sort out player`s chess.
-	if (c != '0') {
+// 	// to sort out player`s chess.
+// 	if (c != '0') {
 
-		// should delete a single piece.
-		if (turn == true) {
+// 		// should delete a single piece.
+// 		if (turn == true) {
 
-			// this Play is A
-			currentPlayer[c-'1'].exist = 0; 
+// 			// this Play is A
+// 			currentPlayer[c-'1'].exist = 0; 
 
-		}
-		else {
+// 		}
+// 		else {
 
-			// this Play is B
-			currentPlayer[c-'A'].exist = 0;
-		}
+// 			// this Play is B
+// 			currentPlayer[c-'A'].exist = 0;
+// 		}
 
-	}
-	else {
+// 	}
+// 	else {
 
-		// nothing to deal with.
-	}
+// 		// nothing to deal with.
+// 	}
 
-	// is this player been killed the game.
-	for (int i = 0; i < 6; i++) {
-		if (currentPlayer[i].exist == 1) {
-			return false;
-		}
-	}
+// 	// is this player been killed the game.
+// 	for (int i = 0; i < 6; i++) {
+// 		if (currentPlayer[i].exist == 1) {
+// 			return false;
+// 		}
+// 	}
 
-	return true;
-}
+// 	return true;
+// }
