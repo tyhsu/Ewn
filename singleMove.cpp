@@ -16,7 +16,7 @@ char OneStep(chess chessToGo) {
   char cmd;
   char replacedChess;
   cin >> cmd;
-  if( cmd == '0') {
+  if(cmd == '0') {
     //move right
     if( IsLegalMove(chessToGo.GetX + 1, chessToGo.GetY) ) {
       chessToGo.moveX();
