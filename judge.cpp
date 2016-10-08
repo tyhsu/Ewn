@@ -17,9 +17,8 @@ void updatePlayer(char c){
 }
 
 bool isGameEnd(){
-	// is this player end the game.
+	// is this player been killed the game.
 	flag = 0;
-
 
 	if (flag == 1) {
 
