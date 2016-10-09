@@ -5,20 +5,19 @@ bool isLegalMove(int x, int y) {
 }
 
 void setBoard(Chess chs) {
-	board[chs.x][chs.y] = chs.symbol;
+	board[chs.getX()][chs.getY()] = chs.symbol;
 }
 
 char getChessOnBoard(Chess chs) {
-	return board[chs.x][chs.y];
+	return board[chs.getX()][chs.getY()];
 }
 
-char moveChess(Chess chessToGo) {
-	char cmd;
+char moveChess(Chess chessToGo, char cmd) {
 	char replacedChess;
-	cin >> cmd;
-	if(cmd == '0') {
+	int direction = (turn == true) 1 : -1;
+	if (cmd == '0') {
 		//move right
-		if( isLegalMove(chessToGo.x + 1, chessToGo.y) ) {
+		if( isLegalMove(chessToGo.getX() + direction, chessToGo.getY()) ) {
 			chessToGo.moveX();
 			replacedChess = getChessOnBoard(chessToGo);
 			setBoard(chessToGo);
@@ -28,9 +27,9 @@ char moveChess(Chess chessToGo) {
 			return '!';
 		}
 	}
-	else if( cmd == '1') {
+	else if (cmd == '1') {
 		//move down
-		if( isLegalMove(chessToGo.x, chessToGo.y + 1) ) {
+		if (isLegalMove(chessToGo.getX(), chessToGo.getY() + direction)) {
 			chessToGo.moveY();
 			replacedChess = getChessOnBoard(chessToGo);
 			setBoard(chessToGo);
@@ -40,9 +39,9 @@ char moveChess(Chess chessToGo) {
 			return '!';
 		}
 	}
-	else if( cmd == '2') {
+	else if (cmd == '2') {
 		//move right down
-		if( isLegalMove(chessToGo.x + 1, chessToGo.y + 1) ) {
+		if (isLegalMove(chessToGo.getX() + direction, chessToGo.getY() + direction)) {
 			chessToGo.moveX();
 			chessToGo.moveY();
 			replacedChess = getChessOnBoard(chessToGo);
