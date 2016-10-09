@@ -3,7 +3,7 @@ using namespace std;
 
 int currentPlayer[6] = {0,0,1,0,1,0};
 
-int nextMove() {
+int Game::nextMove() {
 
 	srand(time(NULL));
 	int a[2] = {0,0};
@@ -41,36 +41,57 @@ int nextMove() {
 	// printf("\n");
 }
 
-// int updatePlayer(char c){
+int Game::updatePlayer(char c){
 
-// 	// to sort out player`s chess.
-// 	if (c != '0') {
+	// to sort out player`s chess.
+	if (c != '0') {
 
-// 		// should delete a single piece.
-// 		if (turn == true) {
+		// should delete a single piece.
+		if (Game.turn == true) {
 
-// 			// this Play is A
-// 			currentPlayer[c-'1'].exist = 0; 
+			// this Play is A
+			currentPlayer[c-'1'].exist = 0; 
 
-// 		}
-// 		else {
+		}
+		else {
 
-// 			// this Play is B
-// 			currentPlayer[c-'A'].exist = 0;
-// 		}
+			// this Play is B
+			currentPlayer[c-'A'].exist = 0;
+		}
 
-// 	}
-// 	else {
+	}
+	else {
 
-// 		// nothing to deal with.
-// 	}
+		// nothing to deal with.
+	}
 
-// 	// is this player been killed the game.
-// 	for (int i = 0; i < 6; i++) {
-// 		if (currentPlayer[i].exist == 1) {
-// 			return false;
-// 		}
-// 	}
+	// is this player been killed the game.
+	for (int i = 0; i < 6; i++) {
+		if (currentPlayer[i].exist == 1) {
+			return false;
+		}
+	}
 
-// 	return true;
-// }
+	return true;
+}
+
+void Game::switchPlayer() {
+
+	// rotate the board.
+	Game *rotateGame = new Game;
+
+	for (int i = 0; i < 5; i++)
+		for (int j = 0; j < 5; j++)
+			rotateGame->board[4-i][4-j] = Game.board[i][j];
+
+	// and coor of this player`s piece.
+	if (turn == 2) {
+		for () {
+
+		}
+		int rotateX = 4 - currentPlayer[/* a piece */].getX();
+		int rotateY	= 4 - currentPlayer[/* a piece */].getY();	
+	}
+	
+	currentPlayer
+}
