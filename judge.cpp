@@ -1,42 +1,50 @@
 #include <iostream>
 using namespace std;
 
-int currentPlayer[6] = {0,0,1,0,1,0};
+// int currentPlayer[6] = {0,0,1,0,1,0};
 
-int Game::nextMove() {
+int nextMove() {
 
 	srand(time(NULL));
-	int a[2] = {0,0};
-	int result = rand()%6+1;	
+	int result = rand()%6;
 
-	if (currentPlayer[result-1] == 1) {
+	char whichPlayerPiece = (this->turn == false? 'A' : '1');
+	movableChs = {'0','0'};
 
+	if (currentPlayer[result] == 1) {
 		// this piece is alive!
-		for(int i = 0; i < 2; i++) a[i] = result;
+		for(int i = 0; i < 2; i++) {
+			movableChs[i] = result + whichPlayerPiece;
+		}
 		return 1;
 	}
 	else {
 		int move = 2;
+
 		// search for maybe other two.
-		for (int i = 1; i < result; i++) {
-			currentPlayer[i-1] == 1? a[0] = i: 0;
+		for (int i = 0; i < result; i++) {
+			if (currentPlayer[i] == 1){
+				movableChs[0] = i + whichPlayerPiece;
+			} 
 		}
 
-		for (int i = result+1; i <= 6 && a[1]==0; i++) {
-			currentPlayer[i-1] == 1? a[1] = i : 0;
+		for (int i = result; i < 6 && movableChs[1]=='0'; i++) {
+			if (currentPlayer[i] == 1){
+				movableChs[1] = i + whichPlayerPiece;
+			} 
 		}
 
 		for (int i = 0; i < 2; i++) {
-			if (a[i] == 0) {
-				a[i] = a[1-i];
+			if (movableChs[i] == '0') {
+				movableChs[i] = movableChs[1-i];
 				move--;
 			}
 		}
 		return move;
 	}
-	// printf("num: %d, ", result);
+	// printf("num[0-5]: %d, ", result);
 	// for (int i = 0; i < 2; i++) {
-	// 	printf("%d ", a[i]);
+	// 	printf("%c ", movableChs[i]);
 	// }
 	// printf("\n");
 }
@@ -73,11 +81,7 @@ int Game::updatePlayer(char c){
 	}
 
 	// if not return yet => the game end(one of the player have no more pieces)
-	if (this->turn == false) {
-		return 2;
-	} else{
-		return 1;
-	}
+	return (this->turn == false ? 2 : 1);
 }
 
 void Game::switchPlayer() {
@@ -98,5 +102,5 @@ void Game::switchPlayer() {
 	// 	int rotateY	= 4 - currentPlayer[/* a piece */].getY();	
 	// }
 	
-	currentPlayer = this->turn == false? playerA : playerB;
+	currentPlayer = (this->turn == false? playerA : playerB);
 }
