@@ -19,7 +19,10 @@ public:
 	char getChessOnBoard(Chess chs);
 	//Player move a chessman
 	char moveChess(Chess chessToGo);
-	
+	//Get command for moveing a chessman
+	char getCommand();
+	//Play the game OuO
+	void Play();
 	//Roll the dice, and return how many chessmen the player can move
 	int nextMove();
 	//Recieve the eaten chessman and update the existence, and return 0(game over), 1(A wins), 2(B wins)
@@ -27,11 +30,11 @@ public:
 	//Rotate the board and change the pointer of the player
 	void switchPlayer();
 
-	void printBoard();	
+	void printBoard();
 };
 
 struct Chess
-{	
+{
 	char symbol;
 	bool exist;
 	int x, y;
