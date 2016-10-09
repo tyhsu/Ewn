@@ -1,3 +1,19 @@
+#include <iostream>
+#include <cstring>
+#include <cstdlib>
+#include <ctime>
+using namespace std;
+
+struct Chess
+{
+	char symbol;
+	bool exist;
+	int x, y;
+	void assign(const char& s, const bool& e, const int& x, const int& y);
+	void moveX();
+	void moveY();
+};
+
 class Game
 {
 public:
@@ -19,7 +35,7 @@ public:
 	//Check if the chessman is out of the board
 	bool isLegalMove(int x, int y);
 	//Synchronize the chessman and the board
-	void setBoard(char chs);
+	void setBoard(Chess chs);
 	//Get the symbol of the chessman originally on the board
 	char getChessOnBoard(Chess chs);
 	//Player move a chessman
@@ -31,13 +47,4 @@ public:
 	int updatePlayer(char c);
 	//Rotate the board and change the pointer of the player
 	void switchPlayer();
-};
-
-struct Chess
-{
-	char symbol;
-	bool exist;
-	int x, y;
-	void moveX();
-	void moveY();
 };

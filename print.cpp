@@ -80,25 +80,25 @@ void Game::play()
 	while (1) {
 		//ask for the next chessman to move
 		int nextMoveCnt = nextMove();
-		cout << "Next chessman able to move: "
+		cout << "Next chessman able to move= "
 		for (int i=0; i<nextMoveCnt; i++) cout << i << ":" << ewn.movableChs[i].symbol << " ";
 		cout << endl;
 		cout << "Choose: ";
 		int chs, direct;
 		cin >> chs;
 		if (!turn)
-			cout << "Direction: 0.Right 1.Down 2.Right-down" << endl;
+			cout << "Direction= 0:Right 1:Down 2:Right-down" << endl;
 		else
-			cout << "Direction: 0.Left 1.Up 2.Left-up" << endl;
+			cout << "Direction= 0:Left 1:Up 2:Left-up" << endl;
 		cout << "Choose: ";
 		cin >> direct;
 		char eatenChs = moveChess(ewn.movableChs[chs], direct);
 		while (eatenChs == '!') {
 			cout << "Illegal move!!" << endl << endl;
 			if (!turn)
-				cout << "Direction: 0.Right 1.Down 2.Right-down" << endl;
+				cout << "Direction= 0:Right 1:Down 2:Right-down" << endl;
 			else
-				cout << "Direction: 0.Left 1.Up 2.Left-up" << endl;
+				cout << "Direction= 0:Left 1:Up 2:Left-up" << endl;
 			cout << "Choose: ";
 			eatenChs = moveChess(ewn.movableChs[chs], direct);
 		}

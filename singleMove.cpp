@@ -1,20 +1,19 @@
 #include <iostream>
 
-Game :: bool isLegalMove(int y, int x) {
+bool Game::isLegalMove(int y, int x) {
 	return ( x >= 0 && x < 5 && y >= 0 && y < 5);
 }
 
-Game :: void setBoard(Chess chs) {
+void Game::setBoard(Chess chs) {
 	this->board[chs.y][chs.x] = chs.symbol;
 }
 
-Game :: char getChessOnBoard(Chess chs) {
+char Game::getChessOnBoard(Chess chs) {
 	return this->board[chs.y][chs.x];
 }
-
-Game :: char moveChess(Chess chessToGo, int cmd) {
+char Game::moveChess(Chess chessToGo, int cmd) {
 	char replacedChess;
-	int direction = (turn == true) 1 : -1;
+	int direction = (turn == true)? 1 : -1;
 	if (cmd == 0) {
 		//move right
 		if( this->isLegalMove(chessToGo.y + direction, chessToGo.x) ) {

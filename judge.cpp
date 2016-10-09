@@ -3,7 +3,7 @@ using namespace std;
 
 // int currentPlayer[6] = {0,0,1,0,1,0};
 
-int nextMove() {
+int Game::nextMove() {
 
 	srand(time(NULL));
 	int result = rand()%6;
