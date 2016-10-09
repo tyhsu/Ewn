@@ -1,26 +1,26 @@
 #include <iostream>
 
-bool isLegalMove(int y, int x) {
+Game :: bool isLegalMove(int y, int x) {
 	return ( x >= 0 && x < 5 && y >= 0 && y < 5);
 }
 
-void setBoard(Chess chs) {
-	board[chs.getY()][chs.getX()] = chs.symbol;
+Game :: void setBoard(Chess chs) {
+	this->board[chs.y][chs.x] = chs.symbol;
 }
 
-char getChessOnBoard(Chess chs) {
-	return board[chs.getY()][chs.getX()];
+Game :: char getChessOnBoard(Chess chs) {
+	return this->board[chs.y][chs.x];
 }
 
-char moveChess(Chess chessToGo, int cmd) {
+Game :: char moveChess(Chess chessToGo, int cmd) {
 	char replacedChess;
 	int direction = (turn == true) 1 : -1;
 	if (cmd == 0) {
 		//move right
-		if( isLegalMove(chessToGo.getY() + direction, chessToGo.getX()) ) {
+		if( this->isLegalMove(chessToGo.y + direction, chessToGo.x) ) {
 			chessToGo.moveY();
-			replacedChess = getChessOnBoard(chessToGo);
-			setBoard(chessToGo);
+			replacedChess = this->getChessOnBoard(chessToGo);
+			this->setBoard(chessToGo);
 		}
 		else {
 			return '!';
@@ -28,10 +28,10 @@ char moveChess(Chess chessToGo, int cmd) {
 	}
 	else if (cmd == 1) {
 		//move down
-		if (isLegalMove(chessToGo.getY(), chessToGo.getX() + direction)) {
+		if (this->isLegalMove(chessToGo.y, chessToGo.x + direction)) {
 			chessToGo.moveX();
-			replacedChess = getChessOnBoard(chessToGo);
-			setBoard(chessToGo);
+			replacedChess = this->getChessOnBoard(chessToGo);
+			this->setBoard(chessToGo);
 		}
 		else {
 			return '!';
@@ -39,11 +39,11 @@ char moveChess(Chess chessToGo, int cmd) {
 	}
 	else if (cmd == 2) {
 		//move right down
-		if (isLegalMove(chessToGo.getY() + direction, chessToGo.getX() + direction)) {
+		if (this->isLegalMove(chessToGo.y + direction, chessToGo.x + direction)) {
 			chessToGo.moveX();
 			chessToGo.moveY();
-			replacedChess = getChessOnBoard(chessToGo);
-			setBoard(chessToGo);
+			replacedChess = this->getChessOnBoard(chessToGo);
+			this->setBoard(chessToGo);
 		}
 		else {
 			return '!';
