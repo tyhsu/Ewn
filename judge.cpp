@@ -47,7 +47,7 @@ int Game::updatePlayer(char c){
 	if (c != '0') {
 
 		// should delete a single piece.
-		if (Game.turn == true) {
+		if (this->turn == false) {
 
 			// this Play is A
 			currentPlayer[c-'1'].exist = 0; 
@@ -68,30 +68,35 @@ int Game::updatePlayer(char c){
 	// is this player been killed the game.
 	for (int i = 0; i < 6; i++) {
 		if (currentPlayer[i].exist == 1) {
-			return false;
+			return 0;
 		}
 	}
 
-	return true;
+	// if not return yet => the game end(one of the player have no more pieces)
+	if (this->turn == false) {
+		return 2;
+	} else{
+		return 1;
+	}
 }
 
 void Game::switchPlayer() {
 
 	// rotate the board.
-	Game *rotateGame = new Game;
+	// Game *rotateGame = new Game;
 
-	for (int i = 0; i < 5; i++)
-		for (int j = 0; j < 5; j++)
-			rotateGame->board[4-i][4-j] = Game.board[i][j];
+	// for (int i = 0; i < 5; i++)
+	// 	for (int j = 0; j < 5; j++)
+	// 		rotateGame->board[4-i][4-j] = Game.board[i][j];
 
-	// and coor of this player`s piece.
-	if (turn == 2) {
-		for () {
+	// // and coor of this player`s piece.
+	// if (turn == 2) {
+	// 	for () {
 
-		}
-		int rotateX = 4 - currentPlayer[/* a piece */].getX();
-		int rotateY	= 4 - currentPlayer[/* a piece */].getY();	
-	}
+	// 	}
+	// 	int rotateX = 4 - currentPlayer[/* a piece */].getX();
+	// 	int rotateY	= 4 - currentPlayer[/* a piece */].getY();	
+	// }
 	
-	currentPlayer
+	currentPlayer = this->turn == false? playerA : playerB;
 }
