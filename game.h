@@ -11,26 +11,26 @@ public:
 
 	//Including initializing the positions
 	Game();
+	//Print the board
+	void printBoard();
+	//Play the game (the integration)
+	void play();
 
+	//Check if the chessman is out of the board
 	bool isLegalMove(int x, int y);
 	//Synchronize the chessman and the board
 	void setBoard(char chs);
 	//Get the symbol of the chessman originally on the board
 	char getChessOnBoard(Chess chs);
 	//Player move a chessman
-	char moveChess(Chess chessToGo);
-	//Get command for moveing a chessman
-	char getCommand();
-	//Play the game OuO
-	void play();
+	char moveChess(Chess chessToGo, int cmd);
+
 	//Roll the dice, and return how many chessmen the player can move
 	int nextMove();
-	//Recieve the eaten chessman and update the existence, and return 0(game over), 1(A wins), 2(B wins)
+	//Recieve the eaten chessman and update the existence, and return 0(game continues), 1(A wins), 2(B wins)
 	int updatePlayer(char c);
 	//Rotate the board and change the pointer of the player
 	void switchPlayer();
-
-	void printBoard();
 };
 
 struct Chess

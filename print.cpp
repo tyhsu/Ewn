@@ -97,6 +97,12 @@ void Game::play()
 		//update, 0(game continues), 1(A wins), 2(B wins)
 		int win = updatePlayer(eatenChs);
 		printBoard();
-		if (win!=0) return;
+		if (win!=0) {
+			cout << "====================================" << endl;
+			if (win==1) cout << "A is the winner!!!" << endl;
+			else cout << "B is the winner!!!" << endl;
+			cout << "====================================" << endl;
+			return;
+		}
 	}
 }
