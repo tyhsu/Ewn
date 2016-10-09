@@ -18,11 +18,13 @@ Game::Game()
 {
 	memset(this->board, 0, sizeof(this->board));
 	memset(this->movableChs, 0, sizeof(this->movableChs));
-	chsNumA = 0, chsNumB = 0;
-	memset(this->playerA, 0, sizeof(this->playerA));
-	memset(this->playerB, 0, sizeof(this->playerB));
-	currentPlayer = playerA;
-	turn = false;
+	this->chsNumA = 0, this->chsNumB = 0;
+	for (int i=0; i<6; i++)
+		this->playerA[i] = { '1'+i, true, 0, 0 };
+	for (int i=0; i<6; i++)
+		this->playerB[i] = { 'A'+i, true, 0, 0 };
+	this->currentPlayer = playerA;
+	this->turn = false;
 
 	//Initialize the positions of the chessmen
 	//A: 1~6
@@ -32,9 +34,12 @@ Game::Game()
 	srand( time(NULL) );
 	//Every position selects a number
 	while (currPos<6) {
-		int number = rand()%6;	//0~6
+		int number = rand()%6;	//0~5
 		if ((six & (1<<number)) >> number) {	//The number hasn't been used
-			this->board[ position[currPos][0] ][ position[currPos][1] ] = '1' + number;
+			int posX = position[currPos][0], posY = position[currPos][1];
+			this->board[posX][posY] = '1' + number;
+			this->playerA[number].x = posX;
+			this->playerA[number].y = posY;
 			currPos++;
 			six = six ^ (1<<number);	//The used number is discarded
 		}
@@ -47,7 +52,10 @@ Game::Game()
 	while (currPos<6) {
 		int number = rand()%6;	//0~6
 		if ((six & (1<<number)) >> number) {	//The number hasn't been used
-			this->board[ position[currPos][0] ][ position[currPos][1] ] = 'A' + number;
+			int posX = position[currPos][0], posY = position[currPos][1];
+			this->board[posX][posY] = 'A' + number;
+			this->playerB[number].x = posX;
+			this->playerB[number].y = posY;
 			currPos++;
 			six = six ^ (1<<number);	//The used number is discarded
 		}
