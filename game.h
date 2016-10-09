@@ -22,7 +22,7 @@ public:
 	//Get command for moveing a chessman
 	char getCommand();
 	//Play the game OuO
-	void Play();
+	void play();
 	//Roll the dice, and return how many chessmen the player can move
 	int nextMove();
 	//Recieve the eaten chessman and update the existence, and return 0(game over), 1(A wins), 2(B wins)

@@ -1,59 +1,55 @@
 #include <iostream>
 
-bool isLegalMove(int x, int y) {
+bool isLegalMove(int y, int x) {
 	return ( x >= 0 && x < 5 && y >= 0 && y < 5);
 }
 
 void setBoard(Chess chs) {
-	board[chs.getX()][chs.getY()] = chs.symbol;
+	board[chs.getY()][chs.getX()] = chs.symbol;
 }
 
 char getChessOnBoard(Chess chs) {
-	return board[chs.getX()][chs.getY()];
+	return board[chs.getY()][chs.getX()];
 }
 
-char moveChess(Chess chessToGo, char cmd) {
+char moveChess(Chess chessToGo, int cmd) {
 	char replacedChess;
 	int direction = (turn == true) 1 : -1;
-	if (cmd == '0') {
+	if (cmd == 0) {
 		//move right
-		if( isLegalMove(chessToGo.getX() + direction, chessToGo.getY()) ) {
-			chessToGo.moveX();
+		if( isLegalMove(chessToGo.getY() + direction, chessToGo.getX()) ) {
+			chessToGo.moveY();
 			replacedChess = getChessOnBoard(chessToGo);
 			setBoard(chessToGo);
 		}
 		else {
-			cout << "Illegal move !" << endl;
 			return '!';
 		}
 	}
-	else if (cmd == '1') {
+	else if (cmd == 1) {
 		//move down
-		if (isLegalMove(chessToGo.getX(), chessToGo.getY() + direction)) {
-			chessToGo.moveY();
+		if (isLegalMove(chessToGo.getY(), chessToGo.getX() + direction)) {
+			chessToGo.moveX();
 			replacedChess = getChessOnBoard(chessToGo);
 			setBoard(chessToGo);
 		}
 		else {
-			cout << "Illegal move !" << endl;
 			return '!';
 		}
 	}
-	else if (cmd == '2') {
+	else if (cmd == 2) {
 		//move right down
-		if (isLegalMove(chessToGo.getX() + direction, chessToGo.getY() + direction)) {
+		if (isLegalMove(chessToGo.getY() + direction, chessToGo.getX() + direction)) {
 			chessToGo.moveX();
 			chessToGo.moveY();
 			replacedChess = getChessOnBoard(chessToGo);
 			setBoard(chessToGo);
 		}
 		else {
-			cout << "Illegal move !" << endl;
 			return '!';
 		}
 	}
 	else {
-		cout << "Illigal command !" << endl;
 		return '!';
 	}
 
