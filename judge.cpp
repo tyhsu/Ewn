@@ -8,13 +8,10 @@ int Game::nextMove() {
 	srand(time(NULL));
 	int result = rand()%6;
 
-	char whichPlayerPiece = (this->turn == false? 'A' : '1');
-	// movableChs = {'0','0'};
-
 	for(int i = 0; i < 2; i++)
-		movableChs[i].assign('0', false, 0, 0);
+		movableChs[i].assign(0, false, 0, 0);
 
-	if (currentPlayer[result].exist == 1) {
+	if (currentPlayer[result].exist == true) {
 		// this piece is alive!
 		for(int i = 0; i < 2; i++) {
 			movableChs[i] = currentPlayer[result];
@@ -27,21 +24,21 @@ int Game::nextMove() {
 
 		// search for maybe other two.
 		for (int i = 0; i < result; i++) {
-			if (currentPlayer[i].exist == 1){
+			if (currentPlayer[i].exist == true){
 				movableChs[0] = currentPlayer[result];
 				// movableChs[i] = result + whichPlayerPiece;
 			} 
 		}
 
-		for (int i = result; i < 6 && movableChs[1].symbol!='0'; i++) {
-			if (currentPlayer[i].exist == 1){
+		for (int i = result; i < 6 && movableChs[1].symbol!=0; i++) {
+			if (currentPlayer[i].exist == true){
 				movableChs[1] = currentPlayer[result];
 				// movableChs[1] = i + whichPlayerPiece;
 			} 
 		}
 
 		for (int i = 0; i < 2; i++) {
-			if (movableChs[i].symbol == '0') {
+			if (movableChs[i].symbol == 0) {
 				movableChs[i] = movableChs[1-i];
 				move--;
 			}
@@ -58,19 +55,19 @@ int Game::nextMove() {
 int Game::updatePlayer(char c){
 
 	// to sort out player`s chess.
-	if (c != '0') {
+	if (c != 0) {
 
 		// should delete a single piece.
-		if (this->turn == false) {
+		if (this->turn == true) {
 
 			// this Play is A
-			currentPlayer[c-'1'].exist = 0; 
+			currentPlayer[c-'1'].exist = false; 
 
 		}
 		else {
 
 			// this Play is B
-			currentPlayer[c-'A'].exist = 0;
+			currentPlayer[c-'A'].exist = false;
 		}
 
 	}
@@ -81,13 +78,13 @@ int Game::updatePlayer(char c){
 
 	// is this player been killed the game.
 	for (int i = 0; i < 6; i++) {
-		if (currentPlayer[i].exist == 1) {
+		if (currentPlayer[i].exist == true) {
 			return 0;
 		}
 	}
 
 	// if not return yet => the game end(one of the player have no more pieces)
-	return (this->turn == false ? 2 : 1);
+	return (this->turn == true ? 2 : 1);
 }
 
 void Game::switchPlayer() {

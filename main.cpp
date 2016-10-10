@@ -5,7 +5,7 @@
 #include "game.h"
 using namespace std;
 
-int main(void) {
+int main() {
 	Game ewn;
 	ewn.play();
 	return 0;
