@@ -48,7 +48,6 @@ Game::Game()
 	currPos = 0;
 	int positionB[6][2] = { {4,4}, {4,3}, {4,2}, {3,4}, {3,3}, {2,4} };
 	six = 0x3f;	//11,1111(2)
-	srand( time(NULL) );
 	while (currPos<6) {
 		int number = rand()%6;	//0~6
 		if ((six & (1<<number)) >> number) {	//The number hasn't been used
@@ -65,16 +64,19 @@ Game::Game()
 
 void Game::printBoard()
 {
-	cout << "------------------------------------" << endl;
+	cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 	cout << "The current board:" << endl;
+	cout << "     /-----\\" << endl;
 	for (int i=0; i<5; i++) {
+		cout << "     |";
 		for (int j=0; j<5; j++) {
 			char c = this->board[i][j];
 			if (c==0) cout << " ";
 			else cout << this->board[i][j];
 		}
-		cout << endl;
+		cout << "|" << endl;
 	}
+	cout << "     \\-----/" << endl;
 	cout << "====================================" << endl;
 }
 
@@ -83,27 +85,30 @@ void Game::play()
 	while (1) {
 		//ask for the next chessman to move
 		int nextMoveCnt = nextMove();
-		cout << "Next chessman able to move= "
-		for (int i=0; i<nextMoveCnt; i++) cout << i << ":" << ewn.movableChs[i].symbol << " ";
+		cout << "Next chessman able to move: ";
+		for (int i=0; i<nextMoveCnt; i++) cout << i << ")" << this->movableChs[i].symbol << " ";
 		cout << endl;
 		cout << "Choose: ";
 		int chs, direct;
 		cin >> chs;
 		if (!turn)
-			cout << "Direction= 0:Right 1:Down 2:Right-down" << endl;
+			cout << "Direction: 0)Right 1)Down 2)Right-down" << endl;
 		else
-			cout << "Direction= 0:Left 1:Up 2:Left-up" << endl;
+			cout << "Direction: 0)Left 1)Up 2)Left-up" << endl;
 		cout << "Choose: ";
 		cin >> direct;
-		char eatenChs = moveChess(ewn.movableChs[chs], direct);
+		char eatenChs = moveChess(this->movableChs[chs], direct);
 		while (eatenChs == '!') {
 			cout << "Illegal move!!" << endl << endl;
 			if (!turn)
-				cout << "Direction= 0:Right 1:Down 2:Right-down" << endl;
+				cout << "Direction: 0)Right 1)Down 2)Right-down" << endl;
 			else
-				cout << "Direction= 0:Left 1:Up 2:Left-up" << endl;
-			cout << "Choose: ";
-			eatenChs = moveChess(ewn.movableChs[chs], direct);
+				cout << "Direction: 0)Left 1)Up 2)Left-up" << endl;
+			cout << "Choose next chessman: ";
+			cin >> chs;
+			cout << "Choose the direction: ";
+			cin >> direct;
+			eatenChs = moveChess(this->movableChs[chs], direct);
 		}
 		//update, 0(game continues), 1(A wins), 2(B wins)
 		int win = updatePlayer(eatenChs);
