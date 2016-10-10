@@ -248,7 +248,7 @@ int Game::nextMove() {
 		int move = 2;
 
 		// search for maybe other two.
-		for (int i = result; i >= 0; i--) {
+		for (int i = result-1; i >= 0; i--) {
 			if (currentPlayer[i].exist == true){
 				movableChs[0] = currentPlayer[result];
 				break;
@@ -256,7 +256,7 @@ int Game::nextMove() {
 			}
 		}
 
-		for (int i = result; i < 6; i++) {
+		for (int i = result+1; i < 6; i++) {
 			if (currentPlayer[i].exist == true){
 				movableChs[1] = currentPlayer[result];
 				break;
