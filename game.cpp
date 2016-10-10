@@ -80,9 +80,9 @@ void Game::printBoard()
 	for (int i=0; i<5; i++) {
 		cout << "     |";
 		for (int j=0; j<5; j++) {
-			char c = this->board[i][j];
+			char c = this->board[j][i];
 			if (c==0) cout << " ";
-			else cout << this->board[i][j];
+			else cout << c;
 		}
 		cout << "|" << endl;
 	}
