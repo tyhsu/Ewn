@@ -224,7 +224,6 @@ char Game::moveChess(Chess chessToGo, int cmd) {
 	else {
 		return '!';
 	}
-
 	return replacedChess;
 }
 
@@ -282,24 +281,32 @@ int Game::updatePlayer(char c){
 	// to sort out player`s chess.
 	if (c != 0) {
 		// should delete a single piece.
-		if (!this->turn) {
+		if (c < 'A') {
 			// this Play is A
-			this->currentPlayer[c-'1'].exist = false;
+			this->playerA[c-'1'].exist = false;
 		}
 		else {
 			// this Play is B
-			this->currentPlayer[c-'A'].exist = false;
+			this->playerB[c-'A'].exist = false;
 		}
 	}
 	else {
 		// nothing to deal with.
 	}
-	// is this player been killed the game.
+
+
+	// check if player arrive the end-game Pos.
 	for (int i = 0; i < 6; i++) {
-		if (this->currentPlayer[i].exist == true) {
-			return 0;
-		}
+		if(playerA[i].x == 4 && playerA[i].y == 4) 
+			return 1;
+		if(playerB[i].x == 0 && playerB[i].y == 0) 
+			return 2;
 	}
+
+	// is this player been killed the game.
+	for (int i = 0; i < 6; i++) 
+		if (this->currentPlayer[i].exist == true) 
+			return 0;
 
 	// if not return yet => the game end(one of the player have no more pieces)
 	// the current player loses, so the winner is the other player
