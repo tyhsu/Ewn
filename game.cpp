@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstring>
 #include <cstdlib>
+#include <cstdio>
 #include <ctime>
 #include "game.h"
 using namespace std;
@@ -25,7 +26,6 @@ void Chess::moveY()
 
 Game::Game()
 {
-	printf("dd\n");
 	memset(this->board, 0, sizeof(this->board));
 	memset(this->movableChs, 0, sizeof(this->movableChs));
 	this->chsNumA = 0, this->chsNumB = 0;
@@ -43,7 +43,6 @@ Game::Game()
 	int six = 0x3f;	//11,1111(2)
 	srand( time(NULL) );
 	//Every position selects a number
-	printf("ewe\n");
 	while (currPos<6) {
 		int number = rand()%6;	//0~5
 		if ((six & (1<<number)) >> number) {	//The number hasn't been used
@@ -55,7 +54,6 @@ Game::Game()
 			six = six ^ (1<<number);	//The used number is discarded
 		}
 	}
-	printf("ee\n");
 	//B: A~F
 	currPos = 0;
 	int positionB[6][2] = { {4,4}, {4,3}, {4,2}, {3,4}, {3,3}, {2,4} };
@@ -93,7 +91,6 @@ void Game::printBoard()
 
 void Game::play()
 {
-	printf("in play\n");
 	while (1) {
 		//ask for the next chessman to move
 		int nextMoveCnt = nextMove();
@@ -116,7 +113,10 @@ void Game::play()
 				cout << "Direction= 0:Right 1:Down 2:Right-down" << endl;
 			else
 				cout << "Direction= 0:Left 1:Up 2:Left-up" << endl;
-			cout << "Choose: ";
+			cout << "Choose next chessman: ";
+			cin >> chs;
+			cout << "Choose the direction: ";
+			cin >> direct;
 			eatenChs = moveChess(this->movableChs[chs], direct);
 		}
 		//update, 0(game continues), 1(A wins), 2(B wins)
@@ -145,11 +145,15 @@ char Game::getChessOnBoard(Chess chs) {
 }
 char Game::moveChess(Chess chessToGo, int cmd) {
 	char replacedChess;
-	int direction = (turn == true)? 1 : -1;
+	int direction = (this->turn == false)? 1 : -1;
 	if (cmd == 0) {
 		//move right
 		if( this->isLegalMove(chessToGo.y + direction, chessToGo.x) ) {
-			chessToGo.moveY();
+			Chess previous = chessToGo;
+			previous.symbol = 0;
+			this->setBoard(previous);//clear previous location
+
+			chessToGo.moveX();
 			replacedChess = this->getChessOnBoard(chessToGo);
 			this->setBoard(chessToGo);
 		}
@@ -160,7 +164,11 @@ char Game::moveChess(Chess chessToGo, int cmd) {
 	else if (cmd == 1) {
 		//move down
 		if (this->isLegalMove(chessToGo.y, chessToGo.x + direction)) {
-			chessToGo.moveX();
+			Chess previous = chessToGo;
+			previous.symbol = 0;
+			this->setBoard(previous);//clear previous location
+
+			chessToGo.moveY();
 			replacedChess = this->getChessOnBoard(chessToGo);
 			this->setBoard(chessToGo);
 		}
@@ -171,6 +179,10 @@ char Game::moveChess(Chess chessToGo, int cmd) {
 	else if (cmd == 2) {
 		//move right down
 		if (this->isLegalMove(chessToGo.y + direction, chessToGo.x + direction)) {
+			Chess previous = chessToGo;
+			previous.symbol = 0;
+			this->setBoard(previous);//clear previous location
+
 			chessToGo.moveX();
 			chessToGo.moveY();
 			replacedChess = this->getChessOnBoard(chessToGo);
@@ -191,11 +203,11 @@ int Game::nextMove() {
 
 	srand(time(NULL));
 	int result = rand()%6;
-
+	printf("result : %d \n", result+1);
 	for(int i = 0; i < 2; i++)
-		movableChs[i].assign('0', false, 0, 0);
+		movableChs[i].assign(0, false, 0, 0);
 
-	if (currentPlayer[result].exist == 1) {
+	if (currentPlayer[result].exist == true) {
 		// this piece is alive!
 		for(int i = 0; i < 2; i++) {
 			movableChs[i] = currentPlayer[result];
@@ -208,21 +220,21 @@ int Game::nextMove() {
 
 		// search for maybe other two.
 		for (int i = 0; i < result; i++) {
-			if (currentPlayer[i].exist == 1){
+			if (currentPlayer[i].exist == true){
 				movableChs[0] = currentPlayer[result];
 				// movableChs[i] = result + whichPlayerPiece;
-			} 
+			}
 		}
 
-		for (int i = result; i < 6 && movableChs[1].symbol!='0'; i++) {
-			if (currentPlayer[i].exist == 1){
+		for (int i = result; i < 6 && movableChs[1].symbol!=0; i++) {
+			if (currentPlayer[i].exist == true){
 				movableChs[1] = currentPlayer[result];
 				// movableChs[1] = i + whichPlayerPiece;
-			} 
+			}
 		}
 
 		for (int i = 0; i < 2; i++) {
-			if (movableChs[i].symbol == '0') {
+			if (movableChs[i].symbol == 0) {
 				movableChs[i] = movableChs[1-i];
 				move--;
 			}
@@ -234,15 +246,15 @@ int Game::nextMove() {
 int Game::updatePlayer(char c){
 
 	// to sort out player`s chess.
-	if (c != '0') {
+	if (c != 0) {
 		// should delete a single piece.
-		if (this->turn == false) {
+		if (this->turn == true) {
 			// this Play is A
-			currentPlayer[c-'1'].exist = 0; 
+			currentPlayer[c-'1'].exist = false;
 		}
 		else {
 			// this Play is B
-			currentPlayer[c-'A'].exist = 0;
+			currentPlayer[c-'A'].exist = false;
 		}
 	}
 	else {
@@ -250,15 +262,22 @@ int Game::updatePlayer(char c){
 	}
 	// is this player been killed the game.
 	for (int i = 0; i < 6; i++) {
-		if (currentPlayer[i].exist == 1) {
+		if (currentPlayer[i].exist == true) {
 			return 0;
 		}
 	}
 
 	// if not return yet => the game end(one of the player have no more pieces)
-	return (this->turn == false ? 2 : 1);
+	return (this->turn == true ? 2 : 1);
 }
 
 void Game::switchPlayer() {
-	currentPlayer = (this->turn == false? playerA : playerB);
+	if (turn) {	//now is B
+		currentPlayer = playerA;
+		turn = false;
+	}
+	else {
+		currentPlayer = playerB;
+		turn = true;
+	}
 }
