@@ -1,4 +1,4 @@
-all: main
+all: ewn
 
 CXXFLAGS+=-g -Wall
 LDLIBS+=-lstdc++
