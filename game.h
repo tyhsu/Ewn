@@ -11,8 +11,8 @@ struct Chess
 	bool exist;
 	int x, y;
 	void assign(const char& s, const bool& e, const int& x, const int& y);
-	void moveX();
-	void moveY();
+	void moveX(int direction);
+	void moveY(int direction);
 };
 
 class Game
@@ -48,4 +48,7 @@ public:
 	int updatePlayer(char c);
 	//Rotate the board and change the pointer of the player
 	void switchPlayer();
+	//Check chesses
+	void checkStatus();
+
 };
