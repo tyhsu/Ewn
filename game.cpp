@@ -153,7 +153,7 @@ char Game::moveChess(Chess chessToGo, int cmd) {
 	char replacedChess;
 
 	int direction = (this->turn == false)? 1 : -1;
-	cout <<"currentPlayer :" << ((this->currentPlayer == this->playerA) ? "playerA" : "playerB") << endl;
+	cout <<"currentPlayer :" << (this->turn ? "playerB" : "playerA") << endl;
 	if (cmd == 0) {
 		//move right
 		if( this->isLegalMove(chessToGo.x + direction, chessToGo.y) ) {
@@ -163,12 +163,16 @@ char Game::moveChess(Chess chessToGo, int cmd) {
 			this->setBoard(previous);
 
 			int playerIndex = 0;
-			for(int i = 0; i < 6; i++){
-				if (this->currentPlayer[i].symbol == chessToGo.symbol){
-					playerIndex = i;
-					break;
-				}
-			}
+			if (!this->turn)	//playerA
+				playerIndex = chessToGo.symbol - '1';
+			else				//playerB
+				playerIndex = chessToGo.symbol - 'A';
+			// for(int i = 0; i < 6; i++){
+			// 	if (this->currentPlayer[i].symbol == chessToGo.symbol){
+			// 		playerIndex = i;
+			// 		break;
+			// 	}
+			// }
 			cout<<"index: " << playerIndex << endl;
 			this->currentPlayer[playerIndex].moveX(direction);
 			replacedChess = this->getChessOnBoard(this->currentPlayer[playerIndex]);
@@ -186,12 +190,16 @@ char Game::moveChess(Chess chessToGo, int cmd) {
 			this->setBoard(previous);//clear previous location
 
 			int playerIndex = 0;
-			for(int i = 0; i < 6; i++){
-				if (this->currentPlayer[i].symbol == chessToGo.symbol){
-					playerIndex = i;
-					break;
-				}
-			}
+			if (!this->turn)	//playerA
+				playerIndex = chessToGo.symbol - '1';
+			else				//playerB
+				playerIndex = chessToGo.symbol - 'A';
+			// for(int i = 0; i < 6; i++){
+			// 	if (this->currentPlayer[i].symbol == chessToGo.symbol){
+			// 		playerIndex = i;
+			// 		break;
+			// 	}
+			// }
 			cout<<"index: " << playerIndex << endl;
 			this->currentPlayer[playerIndex].moveY(direction);
 			replacedChess = this->getChessOnBoard(this->currentPlayer[playerIndex]);
@@ -209,12 +217,16 @@ char Game::moveChess(Chess chessToGo, int cmd) {
 			this->setBoard(previous);//clear previous location
 
 			int playerIndex = 0;
-			for(int i = 0; i < 6; i++){
-				if (this->currentPlayer[i].symbol == chessToGo.symbol){
-					playerIndex = i;
-					break;
-				}
-			}
+			if (!this->turn)	//playerA
+				playerIndex = chessToGo.symbol - '1';
+			else				//playerB
+				playerIndex = chessToGo.symbol - 'A';
+			// for(int i = 0; i < 6; i++){
+			// 	if (this->currentPlayer[i].symbol == chessToGo.symbol){
+			// 		playerIndex = i;
+			// 		break;
+			// 	}
+			// }
 			cout<<"index: " << playerIndex << endl;
 			this->currentPlayer[playerIndex].moveX(direction);
 			this->currentPlayer[playerIndex].moveY(direction);
