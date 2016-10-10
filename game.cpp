@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstring>
 #include <cstdlib>
+#include <cstdio>
 #include <ctime>
 #include "game.h"
 using namespace std;
@@ -147,7 +148,11 @@ char Game::moveChess(Chess chessToGo, int cmd) {
 	if (cmd == 0) {
 		//move right
 		if( this->isLegalMove(chessToGo.y + direction, chessToGo.x) ) {
-			chessToGo.moveY();
+			Chess previous = chessToGo;
+			previous.symbol = 0;
+			this->setBoard(previous);//clear previous location
+
+			chessToGo.moveX();
 			replacedChess = this->getChessOnBoard(chessToGo);
 			this->setBoard(chessToGo);
 		}
@@ -158,7 +163,11 @@ char Game::moveChess(Chess chessToGo, int cmd) {
 	else if (cmd == 1) {
 		//move down
 		if (this->isLegalMove(chessToGo.y, chessToGo.x + direction)) {
-			chessToGo.moveX();
+			Chess previous = chessToGo;
+			previous.symbol = 0;
+			this->setBoard(previous);//clear previous location
+
+			chessToGo.moveY();
 			replacedChess = this->getChessOnBoard(chessToGo);
 			this->setBoard(chessToGo);
 		}
@@ -169,6 +178,10 @@ char Game::moveChess(Chess chessToGo, int cmd) {
 	else if (cmd == 2) {
 		//move right down
 		if (this->isLegalMove(chessToGo.y + direction, chessToGo.x + direction)) {
+			Chess previous = chessToGo;
+			previous.symbol = 0;
+			this->setBoard(previous);//clear previous location
+
 			chessToGo.moveX();
 			chessToGo.moveY();
 			replacedChess = this->getChessOnBoard(chessToGo);
@@ -189,9 +202,9 @@ int Game::nextMove() {
 
 	srand(time(NULL));
 	int result = rand()%6;
-
+	printf("result : %d \n", result+1);
 	for(int i = 0; i < 2; i++)
-		movableChs[i].assign('0', false, 0, 0);
+		movableChs[i].assign(0, false, 0, 0);
 
 	if (currentPlayer[result].exist == 1) {
 		// this piece is alive!
@@ -209,18 +222,18 @@ int Game::nextMove() {
 			if (currentPlayer[i].exist == 1){
 				movableChs[0] = currentPlayer[result];
 				// movableChs[i] = result + whichPlayerPiece;
-			} 
+			}
 		}
 
-		for (int i = result; i < 6 && movableChs[1].symbol!='0'; i++) {
+		for (int i = result; i < 6 && movableChs[1].symbol!=0; i++) {
 			if (currentPlayer[i].exist == 1){
 				movableChs[1] = currentPlayer[result];
 				// movableChs[1] = i + whichPlayerPiece;
-			} 
+			}
 		}
 
 		for (int i = 0; i < 2; i++) {
-			if (movableChs[i].symbol == '0') {
+			if (movableChs[i].symbol == 0) {
 				movableChs[i] = movableChs[1-i];
 				move--;
 			}
@@ -236,7 +249,7 @@ int Game::updatePlayer(char c){
 		// should delete a single piece.
 		if (this->turn == false) {
 			// this Play is A
-			currentPlayer[c-'1'].exist = 0; 
+			currentPlayer[c-'1'].exist = 0;
 		}
 		else {
 			// this Play is B
@@ -258,5 +271,12 @@ int Game::updatePlayer(char c){
 }
 
 void Game::switchPlayer() {
-	currentPlayer = (this->turn == false? playerA : playerB);
+	if (turn) {	//now is B
+		currentPlayer = playerA;
+		turn = false;
+	}
+	else {
+		currentPlayer = playerB;
+		turn = true;
+	}
 }

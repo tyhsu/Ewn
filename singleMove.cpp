@@ -17,6 +17,10 @@ char Game::moveChess(Chess chessToGo, int cmd) {
 	if (cmd == 0) {
 		//move right
 		if( this->isLegalMove(chessToGo.y + direction, chessToGo.x) ) {
+			Chess previous = chessToGo;
+			previous.symbol = 0;
+			this->setBoard(previous);//clear previous location
+
 			chessToGo.moveY();
 			replacedChess = this->getChessOnBoard(chessToGo);
 			this->setBoard(chessToGo);
