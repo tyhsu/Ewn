@@ -129,6 +129,7 @@ void Game::play()
 			cout << "====================================" << endl;
 			return;
 		}
+		switchPlayer();
 	}
 }
 
@@ -219,20 +220,24 @@ int Game::nextMove() {
 		int move = 2;
 
 		// search for maybe other two.
-		for (int i = 0; i < result; i++) {
+		for (int i = result; i >= 0; i--) {
 			if (currentPlayer[i].exist == true){
 				movableChs[0] = currentPlayer[result];
+				break;
 				// movableChs[i] = result + whichPlayerPiece;
 			}
 		}
 
-		for (int i = result; i < 6 && movableChs[1].symbol!=0; i++) {
+		for (int i = result; i < 6; i++) {
 			if (currentPlayer[i].exist == true){
 				movableChs[1] = currentPlayer[result];
+				break;
 				// movableChs[1] = i + whichPlayerPiece;
 			}
 		}
 
+		// if one of movableChs doesn`t value.
+		// let this Chs = the other one (with value).
 		for (int i = 0; i < 2; i++) {
 			if (movableChs[i].symbol == 0) {
 				movableChs[i] = movableChs[1-i];
