@@ -110,13 +110,16 @@ void Game::play()
 		char eatenChs = moveChess(this->movableChs[chs], direct);
 		while (eatenChs == '!') {
 			cout << "Illegal move!!" << endl << endl;
+			cout << "Next chessman able to move: ";
+			for (int i=0; i<nextMoveCnt; i++) cout << i << ")" << this->movableChs[i].symbol << " ";
+			cout << endl;
+			cout << "Choose: ";
+			cin >> chs;
 			if (!this->turn)
 				cout << "Direction: 0)Right 1)Down 2)Right-down" << endl;
 			else
 				cout << "Direction: 0)Left 1)Up 2)Left-up" << endl;
-			cout << "Choose next chessman: ";
-			cin >> chs;
-			cout << "Choose the direction: ";
+			cout << "Choose: ";
 			cin >> direct;
 			eatenChs = moveChess(this->movableChs[chs], direct);
 		}
@@ -150,13 +153,14 @@ char Game::moveChess(Chess chessToGo, int cmd) {
 	char replacedChess;
 
 	int direction = (this->turn == false)? 1 : -1;
-	cout <<"currentPlayer :" << ((currentPlayer == playerA) ? "playerA" : "playerB") << endl;
+	cout <<"currentPlayer :" << ((this->currentPlayer == this->playerA) ? "playerA" : "playerB") << endl;
 	if (cmd == 0) {
 		//move right
-		if( this->isLegalMove(chessToGo.y + direction, chessToGo.x) ) {
+		if( this->isLegalMove(chessToGo.x + direction, chessToGo.y) ) {
+			//clear previous location
 			Chess previous = chessToGo;
 			previous.symbol = 0;
-			this->setBoard(previous);//clear previous location
+			this->setBoard(previous);
 
 			int playerIndex = 0;
 			for(int i = 0; i < 6; i++){
@@ -165,7 +169,7 @@ char Game::moveChess(Chess chessToGo, int cmd) {
 					break;
 				}
 			}
-			cout<<"index :" << playerIndex<<endl;
+			cout<<"index: " << playerIndex << endl;
 			this->currentPlayer[playerIndex].moveX(direction);
 			replacedChess = this->getChessOnBoard(this->currentPlayer[playerIndex]);
 			this->setBoard(this->currentPlayer[playerIndex]);
@@ -176,7 +180,7 @@ char Game::moveChess(Chess chessToGo, int cmd) {
 	}
 	else if (cmd == 1) {
 		//move down
-		if (this->isLegalMove(chessToGo.y, chessToGo.x + direction)) {
+		if (this->isLegalMove(chessToGo.x, chessToGo.y + direction)) {
 			Chess previous = chessToGo;
 			previous.symbol = 0;
 			this->setBoard(previous);//clear previous location
@@ -188,7 +192,7 @@ char Game::moveChess(Chess chessToGo, int cmd) {
 					break;
 				}
 			}
-			cout<<"index :" << playerIndex<<endl;
+			cout<<"index: " << playerIndex << endl;
 			this->currentPlayer[playerIndex].moveY(direction);
 			replacedChess = this->getChessOnBoard(this->currentPlayer[playerIndex]);
 			this->setBoard(this->currentPlayer[playerIndex]);
@@ -199,7 +203,7 @@ char Game::moveChess(Chess chessToGo, int cmd) {
 	}
 	else if (cmd == 2) {
 		//move right down
-		if (this->isLegalMove(chessToGo.y + direction, chessToGo.x + direction)) {
+		if (this->isLegalMove(chessToGo.x + direction, chessToGo.y + direction)) {
 			Chess previous = chessToGo;
 			previous.symbol = 0;
 			this->setBoard(previous);//clear previous location
@@ -211,7 +215,7 @@ char Game::moveChess(Chess chessToGo, int cmd) {
 					break;
 				}
 			}
-			cout<<"index :" << playerIndex << endl;
+			cout<<"index: " << playerIndex << endl;
 			this->currentPlayer[playerIndex].moveX(direction);
 			this->currentPlayer[playerIndex].moveY(direction);
 			replacedChess = this->getChessOnBoard(this->currentPlayer[playerIndex]);
@@ -229,9 +233,9 @@ char Game::moveChess(Chess chessToGo, int cmd) {
 
 int Game::nextMove() {
 
-	srand(time(NULL));
+	//srand(time(NULL));
 	int result = rand()%6;
-	printf("result : %d \n", result+1);
+	printf("result: %d \n", result+1);
 	for(int i = 0; i < 2; i++)
 		this->movableChs[i].assign(0, false, 0, 0);
 
@@ -297,9 +301,9 @@ int Game::updatePlayer(char c){
 
 	// check if player arrive the end-game Pos.
 	for (int i = 0; i < 6; i++) {
-		if(playerA[i].x == 4 && playerA[i].y == 4) 
+		if(this->playerA[i].x == 4 && this->playerA[i].y == 4) 
 			return 1;
-		if(playerB[i].x == 0 && playerB[i].y == 0) 
+		if(this->playerB[i].x == 0 && this->playerB[i].y == 0) 
 			return 2;
 	}
 
@@ -314,7 +318,7 @@ int Game::updatePlayer(char c){
 }
 
 void Game::switchPlayer() {
-	if (turn) {	//now is B
+	if (this->turn) {	//now is B
 		this->currentPlayer = this->playerA;
 		this->turn = false;
 	}
@@ -328,13 +332,13 @@ void Game::checkStatus()
 {
 	cout <<"/*    Player A    */" <<endl;
 	for(int i=0; i<6; i++){
-		cout << this->playerA[i].symbol << "is at (" << this->playerA[i].x << ", " << this->playerA[i].y << ")   [exist : " << this->playerA[i].exist << "] ;" <<endl;
+		cout << this->playerA[i].symbol << " is at (" << this->playerA[i].x << ", " << this->playerA[i].y << ")   [exist : " << this->playerA[i].exist << "] ;" <<endl;
 	}
 	cout <<"/*    --------    */" << endl;
 
 	cout <<"/*    Player B    */" <<endl;
 	for(int i=0; i<6; i++){
-		cout << this->playerB[i].symbol << "is at (" << this->playerB[i].x << ", " << this->playerB[i].y << ")   [exist : " << this->playerB[i].exist << "] ;" <<endl;
+		cout << this->playerB[i].symbol << " is at (" << this->playerB[i].x << ", " << this->playerB[i].y << ")   [exist : " << this->playerB[i].exist << "] ;" <<endl;
 	}
 	cout <<"/*    --------    */" << endl;
 
