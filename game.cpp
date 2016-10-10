@@ -320,9 +320,18 @@ int Game::updatePlayer(char c){
 	}
 
 	// is this player been killed the game.
-	for (int i = 0; i < 6; i++)
-		if (this->currentPlayer[i].exist == true)
-			return 0;
+
+	if (this->currentPlayer == this->playerA) {
+		for (int i = 0; i < 6; i++)
+			if (this->playerB[i].exist == true)
+				return 0;
+	}
+	else {
+		for (int i = 0; i < 6; i++)
+			if (this->playerA[i].exist == true)
+				return 0;
+	}
+
 
 	// if not return yet => the game end(one of the player have no more pieces)
 	// the current player loses, so the winner is the other player
