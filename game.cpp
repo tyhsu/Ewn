@@ -184,13 +184,14 @@ int Game::nextMove() {
 	srand(time(NULL));
 	int result = rand()%6;
 
-	char whichPlayerPiece = (this->turn == false? 'A' : '1');
-	movableChs = {'0','0'};
+	for(int i = 0; i < 2; i++)
+		movableChs[i].assign('0', false, 0, 0);
 
-	if (currentPlayer[result] == 1) {
+	if (currentPlayer[result].exist == 1) {
 		// this piece is alive!
 		for(int i = 0; i < 2; i++) {
-			movableChs[i] = result + whichPlayerPiece;
+			movableChs[i] = currentPlayer[result];
+			// movableChs[i] = result + whichPlayerPiece;
 		}
 		return 1;
 	}
@@ -199,19 +200,21 @@ int Game::nextMove() {
 
 		// search for maybe other two.
 		for (int i = 0; i < result; i++) {
-			if (currentPlayer[i] == 1){
-				movableChs[0] = i + whichPlayerPiece;
+			if (currentPlayer[i].exist == 1){
+				movableChs[0] = currentPlayer[result];
+				// movableChs[i] = result + whichPlayerPiece;
 			} 
 		}
 
-		for (int i = result; i < 6 && movableChs[1]=='0'; i++) {
-			if (currentPlayer[i] == 1){
-				movableChs[1] = i + whichPlayerPiece;
+		for (int i = result; i < 6 && movableChs[1].symbol!='0'; i++) {
+			if (currentPlayer[i].exist == 1){
+				movableChs[1] = currentPlayer[result];
+				// movableChs[1] = i + whichPlayerPiece;
 			} 
 		}
 
 		for (int i = 0; i < 2; i++) {
-			if (movableChs[i] == '0') {
+			if (movableChs[i].symbol == '0') {
 				movableChs[i] = movableChs[1-i];
 				move--;
 			}
