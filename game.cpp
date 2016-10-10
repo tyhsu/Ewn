@@ -143,7 +143,7 @@ char Game::getChessOnBoard(Chess chs) {
 }
 char Game::moveChess(Chess chessToGo, int cmd) {
 	char replacedChess;
-	int direction = (turn == true)? 1 : -1;
+	int direction = (this->turn == false)? 1 : -1;
 	if (cmd == 0) {
 		//move right
 		if( this->isLegalMove(chessToGo.y + direction, chessToGo.x) ) {
