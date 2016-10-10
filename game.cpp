@@ -111,7 +111,10 @@ void Game::play()
 				cout << "Direction= 0:Right 1:Down 2:Right-down" << endl;
 			else
 				cout << "Direction= 0:Left 1:Up 2:Left-up" << endl;
-			cout << "Choose: ";
+			cout << "Choose next chessman: ";
+			cin >> chs;
+			cout << "Choose the direction: ";
+			cin >> direct;
 			eatenChs = moveChess(this->movableChs[chs], direct);
 		}
 		//update, 0(game continues), 1(A wins), 2(B wins)
