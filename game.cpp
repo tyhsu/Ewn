@@ -101,7 +101,7 @@ void Game::play()
 		cout << "Choose: ";
 		int chs, direct;
 		cin >> chs;
-		if (!turn)
+		if (!this->turn)
 			cout << "Direction: 0)Right 1)Down 2)Right-down" << endl;
 		else
 			cout << "Direction: 0)Left 1)Up 2)Left-up" << endl;
@@ -110,7 +110,7 @@ void Game::play()
 		char eatenChs = moveChess(this->movableChs[chs], direct);
 		while (eatenChs == '!') {
 			cout << "Illegal move!!" << endl << endl;
-			if (!turn)
+			if (!this->turn)
 				cout << "Direction: 0)Right 1)Down 2)Right-down" << endl;
 			else
 				cout << "Direction: 0)Left 1)Up 2)Left-up" << endl;
@@ -234,12 +234,12 @@ int Game::nextMove() {
 	int result = rand()%6;
 	printf("result : %d \n", result+1);
 	for(int i = 0; i < 2; i++)
-		movableChs[i].assign(0, false, 0, 0);
+		this->movableChs[i].assign(0, false, 0, 0);
 
-	if (currentPlayer[result].exist == true) {
+	if (this->currentPlayer[result].exist == true) {
 		// this piece is alive!
 		for(int i = 0; i < 2; i++) {
-			movableChs[i] = currentPlayer[result];
+			this->movableChs[i] = this->currentPlayer[result];
 			// movableChs[i] = result + whichPlayerPiece;
 		}
 		return 1;
@@ -249,16 +249,16 @@ int Game::nextMove() {
 
 		// search for maybe other two.
 		for (int i = result-1; i >= 0; i--) {
-			if (currentPlayer[i].exist == true){
-				movableChs[0] = currentPlayer[result];
+			if (this->currentPlayer[i].exist == true){
+				this->movableChs[0] = this->currentPlayer[result];
 				break;
 				// movableChs[i] = result + whichPlayerPiece;
 			}
 		}
 
 		for (int i = result+1; i < 6; i++) {
-			if (currentPlayer[i].exist == true){
-				movableChs[1] = currentPlayer[result];
+			if (this->currentPlayer[i].exist == true){
+				this->movableChs[1] = this->currentPlayer[result];
 				break;
 				// movableChs[1] = i + whichPlayerPiece;
 			}
@@ -267,8 +267,8 @@ int Game::nextMove() {
 		// if one of movableChs doesn`t value.
 		// let this Chs = the other one (with value).
 		for (int i = 0; i < 2; i++) {
-			if (movableChs[i].symbol == 0) {
-				movableChs[i] = movableChs[1-i];
+			if (this->movableChs[i].symbol == 0) {
+				this->movableChs[i] = this->movableChs[1-i];
 				move--;
 			}
 		}
@@ -281,13 +281,13 @@ int Game::updatePlayer(char c){
 	// to sort out player`s chess.
 	if (c != 0) {
 		// should delete a single piece.
-		if (this->turn == true) {
+		if (!this->turn) {
 			// this Play is A
-			currentPlayer[c-'1'].exist = false;
+			this->currentPlayer[c-'1'].exist = false;
 		}
 		else {
 			// this Play is B
-			currentPlayer[c-'A'].exist = false;
+			this->currentPlayer[c-'A'].exist = false;
 		}
 	}
 	else {
@@ -295,23 +295,24 @@ int Game::updatePlayer(char c){
 	}
 	// is this player been killed the game.
 	for (int i = 0; i < 6; i++) {
-		if (currentPlayer[i].exist == true) {
+		if (this->currentPlayer[i].exist == true) {
 			return 0;
 		}
 	}
 
 	// if not return yet => the game end(one of the player have no more pieces)
-	return (this->turn == true ? 2 : 1);
+	// the current player loses, so the winner is the other player
+	return (this->turn == true ? 1 : 2);
 }
 
 void Game::switchPlayer() {
 	if (turn) {	//now is B
-		currentPlayer = playerA;
-		turn = false;
+		this->currentPlayer = this->playerA;
+		this->turn = false;
 	}
 	else {
-		currentPlayer = playerB;
-		turn = true;
+		this->currentPlayer = this->playerB;
+		this->turn = true;
 	}
 }
 
