@@ -122,6 +122,7 @@ void Game::play()
 		}
 		//update, 0(game continues), 1(A wins), 2(B wins)
 		int win = updatePlayer(eatenChs);
+		checkStatus();
 		printBoard();
 		if (win!=0) {
 			cout << "====================================" << endl;
@@ -139,11 +140,11 @@ bool Game::isLegalMove(int y, int x) {
 }
 
 void Game::setBoard(Chess chs) {
-	this->board[chs.y][chs.x] = chs.symbol;
+	this->board[chs.x][chs.y] = chs.symbol;
 }
 
 char Game::getChessOnBoard(Chess chs) {
-	return this->board[chs.y][chs.x];
+	return this->board[chs.x][chs.y];
 }
 char Game::moveChess(Chess chessToGo, int cmd) {
 	char replacedChess;
@@ -164,10 +165,10 @@ char Game::moveChess(Chess chessToGo, int cmd) {
 					break;
 				}
 			}
-
-			currentPlayer[playerIndex].moveX(direction);
-			replacedChess = this->getChessOnBoard(currentPlayer[playerIndex]);
-			this->setBoard(currentPlayer[playerIndex]);
+			cout<<"index :" << playerIndex<<endl;
+			this->currentPlayer[playerIndex].moveX(direction);
+			replacedChess = this->getChessOnBoard(this->currentPlayer[playerIndex]);
+			this->setBoard(this->currentPlayer[playerIndex]);
 		}
 		else {
 			return '!';
@@ -187,10 +188,10 @@ char Game::moveChess(Chess chessToGo, int cmd) {
 					break;
 				}
 			}
-
-			currentPlayer[playerIndex].moveY(direction);
-			replacedChess = this->getChessOnBoard(currentPlayer[playerIndex]);
-			this->setBoard(currentPlayer[playerIndex]);
+			cout<<"index :" << playerIndex<<endl;
+			this->currentPlayer[playerIndex].moveY(direction);
+			replacedChess = this->getChessOnBoard(this->currentPlayer[playerIndex]);
+			this->setBoard(this->currentPlayer[playerIndex]);
 		}
 		else {
 			return '!';
@@ -210,11 +211,11 @@ char Game::moveChess(Chess chessToGo, int cmd) {
 					break;
 				}
 			}
-
-			currentPlayer[playerIndex].moveX(direction);
-			currentPlayer[playerIndex].moveY(direction);
-			replacedChess = this->getChessOnBoard(currentPlayer[playerIndex]);
-			this->setBoard(currentPlayer[playerIndex]);
+			cout<<"index :" << playerIndex << endl;
+			this->currentPlayer[playerIndex].moveX(direction);
+			this->currentPlayer[playerIndex].moveY(direction);
+			replacedChess = this->getChessOnBoard(this->currentPlayer[playerIndex]);
+			this->setBoard(this->currentPlayer[playerIndex]);
 		}
 		else {
 			return '!';
