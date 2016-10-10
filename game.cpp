@@ -245,20 +245,21 @@ int Game::nextMove() {
 		return 1;
 	}
 	else {
+		cout << "Chessman " << this->currentPlayer[result].symbol << " doesn't exist" << endl;
 		int move = 2;
 
 		// search for maybe other two.
 		for (int i = result-1; i >= 0; i--) {
-			if (this->currentPlayer[i].exist == true){
-				this->movableChs[0] = this->currentPlayer[result];
+			if (this->currentPlayer[i].exist){
+				this->movableChs[0] = this->currentPlayer[i];
 				break;
 				// movableChs[i] = result + whichPlayerPiece;
 			}
 		}
 
 		for (int i = result+1; i < 6; i++) {
-			if (this->currentPlayer[i].exist == true){
-				this->movableChs[1] = this->currentPlayer[result];
+			if (this->currentPlayer[i].exist){
+				this->movableChs[1] = this->currentPlayer[i];
 				break;
 				// movableChs[1] = i + whichPlayerPiece;
 			}
