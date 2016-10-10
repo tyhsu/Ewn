@@ -39,7 +39,7 @@ Game::Game()
 	//A: 1~6
 	int currPos = 0;
 	int positionA[6][2] = { {0,0}, {0,1}, {0,2}, {1,0}, {1,1}, {2,0} };
-	int six = 0x111111;
+	int six = 0x3f;	//11,1111(2)
 	srand( time(NULL) );
 	//Every position selects a number
 	while (currPos<6) {
@@ -56,7 +56,7 @@ Game::Game()
 	//B: A~F
 	currPos = 0;
 	int positionB[6][2] = { {4,4}, {4,3}, {4,2}, {3,4}, {3,3}, {2,4} };
-	six = 0x111111;
+	six = 0x3f;	//11,1111(2)
 	srand( time(NULL) );
 	while (currPos<6) {
 		int number = rand()%6;	//0~6
@@ -77,8 +77,11 @@ void Game::printBoard()
 	cout << "------------------------------------" << endl;
 	cout << "The current board:" << endl;
 	for (int i=0; i<5; i++) {
-		for (int j=0; j<5; j++)
-			cout << this->board[i][j];
+		for (int j=0; j<5; j++) {
+			char c = this->board[i][j];
+			if (c==0) cout << " ";
+			else cout << this->board[i][j];
+		}
 		cout << endl;
 	}
 	cout << "====================================" << endl;

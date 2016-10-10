@@ -7,6 +7,6 @@ using namespace std;
 
 int main(void) {
 	Game ewn;
-	ewn.play();
+	//ewn.play();
 	return 0;
 }
