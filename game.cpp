@@ -138,7 +138,7 @@ void Game::play()
 	}
 }
 
-bool Game::isLegalMove(int y, int x) {
+bool Game::isLegalMove(int x, int y) {
 	return ( x >= 0 && x < 5 && y >= 0 && y < 5);
 }
 
@@ -313,15 +313,15 @@ int Game::updatePlayer(char c){
 
 	// check if player arrive the end-game Pos.
 	for (int i = 0; i < 6; i++) {
-		if(this->playerA[i].x == 4 && this->playerA[i].y == 4) 
+		if(this->playerA[i].x == 4 && this->playerA[i].y == 4)
 			return 1;
-		if(this->playerB[i].x == 0 && this->playerB[i].y == 0) 
+		if(this->playerB[i].x == 0 && this->playerB[i].y == 0)
 			return 2;
 	}
 
 	// is this player been killed the game.
-	for (int i = 0; i < 6; i++) 
-		if (this->currentPlayer[i].exist == true) 
+	for (int i = 0; i < 6; i++)
+		if (this->currentPlayer[i].exist == true)
 			return 0;
 
 	// if not return yet => the game end(one of the player have no more pieces)
