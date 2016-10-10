@@ -25,6 +25,7 @@ void Chess::moveY()
 
 Game::Game()
 {
+	printf("dd\n");
 	memset(this->board, 0, sizeof(this->board));
 	memset(this->movableChs, 0, sizeof(this->movableChs));
 	this->chsNumA = 0, this->chsNumB = 0;
@@ -42,6 +43,7 @@ Game::Game()
 	int six = 0x111111;
 	srand( time(NULL) );
 	//Every position selects a number
+	printf("ewe\n");
 	while (currPos<6) {
 		int number = rand()%6;	//0~5
 		if ((six & (1<<number)) >> number) {	//The number hasn't been used
@@ -53,6 +55,7 @@ Game::Game()
 			six = six ^ (1<<number);	//The used number is discarded
 		}
 	}
+	printf("ee\n");
 	//B: A~F
 	currPos = 0;
 	int positionB[6][2] = { {4,4}, {4,3}, {4,2}, {3,4}, {3,3}, {2,4} };
@@ -69,6 +72,7 @@ Game::Game()
 			six = six ^ (1<<number);	//The used number is discarded
 		}
 	}
+
 	printBoard();
 }
 
@@ -86,6 +90,7 @@ void Game::printBoard()
 
 void Game::play()
 {
+	printf("in play\n");
 	while (1) {
 		//ask for the next chessman to move
 		int nextMoveCnt = nextMove();
