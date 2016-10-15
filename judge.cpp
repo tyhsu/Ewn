@@ -84,7 +84,7 @@ int Game::updatePlayer(char c){
 	}
 
 	// if not return yet => the game end(one of the player have no more pieces)
-	return (this->turn == true ? 2 : 1);
+	return (this->turn == false ? 2 : 1);
 }
 
 void Game::switchPlayer() {

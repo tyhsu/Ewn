@@ -347,7 +347,7 @@ int Game::updatePlayer(char c){
 
 	// if not return yet => the game end(one of the player have no more pieces)
 	// the current player loses, so the winner is the other player
-	return (this->turn == true ? 1 : 2);
+	return (this->turn == false ? 1 : 2);
 }
 
 void Game::switchPlayer() {
