@@ -156,7 +156,6 @@ int Game::move(int choice, int cmd) {
 	//int availiableMoveCnt = availiableMove()
 	char eatenChs = moveChess(this->movableChs[choice], cmd);
 	return updatePlayer(eatenChs);
-
 }
 
 char Game::moveChess(Chess chessToGo, int cmd) {
