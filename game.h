@@ -39,16 +39,20 @@ public:
 	void setBoard(Chess chs);
 	//Get the symbol of the chessman originally on the board
 	char getChessOnBoard(Chess chs);
+
+	//Make a move includes choosing a chessman and move the chessman
+	void move(int choice, int cmd);
 	//Player move a chessman
 	char moveChess(Chess chessToGo, int cmd);
-
-	//Roll the dice, and return how many chessmen the player can move
-	int nextMove();
+	//Roll the dice
+	int rollTheDice();
+	//Return how many chessmen the player can move
+	int availiableMove(int dice);
 	//Recieve the eaten chessman and update the existence, and return 0(game continues), 1(A wins), 2(B wins)
 	int updatePlayer(char c);
 	//Rotate the board and change the pointer of the player
 	void switchPlayer();
 	//Check chesses
 	void checkStatus();
-
+	//R
 };

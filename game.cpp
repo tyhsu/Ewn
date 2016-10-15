@@ -94,7 +94,7 @@ void Game::play()
 {
 	while (1) {
 		//ask for the next chessman to move
-		int nextMoveCnt = nextMove();
+		int nextMoveCnt = availiableMove(rollTheDice());
 		cout << "Next chessman able to move: ";
 		for (int i=0; i<nextMoveCnt; i++) cout << i << ")" << this->movableChs[i].symbol << " ";
 		cout << endl;
@@ -149,6 +149,15 @@ void Game::setBoard(Chess chs) {
 char Game::getChessOnBoard(Chess chs) {
 	return this->board[chs.x][chs.y];
 }
+
+void Game::move(int choice, int cmd) {
+	//You'll know availiableMoveCnt in AI
+	//int availiableMoveCnt = availiableMove()
+	char eatenChs = moveChess(this->movableChs(choice), cmd);
+
+
+}
+
 char Game::moveChess(Chess chessToGo, int cmd) {
 	char replacedChess;
 
@@ -243,28 +252,30 @@ char Game::moveChess(Chess chessToGo, int cmd) {
 	return replacedChess;
 }
 
-int Game::nextMove() {
+int Game::rollTheDice() {
+	return rand()%6;
+}
 
-	//srand(time(NULL));
-	int result = rand()%6;
-	printf("result: %d \n", result+1);
+int Game::availiableMove(int dice) {
+
+	printf("result: %d \n", dice+1);
 	for(int i = 0; i < 2; i++)
 		this->movableChs[i].assign(0, false, 0, 0);
 
-	if (this->currentPlayer[result].exist == true) {
+	if (this->currentPlayer[dice].exist == true) {
 		// this piece is alive!
 		for(int i = 0; i < 2; i++) {
-			this->movableChs[i] = this->currentPlayer[result];
+			this->movableChs[i] = this->currentPlayer[dice];
 			// movableChs[i] = result + whichPlayerPiece;
 		}
 		return 1;
 	}
 	else {
-		cout << "Chessman " << this->currentPlayer[result].symbol << " doesn't exist" << endl;
+		cout << "Chessman " << this->currentPlayer[dice].symbol << " doesn't exist" << endl;
 		int move = 2;
 
 		// search for maybe other two.
-		for (int i = result-1; i >= 0; i--) {
+		for (int i = dice-1; i >= 0; i--) {
 			if (this->currentPlayer[i].exist){
 				this->movableChs[0] = this->currentPlayer[i];
 				break;
@@ -272,7 +283,7 @@ int Game::nextMove() {
 			}
 		}
 
-		for (int i = result+1; i < 6; i++) {
+		for (int i = dice+1; i < 6; i++) {
 			if (this->currentPlayer[i].exist){
 				this->movableChs[1] = this->currentPlayer[i];
 				break;
