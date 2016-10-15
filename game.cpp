@@ -6,6 +6,14 @@
 #include "game.h"
 using namespace std;
 
+#define ANSI_COLOR_RED     "\x1b[31m"
+#define ANSI_COLOR_GREEN   "\x1b[32m"
+#define ANSI_COLOR_YELLOW  "\x1b[33m"
+#define ANSI_COLOR_BLUE    "\x1b[34m"
+#define ANSI_COLOR_MAGENTA "\x1b[35m"
+#define ANSI_COLOR_CYAN    "\x1b[36m"
+#define ANSI_COLOR_RESET   "\x1b[0m"
+
 void Chess::assign(const char& s, const bool& e, const int& x, const int& y)
 {
 	this->symbol = s;
@@ -82,7 +90,11 @@ void Game::printBoard()
 		for (int j=0; j<5; j++) {
 			char c = this->board[j][i];
 			if (c==0) cout << " ";
-			else cout << c;
+			else if (c >= 'A' && c <= 'F')
+				cout << ANSI_COLOR_RED << c << ANSI_COLOR_RESET;
+			else 
+				cout << ANSI_COLOR_BLUE << c << ANSI_COLOR_BLUE;
+			//else cout << c;
 		}
 		cout << "|" << endl;
 	}
