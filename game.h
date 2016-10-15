@@ -40,8 +40,8 @@ public:
 	//Get the symbol of the chessman originally on the board
 	char getChessOnBoard(Chess chs);
 
-	//Make a move includes choosing a chessman and move the chessman
-	void move(int choice, int cmd);
+	//Make a move includes choosing a chessman and move the chessman      You should know whether the cmd is legal
+	int move(int choice, int cmd);
 	//Player move a chessman
 	char moveChess(Chess chessToGo, int cmd);
 	//Roll the dice

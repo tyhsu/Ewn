@@ -107,24 +107,25 @@ void Game::play()
 			cout << "Direction: 0)Left 1)Up 2)Left-up" << endl;
 		cout << "Choose: ";
 		cin >> direct;
-		char eatenChs = moveChess(this->movableChs[chs], direct);
-		while (eatenChs == '!') {
-			cout << "Illegal move!!" << endl << endl;
-			cout << "Next chessman able to move: ";
-			for (int i=0; i<nextMoveCnt; i++) cout << i << ")" << this->movableChs[i].symbol << " ";
-			cout << endl;
-			cout << "Choose: ";
-			cin >> chs;
-			if (!this->turn)
-				cout << "Direction: 0)Right 1)Down 2)Right-down" << endl;
-			else
-				cout << "Direction: 0)Left 1)Up 2)Left-up" << endl;
-			cout << "Choose: ";
-			cin >> direct;
-			eatenChs = moveChess(this->movableChs[chs], direct);
-		}
-		//update, 0(game continues), 1(A wins), 2(B wins)
-		int win = updatePlayer(eatenChs);
+		//char eatenChs = moveChess(this->movableChs[chs], direct);
+		//while (eatenChs == '!') {
+		//	cout << "Illegal move!!" << endl << endl;
+		//	cout << "Next chessman able to move: ";
+		//	for (int i=0; i<nextMoveCnt; i++) cout << i << ")" << this->movableChs[i].symbol << " ";
+		//	cout << endl;
+		//	cout << "Choose: ";
+		//	cin >> chs;
+		//	if (!this->turn)
+		//		cout << "Direction: 0)Right 1)Down 2)Right-down" << endl;
+		//	else
+		//		cout << "Direction: 0)Left 1)Up 2)Left-up" << endl;
+		//	cout << "Choose: ";
+		//	cin >> direct;
+		//	eatenChs = moveChess(this->movableChs[chs], direct);
+		//}
+		////update, 0(game continues), 1(A wins), 2(B wins)
+		int win = move(chs, direct);
+		cout << "turn, win :" << turn << " " << win << endl;
 		checkStatus();
 		printBoard();
 		if (win!=0) {
@@ -150,11 +151,11 @@ char Game::getChessOnBoard(Chess chs) {
 	return this->board[chs.x][chs.y];
 }
 
-void Game::move(int choice, int cmd) {
+int Game::move(int choice, int cmd) {
 	//You'll know availiableMoveCnt in AI
 	//int availiableMoveCnt = availiableMove()
-	char eatenChs = moveChess(this->movableChs(choice), cmd);
-
+	char eatenChs = moveChess(this->movableChs[choice], cmd);
+	return updatePlayer(eatenChs);
 
 }
 
