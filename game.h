@@ -18,29 +18,29 @@ struct Chess
 class Game
 {
 public:
-	char board[5][5];
-	Chess movableChs[2];
+	char board_[5][5];
+	Chess movableChs_[2];
 	//How many chessmen are on the board
-	int chsNumA, chsNumB;
-	Chess playerA[6], playerB[6];
-	Chess* currentPlayer;
+	int chsNumA_, chsNumB_;
+	Chess playerA_[6], playerB_[6];
+	Chess* currentPlayer_;
 	//false(0): A, true(1): B
-	bool turn;
+	bool turn_;
 
 	//Including initializing the positions
 	Game();
 	//Print the board
 	void printBoard();
 	//One player plays the game (the integration)
-	void playerPlay();
+	int playerPlay(int dice);
 	//One AI plays the game (without std input)
-	void autoPlay();
+	//int autoPlay(int dice);
 	//Two players fight!
 	void twoPlayers();
 	//One player fight with AI
-	void playerAI();
+	//void playerAI();
 	//Two AIs fight
-	void twoAIs();
+	//void twoAIs();
 
 	//Check if the chessman is out of the board
 	bool isLegalMove(int x, int y);
