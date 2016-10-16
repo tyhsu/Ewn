@@ -92,7 +92,7 @@ void Game::printBoard()
 			if (c==0) cout << " ";
 			else if (c >= 'A' && c <= 'F')
 				cout << ANSI_COLOR_RED << c << ANSI_COLOR_RESET;
-			else 
+			else
 				cout << ANSI_COLOR_BLUE << c << ANSI_COLOR_BLUE;
 			//else cout << c;
 		}
@@ -119,24 +119,25 @@ void Game::play()
 			cout << "Direction: 0)Left 1)Up 2)Left-up" << endl;
 		cout << "Choose: ";
 		cin >> direct;
-		//char eatenChs = moveChess(this->movableChs[chs], direct);
-		//while (eatenChs == '!') {
-		//	cout << "Illegal move!!" << endl << endl;
-		//	cout << "Next chessman able to move: ";
-		//	for (int i=0; i<nextMoveCnt; i++) cout << i << ")" << this->movableChs[i].symbol << " ";
-		//	cout << endl;
-		//	cout << "Choose: ";
-		//	cin >> chs;
-		//	if (!this->turn)
-		//		cout << "Direction: 0)Right 1)Down 2)Right-down" << endl;
-		//	else
-		//		cout << "Direction: 0)Left 1)Up 2)Left-up" << endl;
-		//	cout << "Choose: ";
-		//	cin >> direct;
-		//	eatenChs = moveChess(this->movableChs[chs], direct);
-		//}
-		////update, 0(game continues), 1(A wins), 2(B wins)
-		int win = move(chs, direct);
+		char eatenChs = moveChess(this->movableChs[chs], direct);
+		while (eatenChs == '!') {
+			cout << "Illegal move!!" << endl << endl;
+			cout << "Next chessman able to move: ";
+			for (int i=0; i<nextMoveCnt; i++) cout << i << ")" << this->movableChs[i].symbol << " ";
+			cout << endl;
+			cout << "Choose: ";
+			cin >> chs;
+			if (!this->turn)
+				cout << "Direction: 0)Right 1)Down 2)Right-down" << endl;
+			else
+				cout << "Direction: 0)Left 1)Up 2)Left-up" << endl;
+			cout << "Choose: ";
+			cin >> direct;
+			eatenChs = moveChess(this->movableChs[chs], direct);
+		}
+		//update, 0(game continues), 1(A wins), 2(B wins)
+		//int win = move(chs, direct);
+		int win = updatePlayer(eatenChs);
 		cout << "turn, win :" << turn << " " << win << endl;
 		checkStatus();
 		printBoard();
@@ -174,7 +175,6 @@ char Game::moveChess(Chess chessToGo, int cmd) {
 	char replacedChess;
 
 	int direction = (this->turn == false)? 1 : -1;
-	cout <<"currentPlayer :" << (this->turn ? "playerB" : "playerA") << endl;
 	if (cmd == 0) {
 		//move right
 		if( this->isLegalMove(chessToGo.x + direction, chessToGo.y) ) {
@@ -194,7 +194,7 @@ char Game::moveChess(Chess chessToGo, int cmd) {
 			// 		break;
 			// 	}
 			// }
-			cout<<"index: " << playerIndex << endl;
+//			cout<<"index: " << playerIndex << endl;
 			this->currentPlayer[playerIndex].moveX(direction);
 			replacedChess = this->getChessOnBoard(this->currentPlayer[playerIndex]);
 			this->setBoard(this->currentPlayer[playerIndex]);
@@ -221,7 +221,7 @@ char Game::moveChess(Chess chessToGo, int cmd) {
 			// 		break;
 			// 	}
 			// }
-			cout<<"index: " << playerIndex << endl;
+		//	cout<<"index: " << playerIndex << endl;
 			this->currentPlayer[playerIndex].moveY(direction);
 			replacedChess = this->getChessOnBoard(this->currentPlayer[playerIndex]);
 			this->setBoard(this->currentPlayer[playerIndex]);
@@ -248,7 +248,7 @@ char Game::moveChess(Chess chessToGo, int cmd) {
 			// 		break;
 			// 	}
 			// }
-			cout<<"index: " << playerIndex << endl;
+			//cout<<"index: " << playerIndex << endl;
 			this->currentPlayer[playerIndex].moveX(direction);
 			this->currentPlayer[playerIndex].moveY(direction);
 			replacedChess = this->getChessOnBoard(this->currentPlayer[playerIndex]);
