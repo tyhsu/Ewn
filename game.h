@@ -20,6 +20,7 @@ class Game
 public:
 	char board[5][5];
 	Chess movableChs[2];
+	//How many chessmen are on the board
 	int chsNumA, chsNumB;
 	Chess playerA[6], playerB[6];
 	Chess* currentPlayer;
@@ -47,11 +48,11 @@ public:
 	void setBoard(Chess chs);
 	//Get the symbol of the chessman originally on the board
 	char getChessOnBoard(Chess chs);
-
-	//Make a move includes choosing a chessman and move the chessman      You should know whether the cmd is legal
-	int move(int choice, int cmd);
 	//Player has a move according to the assigned chessman and direction
 	char moveChess(Chess chessToGo, int cmd);
+	//Make a move includes choosing a chessman and move the chessman
+	//You should know whether the cmd is legal (for AI)
+	int move(int choice, int cmd);
 	
 	//Roll the dice
 	int rollTheDice();
