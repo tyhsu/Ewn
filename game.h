@@ -30,8 +30,16 @@ public:
 	Game();
 	//Print the board
 	void printBoard();
-	//Play the game (the integration)
-	void play();
+	//One player plays the game (the integration)
+	void playerPlay();
+	//One AI plays the game (without std input)
+	void autoPlay();
+	//Two players fight!
+	void twoPlayers();
+	//One player fight with AI
+	void playerAI();
+	//Two AIs fight
+	void twoAIs();
 
 	//Check if the chessman is out of the board
 	bool isLegalMove(int x, int y);
@@ -42,11 +50,12 @@ public:
 
 	//Make a move includes choosing a chessman and move the chessman      You should know whether the cmd is legal
 	int move(int choice, int cmd);
-	//Player move a chessman
+	//Player has a move according to the assigned chessman and direction
 	char moveChess(Chess chessToGo, int cmd);
+	
 	//Roll the dice
 	int rollTheDice();
-	//Return how many chessmen the player can move
+	//Input the result of dice and return how many chessmen the player can move
 	int availiableMove(int dice);
 	//Recieve the eaten chessman and update the existence, and return 0(game continues), 1(A wins), 2(B wins)
 	int updatePlayer(char c);
@@ -54,5 +63,4 @@ public:
 	void switchPlayer();
 	//Check chesses
 	void checkStatus();
-	//R
 };

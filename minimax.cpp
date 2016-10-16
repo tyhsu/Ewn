@@ -20,7 +20,7 @@ function minimax(board, height, maximizingPlayer)
 		for each possible move chs, dirct
 			nxtBoard := curBoard	//copy
 			nxtBoard.move(chs, dirct)
-			val := minimax(nxtBoard, height - 1, TRUE)
+			val := minimax(nxtBoard, height-1, TRUE)
 			bestValue := min(bestValue, val);
 		return bestValue
 
