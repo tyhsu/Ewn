@@ -3,6 +3,8 @@
 #include <cstdlib>
 #include <cstdio>
 #include <ctime>
+#include <sys/types.h>
+#include <unistd.h>
 #include "game.h"
 using namespace std;
 
@@ -49,7 +51,7 @@ Game::Game()
 	int currPos = 0;
 	int positionA[6][2] = { {0,0}, {0,1}, {0,2}, {1,0}, {1,1}, {2,0} };
 	int six = 0x3f;	//11,1111(2)
-	srand( time(NULL) );
+	srand( time(NULL) + getpid() );
 	//Every position selects a number
 	while (currPos<6) {
 		int number = rand()%6;	//0~5
@@ -215,13 +217,6 @@ char Game::moveChess(Chess chessToGo, int cmd) {
 				playerIndex = chessToGo.symbol - '1';
 			else				//playerB
 				playerIndex = chessToGo.symbol - 'A';
-			// for(int i = 0; i < 6; i++){
-			// 	if (this->currentPlayer[i].symbol == chessToGo.symbol){
-			// 		playerIndex = i;
-			// 		break;
-			// 	}
-			// }
-		//	cout<<"index: " << playerIndex << endl;
 			this->currentPlayer[playerIndex].moveY(direction);
 			replacedChess = this->getChessOnBoard(this->currentPlayer[playerIndex]);
 			this->setBoard(this->currentPlayer[playerIndex]);
@@ -242,13 +237,6 @@ char Game::moveChess(Chess chessToGo, int cmd) {
 				playerIndex = chessToGo.symbol - '1';
 			else				//playerB
 				playerIndex = chessToGo.symbol - 'A';
-			// for(int i = 0; i < 6; i++){
-			// 	if (this->currentPlayer[i].symbol == chessToGo.symbol){
-			// 		playerIndex = i;
-			// 		break;
-			// 	}
-			// }
-			//cout<<"index: " << playerIndex << endl;
 			this->currentPlayer[playerIndex].moveX(direction);
 			this->currentPlayer[playerIndex].moveY(direction);
 			replacedChess = this->getChessOnBoard(this->currentPlayer[playerIndex]);
