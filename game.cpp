@@ -36,7 +36,7 @@ Game::Game()
 {
 	memset(this->board, 0, sizeof(this->board));
 	memset(this->movableChs, 0, sizeof(this->movableChs));
-	this->chsNumA = 0, this->chsNumB = 0;
+	this->chsNumA = 6, this->chsNumB = 6;
 	for (int i=0; i<6; i++)
 		this->playerA[i].assign('1'+i, true, 0, 0);
 	for (int i=0; i<6; i++)
@@ -164,13 +164,6 @@ char Game::getChessOnBoard(Chess chs) {
 	return this->board[chs.x][chs.y];
 }
 
-int Game::move(int choice, int cmd) {
-	//You'll know availiableMoveCnt in AI
-	//int availiableMoveCnt = availiableMove()
-	char eatenChs = moveChess(this->movableChs[choice], cmd);
-	return updatePlayer(eatenChs);
-}
-
 char Game::moveChess(Chess chessToGo, int cmd) {
 	char replacedChess;
 
@@ -188,13 +181,7 @@ char Game::moveChess(Chess chessToGo, int cmd) {
 				playerIndex = chessToGo.symbol - '1';
 			else				//playerB
 				playerIndex = chessToGo.symbol - 'A';
-			// for(int i = 0; i < 6; i++){
-			// 	if (this->currentPlayer[i].symbol == chessToGo.symbol){
-			// 		playerIndex = i;
-			// 		break;
-			// 	}
-			// }
-//			cout<<"index: " << playerIndex << endl;
+			// cout<<"index: " << playerIndex << endl;
 			this->currentPlayer[playerIndex].moveX(direction);
 			replacedChess = this->getChessOnBoard(this->currentPlayer[playerIndex]);
 			this->setBoard(this->currentPlayer[playerIndex]);
@@ -215,13 +202,7 @@ char Game::moveChess(Chess chessToGo, int cmd) {
 				playerIndex = chessToGo.symbol - '1';
 			else				//playerB
 				playerIndex = chessToGo.symbol - 'A';
-			// for(int i = 0; i < 6; i++){
-			// 	if (this->currentPlayer[i].symbol == chessToGo.symbol){
-			// 		playerIndex = i;
-			// 		break;
-			// 	}
-			// }
-		//	cout<<"index: " << playerIndex << endl;
+			//cout<<"index: " << playerIndex << endl;
 			this->currentPlayer[playerIndex].moveY(direction);
 			replacedChess = this->getChessOnBoard(this->currentPlayer[playerIndex]);
 			this->setBoard(this->currentPlayer[playerIndex]);
@@ -242,12 +223,6 @@ char Game::moveChess(Chess chessToGo, int cmd) {
 				playerIndex = chessToGo.symbol - '1';
 			else				//playerB
 				playerIndex = chessToGo.symbol - 'A';
-			// for(int i = 0; i < 6; i++){
-			// 	if (this->currentPlayer[i].symbol == chessToGo.symbol){
-			// 		playerIndex = i;
-			// 		break;
-			// 	}
-			// }
 			//cout<<"index: " << playerIndex << endl;
 			this->currentPlayer[playerIndex].moveX(direction);
 			this->currentPlayer[playerIndex].moveY(direction);
@@ -262,6 +237,13 @@ char Game::moveChess(Chess chessToGo, int cmd) {
 		return '!';
 	}
 	return replacedChess;
+}
+
+int Game::move(int choice, int cmd) {
+	//You'll know availiableMoveCnt in AI
+	//int availiableMoveCnt = availiableMove()
+	char eatenChs = moveChess(this->movableChs[choice], cmd);
+	return updatePlayer(eatenChs);
 }
 
 int Game::rollTheDice() {
@@ -316,23 +298,20 @@ int Game::availiableMove(int dice) {
 }
 
 int Game::updatePlayer(char c){
-
 	// to sort out player`s chess.
 	if (c != 0) {
 		// should delete a single piece.
 		if (c < 'A') {
 			// this Play is A
 			this->playerA[c-'1'].exist = false;
+			this->chsNumA--;
 		}
 		else {
 			// this Play is B
 			this->playerB[c-'A'].exist = false;
+			this->chsNumB--;
 		}
 	}
-	else {
-		// nothing to deal with.
-	}
-
 
 	// check if player arrive the end-game Pos.
 	for (int i = 0; i < 6; i++) {
@@ -342,23 +321,14 @@ int Game::updatePlayer(char c){
 			return 2;
 	}
 
-	// is this player been killed the game.
+	// is the other player been killed the game.
+	if (!this->turn && this->chsNumB==0)		//this player is A
+		return 1;
+	else if (this->turn && this->chsNumA==0)	//this player is B
+		return 2;
 
-	if (this->currentPlayer == this->playerA) {
-		for (int i = 0; i < 6; i++)
-			if (this->playerB[i].exist == true)
-				return 0;
-	}
-	else {
-		for (int i = 0; i < 6; i++)
-			if (this->playerA[i].exist == true)
-				return 0;
-	}
-
-
-	// if not return yet => the game end(one of the player have no more pieces)
-	// the current player loses, so the winner is the other player
-	return (this->turn == false ? 1 : 2);
+	//The game has not come to a close
+	return 0;
 }
 
 void Game::switchPlayer() {
