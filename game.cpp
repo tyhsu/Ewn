@@ -95,7 +95,7 @@ void Game::printBoard()
 			else if (c >= 'A' && c <= 'F')
 				cout << ANSI_COLOR_RED << c << ANSI_COLOR_RESET;
 			else
-				cout << ANSI_COLOR_BLUE << c << ANSI_COLOR_BLUE;
+				cout << ANSI_COLOR_YELLOW << c << ANSI_COLOR_RESET;
 			//else cout << c;
 		}
 		cout << "|" << endl;
@@ -104,7 +104,7 @@ void Game::printBoard()
 	cout << "====================================" << endl;
 }
 
-void Game::play()
+void Game::playerPlay()
 {
 	while (1) {
 		//ask for the next chessman to move
