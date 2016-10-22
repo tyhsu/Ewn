@@ -5,6 +5,7 @@
 #include <ctime>
 #include <sys/types.h>
 #include <unistd.h>
+#include <utility>
 #include "game.h"
 using namespace std;
 
@@ -101,10 +102,10 @@ void Game::printBoard()
 		cout << "|" << endl;
 	}
 	cout << "     \\-----/" << endl;
-	cout << "====================================" << endl;
+	cout << "================/====================" << endl;
 }
 
-int Game::playerPlay(int dice) {
+Movement Game::playerPlay(int dice) {
 	int nextMoveCnt = availiableMove(dice);
 	cout << "Next chessman able to move: ";
 	for (int i=0; i<nextMoveCnt; i++) cout << i << ")" << this->movableChs_[i].symbol << " ";
@@ -118,8 +119,8 @@ int Game::playerPlay(int dice) {
 		cout << "Direction: 0)Left 1)Up 2)Left-up" << endl;
 	cout << "Choose: ";
 	cin >> direct;
-	char eatenChs = moveChess(this->movableChs_[chs], direct);
-	while (eatenChs == '!') {
+	Movement mvmt(chs, direct);
+	while (isLegalMove(mvmt) == false) {
 		cout << "Illegal move!!" << endl << endl;
 		cout << "Next chessman able to move: ";
 		for (int i=0; i<nextMoveCnt; i++) cout << i << ")" << this->movableChs_[i].symbol << " ";
@@ -132,9 +133,10 @@ int Game::playerPlay(int dice) {
 			cout << "Direction: 0)Left 1)Up 2)Left-up" << endl;
 		cout << "Choose: ";
 		cin >> direct;
-		eatenChs = moveChess(this->movableChs_[chs], direct);
+		mvmt.first = chs;
+		mvmt.second = direct;
 	}
-	return updatePlayer(eatenChs) ;
+	return mvmt ;
 }
 
 // int Game::autoPlay(int dice) {
@@ -150,7 +152,7 @@ void Game::twoPlayers() {
 		//update, 0(game continues), 1(A wins), 2(B wins)
 		//int win = move(chs, direct);
 		int dice = rollTheDice();
-		int win = playerPlay(dice);
+		int win = update(playerPlay(dice));
 		cout << "turn_, win :" << turn_ << " " << win << endl;
 		checkStatus();
 		printBoard();
@@ -207,7 +209,13 @@ void Game::twoPlayers() {
 // 	}
 // }
 
-bool Game::isLegalMove(int x, int y) {
+bool Game::isLegalMove(Movement mvmt) {
+	Chess chess = this->movableChs_[mvmt.first];
+	int posneg = (this->turn_ == false) ? 1 : -1;
+	int x = chess.x;
+	int y = chess.y;
+	x += (mvmt.second == 1) ? 0 : posneg;
+	y += (mvmt.second == 0) ? 0 : posneg;
 	return ( x >= 0 && x < 5 && y >= 0 && y < 5);
 }
 
@@ -219,85 +227,13 @@ char Game::getChessOnBoard(Chess chs) {
 	return this->board_[chs.x][chs.y];
 }
 
-char Game::moveChess(Chess chessToGo, int cmd) {
-	char replacedChess;
 
-	int direction = (this->turn_ == false)? 1 : -1;
-	if (cmd == 0) {
-		//move right
-		if( this->isLegalMove(chessToGo.x + direction, chessToGo.y) ) {
-			//clear previous location
-			Chess previous = chessToGo;
-			previous.symbol = 0;
-			this->setBoard(previous);
-
-			int playerIndex = 0;
-			if (!this->turn_)	//playerA_
-				playerIndex = chessToGo.symbol - '1';
-			else				//playerB_
-				playerIndex = chessToGo.symbol - 'A';
-			// cout<<"index: " << playerIndex << endl;
-			this->currentPlayer_[playerIndex].moveX(direction);
-			replacedChess = this->getChessOnBoard(this->currentPlayer_[playerIndex]);
-			this->setBoard(this->currentPlayer_[playerIndex]);
-		}
-		else {
-			return '!';
-		}
-	}
-	else if (cmd == 1) {
-		//move down
-		if (this->isLegalMove(chessToGo.x, chessToGo.y + direction)) {
-			Chess previous = chessToGo;
-			previous.symbol = 0;
-			this->setBoard(previous);//clear previous location
-
-			int playerIndex = 0;
-			if (!this->turn_)	//playerA_
-				playerIndex = chessToGo.symbol - '1';
-			else				//playerB_
-				playerIndex = chessToGo.symbol - 'A';
-			this->currentPlayer_[playerIndex].moveY(direction);
-			replacedChess = this->getChessOnBoard(this->currentPlayer_[playerIndex]);
-			this->setBoard(this->currentPlayer_[playerIndex]);
-		}
-		else {
-			return '!';
-		}
-	}
-	else if (cmd == 2) {
-		//move right down
-		if (this->isLegalMove(chessToGo.x + direction, chessToGo.y + direction)) {
-			Chess previous = chessToGo;
-			previous.symbol = 0;
-			this->setBoard(previous);//clear previous location
-
-			int playerIndex = 0;
-			if (!this->turn_)	//playerA_
-				playerIndex = chessToGo.symbol - '1';
-			else				//playerB_
-				playerIndex = chessToGo.symbol - 'A';
-			this->currentPlayer_[playerIndex].moveX(direction);
-			this->currentPlayer_[playerIndex].moveY(direction);
-			replacedChess = this->getChessOnBoard(this->currentPlayer_[playerIndex]);
-			this->setBoard(this->currentPlayer_[playerIndex]);
-		}
-		else {
-			return '!';
-		}
-	}
-	else {
-		return '!';
-	}
-	return replacedChess;
-}
-
-int Game::move(int choice, int cmd) {
-	//You'll know availiableMoveCnt in AI
-	//int availiableMoveCnt = availiableMove()
-	char eatenChs = moveChess(this->movableChs_[choice], cmd);
-	return updatePlayer(eatenChs);
-}
+//int Game::move(int choice, int cmd) {
+//	//You'll know availiableMoveCnt in AI
+//	//int availiableMoveCnt = availiableMove()
+//	char eatenChs = moveChess(this->movableChs_[choice], cmd);
+//	return updatePlayer(eatenChs);
+//}
 
 int Game::rollTheDice() {
 	return rand()%6;
@@ -350,7 +286,68 @@ int Game::availiableMove(int dice) {
 	}
 }
 
-int Game::updatePlayer(char c){
+int Game::update(Movement mvmt){
+
+	Chess chessToGo = this->movableChs_[mvmt.first];
+	char replacedChess;
+	int direct = mvmt.second;
+	int posneg = (this->turn_ == false)? 1 : -1;
+	if (direct == 0) {
+		//move right
+		Chess previous = chessToGo;
+		previous.symbol = 0;
+		this->setBoard(previous);//clear previous location
+
+		int playerIndex = 0;
+		if (!this->turn_)	//playerA_
+			playerIndex = chessToGo.symbol - '1';
+		else				//playerB_
+			playerIndex = chessToGo.symbol - 'A';
+		// cout<<"index: " << playerIndex << endl;
+		this->currentPlayer_[playerIndex].moveX(posneg);
+		replacedChess = this->getChessOnBoard(this->currentPlayer_[playerIndex]);
+		this->setBoard(this->currentPlayer_[playerIndex]);
+	}
+	else if (direct == 1) {
+		//move down
+		Chess previous = chessToGo;
+		previous.symbol = 0;
+		this->setBoard(previous);//clear previous location
+
+		int playerIndex = 0;
+		if (!this->turn_)	//playerA_
+			playerIndex = chessToGo.symbol - '1';
+		else				//playerB_
+			playerIndex = chessToGo.symbol - 'A';
+		this->currentPlayer_[playerIndex].moveY(posneg);
+		replacedChess = this->getChessOnBoard(this->currentPlayer_[playerIndex]);
+		this->setBoard(this->currentPlayer_[playerIndex]);
+
+	}
+	else if (direct == 2) {
+		//move right down
+		Chess previous = chessToGo;
+		previous.symbol = 0;
+		this->setBoard(previous);//clear previous location
+
+		int playerIndex = 0;
+		if (!this->turn_)	//playerA_
+			playerIndex = chessToGo.symbol - '1';
+		else				//playerB_
+			playerIndex = chessToGo.symbol - 'A';
+		this->currentPlayer_[playerIndex].moveX(posneg);
+		this->currentPlayer_[playerIndex].moveY(posneg);
+		replacedChess = this->getChessOnBoard(this->currentPlayer_[playerIndex]);
+		this->setBoard(this->currentPlayer_[playerIndex]);
+	}
+
+
+
+	char c = replacedChess;
+
+
+
+
 	// to sort out player`s chess.
 	if (c != 0) {
 		// should delete a single piece.

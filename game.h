@@ -1,9 +1,14 @@
 #include <iostream>
+#include <map>
 #include <cstring>
 #include <cstdlib>
 #include <cstdio>
 #include <ctime>
+#include <sys/types.h>
+#include <unistd.h>
+#include <utility>
 using namespace std;
+typedef pair<int, int> Movement;
 
 struct Chess
 {
@@ -32,7 +37,7 @@ public:
 	//Print the board
 	void printBoard();
 	//One player plays the game (the integration)
-	int playerPlay(int dice);
+	Movement playerPlay(int dice);
 	//One AI plays the game (without std input)
 	//int autoPlay(int dice);
 	//Two players fight!
@@ -43,23 +48,23 @@ public:
 	//void twoAIs();
 
 	//Check if the chessman is out of the board
-	bool isLegalMove(int x, int y);
+	bool isLegalMove(Movement mvmt);
 	//Synchronize the chessman and the board
 	void setBoard(Chess chs);
 	//Get the symbol of the chessman originally on the board
 	char getChessOnBoard(Chess chs);
 	//Player has a move according to the assigned chessman and direction
-	char moveChess(Chess chessToGo, int cmd);
+	//char moveChess(Chess chessToGo, int cmd);
 	//Make a move includes choosing a chessman and move the chessman
 	//You should know whether the cmd is legal (for AI)
-	int move(int choice, int cmd);
-	
+	//int move(int choice, int cmd);
+
 	//Roll the dice
 	int rollTheDice();
 	//Input the result of dice and return how many chessmen the player can move
 	int availiableMove(int dice);
 	//Recieve the eaten chessman and update the existence, and return 0(game continues), 1(A wins), 2(B wins)
-	int updatePlayer(char c);
+	int update(Movement mvmt);
 	//Rotate the board and change the pointer of the player
 	void switchPlayer();
 	//Check chesses
