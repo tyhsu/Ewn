@@ -83,6 +83,15 @@ Game::Game()
 	printBoard();
 }
 
+void Game::copyBoard(char** boardTmp) {
+	for(int i=0; i<5; i++) {
+		for(int j=0; j<5; j++) {
+			boardTmp[i][j] = this->board_[i][j];
+		}
+	}
+}
+
+
 void Game::printBoard()
 {
 	cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
@@ -114,14 +123,14 @@ Movement Game::playerPlay(int dice) {
 	cout << endl;
 	cout << "Choose: ";
 	cin >> chs;
-	
+
 	if (!this->turn_)
 		cout << "Direction: 0)Right 1)Down 2)Right-down" << endl;
 	else
 		cout << "Direction: 0)Left 1)Up 2)Left-up" << endl;
 	cout << "Choose: ";
 	cin >> direct;
-	
+
 	Movement mvmt(chs, direct);
 	while (isLegalMove(mvmt) == false) {
 		cout << "Illegal move!!" << endl << endl;
@@ -142,6 +151,8 @@ Movement Game::playerPlay(int dice) {
 	}
 	return mvmt ;
 }
+
+
 
 // int Game::autoPlay(int dice) {
 
@@ -283,7 +294,7 @@ int Game::update(Movement mvmt){
 	char replacedChess;
 	int direct = mvmt.second;
 	int posneg = (this->turn_ == false)? 1 : -1;
-	
+
 	// Update the chosen movement on the board
 	if (direct == 0) {
 		/* ----------move right---------- */

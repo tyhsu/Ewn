@@ -35,12 +35,16 @@ public:
 
 	//Including initializing the positions
 	Game();
+	//copy board
+	void copyBoard(char ** boardTmp);
 	//Print the board
 	void printBoard();
 	//One player plays the game (the integration)
 	Movement playerPlay(int dice);
 	//One AI plays the game (without std input)
+	int minimax(int height, bool isMax);
 	//int autoPlay(int dice);
+	//miniMax
 	//Two players fight!
 	void twoPlayers();
 	//One player fight with AI
