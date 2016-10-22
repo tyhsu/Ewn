@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <utility>
 using namespace std;
+
 typedef pair<int, int> Movement;
 
 struct Chess
@@ -63,10 +64,10 @@ public:
 	int rollTheDice();
 	//Input the result of dice and return how many chessmen the player can move
 	int availiableMove(int dice);
-	//Recieve the eaten chessman and update the existence, and return 0(game continues), 1(A wins), 2(B wins)
+	//Update the board(have a movement), chsNum, playerA/playerB. Return 0(game continues), 1(A wins), 2(B wins)
 	int update(Movement mvmt);
-	//Rotate the board and change the pointer of the player
+	//Change turn and the pointer of the player
 	void switchPlayer();
-	//Check chesses
+	//Print the position and existence of the both players
 	void checkStatus();
 };

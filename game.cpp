@@ -107,23 +107,27 @@ void Game::printBoard()
 
 Movement Game::playerPlay(int dice) {
 	int nextMoveCnt = availiableMove(dice);
+	int chs, direct;
 	cout << "Next chessman able to move: ";
-	for (int i=0; i<nextMoveCnt; i++) cout << i << ")" << this->movableChs_[i].symbol << " ";
+	for (int i=0; i<nextMoveCnt; i++)
+		cout << i << ")" << this->movableChs_[i].symbol << " ";
 	cout << endl;
 	cout << "Choose: ";
-	int chs, direct;
 	cin >> chs;
+	
 	if (!this->turn_)
 		cout << "Direction: 0)Right 1)Down 2)Right-down" << endl;
 	else
 		cout << "Direction: 0)Left 1)Up 2)Left-up" << endl;
 	cout << "Choose: ";
 	cin >> direct;
+	
 	Movement mvmt(chs, direct);
 	while (isLegalMove(mvmt) == false) {
 		cout << "Illegal move!!" << endl << endl;
 		cout << "Next chessman able to move: ";
-		for (int i=0; i<nextMoveCnt; i++) cout << i << ")" << this->movableChs_[i].symbol << " ";
+		for (int i=0; i<nextMoveCnt; i++)
+			cout << i << ")" << this->movableChs_[i].symbol << " ";
 		cout << endl;
 		cout << "Choose: ";
 		cin >> chs;
@@ -147,13 +151,8 @@ Movement Game::playerPlay(int dice) {
 
 void Game::twoPlayers() {
 	while (1) {
-		//ask for the next chessman to move
-
-		//update, 0(game continues), 1(A wins), 2(B wins)
-		//int win = move(chs, direct);
-		int dice = rollTheDice();
-		int win = update(playerPlay(dice));
-		cout << "turn_, win :" << turn_ << " " << win << endl;
+		//update: 0(game continues), 1(A wins), 2(B wins)
+		int win = update(playerPlay(rollTheDice()));
 		checkStatus();
 		printBoard();
 		if (win!=0) {
@@ -212,8 +211,7 @@ void Game::twoPlayers() {
 bool Game::isLegalMove(Movement mvmt) {
 	Chess chess = this->movableChs_[mvmt.first];
 	int posneg = (this->turn_ == false) ? 1 : -1;
-	int x = chess.x;
-	int y = chess.y;
+	int x = chess.x, y = chess.y;
 	x += (mvmt.second == 1) ? 0 : posneg;
 	y += (mvmt.second == 0) ? 0 : posneg;
 	return ( x >= 0 && x < 5 && y >= 0 && y < 5);
@@ -240,7 +238,6 @@ int Game::rollTheDice() {
 }
 
 int Game::availiableMove(int dice) {
-
 	printf("result: %d \n", dice+1);
 	for(int i = 0; i < 2; i++)
 		this->movableChs_[i].assign(0, false, 0, 0);
@@ -249,7 +246,6 @@ int Game::availiableMove(int dice) {
 		// this piece is alive!
 		for(int i = 0; i < 2; i++) {
 			this->movableChs_[i] = this->currentPlayer_[dice];
-			// movableChs_[i] = result + whichPlayerPiece;
 		}
 		return 1;
 	}
@@ -262,20 +258,16 @@ int Game::availiableMove(int dice) {
 			if (this->currentPlayer_[i].exist){
 				this->movableChs_[0] = this->currentPlayer_[i];
 				break;
-				// movableChs_[i] = result + whichPlayerPiece;
 			}
 		}
-
 		for (int i = dice+1; i < 6; i++) {
 			if (this->currentPlayer_[i].exist){
 				this->movableChs_[1] = this->currentPlayer_[i];
 				break;
-				// movableChs_[1] = i + whichPlayerPiece;
 			}
 		}
 
-		// if one of movableChs_ doesn`t value.
-		// let this Chs = the other one (with value).
+		// if one of movableChs_ doesn't value, let this Chs = the other one (with value).
 		for (int i = 0; i < 2; i++) {
 			if (this->movableChs_[i].symbol == 0) {
 				this->movableChs_[i] = this->movableChs_[1-i];
@@ -287,32 +279,34 @@ int Game::availiableMove(int dice) {
 }
 
 int Game::update(Movement mvmt){
-
 	Chess chessToGo = this->movableChs_[mvmt.first];
 	char replacedChess;
 	int direct = mvmt.second;
 	int posneg = (this->turn_ == false)? 1 : -1;
+	
+	// Update the chosen movement on the board
 	if (direct == 0) {
-		//move right
+		/* ----------move right---------- */
+		// clear previous location
 		Chess previous = chessToGo;
 		previous.symbol = 0;
-		this->setBoard(previous);//clear previous location
+		this->setBoard(previous);
 
 		int playerIndex = 0;
 		if (!this->turn_)	//playerA_
 			playerIndex = chessToGo.symbol - '1';
 		else				//playerB_
 			playerIndex = chessToGo.symbol - 'A';
-		// cout<<"index: " << playerIndex << endl;
 		this->currentPlayer_[playerIndex].moveX(posneg);
 		replacedChess = this->getChessOnBoard(this->currentPlayer_[playerIndex]);
 		this->setBoard(this->currentPlayer_[playerIndex]);
 	}
 	else if (direct == 1) {
-		//move down
+		/* ----------move down---------- */
+		// clear previous location
 		Chess previous = chessToGo;
 		previous.symbol = 0;
-		this->setBoard(previous);//clear previous location
+		this->setBoard(previous);
 
 		int playerIndex = 0;
 		if (!this->turn_)	//playerA_
@@ -325,10 +319,11 @@ int Game::update(Movement mvmt){
 
 	}
 	else if (direct == 2) {
-		//move right down
+		/* ----------move right down---------- */
+		// clear previous location
 		Chess previous = chessToGo;
 		previous.symbol = 0;
-		this->setBoard(previous);//clear previous location
+		this->setBoard(previous);
 
 		int playerIndex = 0;
 		if (!this->turn_)	//playerA_
@@ -341,29 +336,22 @@ int Game::update(Movement mvmt){
 		this->setBoard(this->currentPlayer_[playerIndex]);
 	}
 
-
-
-	char c = replacedChess;
-
-
-
-
-	// to sort out player`s chess.
-	if (c != 0) {
+	// Update the eaten chessman
+	if (replacedChess != 0) {
 		// should delete a single piece.
-		if (c < 'A') {
+		if (replacedChess < 'A') {
 			// this Play is A
-			this->playerA_[c-'1'].exist = false;
+			this->playerA_[replacedChess-'1'].exist = false;
 			this->chsNumA_--;
 		}
 		else {
 			// this Play is B
-			this->playerB_[c-'A'].exist = false;
+			this->playerB_[replacedChess-'A'].exist = false;
 			this->chsNumB_--;
 		}
 	}
 
-	// check if player arrive the end-game Pos.
+	// Check if any player arrives the end-game position
 	for (int i = 0; i < 6; i++) {
 		if(this->playerA_[i].x == 4 && this->playerA_[i].y == 4)
 			return 1;
@@ -371,7 +359,7 @@ int Game::update(Movement mvmt){
 			return 2;
 	}
 
-	// is the other player been killed the game.
+	// Check if the other player is killed the game.
 	if (!this->turn_ && this->chsNumB_==0)		//this player is A
 		return 1;
 	else if (this->turn_ && this->chsNumA_==0)	//this player is B
@@ -386,7 +374,7 @@ void Game::switchPlayer() {
 		this->currentPlayer_ = this->playerA_;
 		this->turn_ = false;
 	}
-	else {
+	else {				//now is A
 		this->currentPlayer_ = this->playerB_;
 		this->turn_ = true;
 	}
