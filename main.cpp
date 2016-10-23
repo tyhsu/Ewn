@@ -2,11 +2,11 @@
 #include <cstring>
 #include <cstdlib>
 #include <ctime>
-#include "game.h"
+#include "play.h"
 using namespace std;
 
 int main() {
-	Game ewn;
+	Play ewn;
 	ewn.twoPlayers();
 	return 0;
 }

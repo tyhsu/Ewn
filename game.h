@@ -1,5 +1,7 @@
+#ifndef GAME_H
+#define GAME_H
+
 #include <iostream>
-#include <map>
 #include <cstring>
 #include <cstdlib>
 #include <cstdio>
@@ -47,30 +49,23 @@ public:
 	//Roll the dice
 	int rollTheDice();
 	//Input the result of dice and return how many chessmen the player can move
-	int availiableMove(int dice);
+	int availiableMove(const int& dice);
 	//Check if the chessman is out of the board
-	bool isLegalMove(Movement mvmt);
+	bool isLegalMove(const Movement& mvmt);
 	//Synchronize the chessman and the board
-	void setBoard(Chess chs);
+	void setBoard(const Chess& chs);
 	//Get the symbol of the chessman originally on the board
-	char getChessOnBoard(Chess chs);
+	char getChessOnBoard(const Chess& chs);
 	//Update the board(have a movement), chsNum, playerA/playerB. Return 0(game continues), 1(A wins), 2(B wins)
-	int update(Movement mvmt);
+	int update(const Movement& mvmt);
 	//Change turn and the pointer of the player
 	void switchPlayer();
 	//Print the position and existence of the both players
 	void checkStatus();
 
-	//One AI plays the game (without std input)
-	int minimax(int height, bool isMax);
-
-	//One player plays the game (the integration)
-	Movement playerPlay(int dice);
-	//int autoPlay(int dice);
-	//Two players fight!
-	void twoPlayers();
-	//One player fight with AI
-	//void playerAI();
-	//Two AIs fight
-	//void twoAIs();
+	Chess getMovableChs(const int& k);
+	bool getTurn();
 };
+
+#endif
+
