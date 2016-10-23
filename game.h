@@ -10,7 +10,6 @@
 using namespace std;
 
 typedef pair<int, int> Movement;
-
 struct Chess
 {
 	char symbol;
@@ -35,6 +34,8 @@ public:
 
 	//Including initializing the positions
 	Game();
+	//Copy constructor
+	Game(Game game);
 	//copy board
 	void copyBoard(char ** boardTmp);
 	//Print the board
