@@ -10,6 +10,7 @@
 using namespace std;
 
 typedef pair<int, int> Movement;
+
 struct Chess
 {
 	char symbol;
@@ -22,7 +23,7 @@ struct Chess
 
 class Game
 {
-public:
+private:
 	char board_[5][5];
 	Chess movableChs_[2];
 	//How many chessmen are on the board
@@ -32,47 +33,44 @@ public:
 	//false(0): A, true(1): B
 	bool turn_;
 
+
+public:
 	//Including initializing the positions
 	Game();
 	//Copy constructor
-	Game(Game game);
-	//copy board
-	void copyBoard(char ** boardTmp);
+	Game(const Game& game);
+	//Copy operator
+	void operator=(const Game& game);
+
 	//Print the board
 	void printBoard();
-	//One player plays the game (the integration)
-	Movement playerPlay(int dice);
-	//One AI plays the game (without std input)
-	int minimax(int height, bool isMax);
-	//int autoPlay(int dice);
-	//miniMax
-	//Two players fight!
-	void twoPlayers();
-	//One player fight with AI
-	//void playerAI();
-	//Two AIs fight
-	//void twoAIs();
-
+	//Roll the dice
+	int rollTheDice();
+	//Input the result of dice and return how many chessmen the player can move
+	int availiableMove(int dice);
 	//Check if the chessman is out of the board
 	bool isLegalMove(Movement mvmt);
 	//Synchronize the chessman and the board
 	void setBoard(Chess chs);
 	//Get the symbol of the chessman originally on the board
 	char getChessOnBoard(Chess chs);
-	//Player has a move according to the assigned chessman and direction
-	//char moveChess(Chess chessToGo, int cmd);
-	//Make a move includes choosing a chessman and move the chessman
-	//You should know whether the cmd is legal (for AI)
-	//int move(int choice, int cmd);
-
-	//Roll the dice
-	int rollTheDice();
-	//Input the result of dice and return how many chessmen the player can move
-	int availiableMove(int dice);
 	//Update the board(have a movement), chsNum, playerA/playerB. Return 0(game continues), 1(A wins), 2(B wins)
 	int update(Movement mvmt);
 	//Change turn and the pointer of the player
 	void switchPlayer();
 	//Print the position and existence of the both players
 	void checkStatus();
+
+	//One AI plays the game (without std input)
+	int minimax(int height, bool isMax);
+
+	//One player plays the game (the integration)
+	Movement playerPlay(int dice);
+	//int autoPlay(int dice);
+	//Two players fight!
+	void twoPlayers();
+	//One player fight with AI
+	//void playerAI();
+	//Two AIs fight
+	//void twoAIs();
 };

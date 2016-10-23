@@ -17,6 +17,7 @@ using namespace std;
 #define ANSI_COLOR_CYAN    "\x1b[36m"
 #define ANSI_COLOR_RESET   "\x1b[0m"
 
+/* -------------------- struct Chess -------------------- */
 void Chess::assign(const char& s, const bool& e, const int& x, const int& y)
 {
 	this->symbol = s;
@@ -35,6 +36,7 @@ void Chess::moveY(int direction)
 	this->y += direction;
 }
 
+/* -------------------- class Game -------------------- */
 Game::Game()
 {
 	memset(this->board_, 0, sizeof(this->board_));
@@ -82,7 +84,9 @@ Game::Game()
 	}
 	printBoard();
 }
-Game::Game(Game game) {
+
+Game::Game(const Game& game)
+{
 	for(int i=0; i<5; i++) {
 		for(int j=0; j<5; j++) {
 			this->board_[i][j] = game.board_[i][j];
@@ -95,18 +99,29 @@ Game::Game(Game game) {
 		this->playerA_[i] = game.playerA_[i];
 		this->playerB_[i] = game.playerB_[i];
 	}
-	this->turn_ = game.turn;
+	this->turn_ = game.turn_;
 	this->chsNumA_ = game.chsNumA_;
 	this->chsNumB_ = game.chsNumB_;
 }
-void Game::copyBoard(char** boardTmp) {
+
+void Game::operator=(const Game& game)
+{
 	for(int i=0; i<5; i++) {
 		for(int j=0; j<5; j++) {
-			boardTmp[i][j] = this->board_[i][j];
+			this->board_[i][j] = game.board_[i][j];
 		}
 	}
+	for(int i=0; i<2; i++) {
+		this->movableChs_[i] = game.movableChs_[i];
+	}
+	for(int i=0; i<6; i++) {
+		this->playerA_[i] = game.playerA_[i];
+		this->playerB_[i] = game.playerB_[i];
+	}
+	this->turn_ = game.turn_;
+	this->chsNumA_ = game.chsNumA_;
+	this->chsNumB_ = game.chsNumB_;
 }
-
 
 void Game::printBoard()
 {
@@ -130,141 +145,13 @@ void Game::printBoard()
 	cout << "================/====================" << endl;
 }
 
-Movement Game::playerPlay(int dice) {
-	int nextMoveCnt = availiableMove(dice);
-	int chs, direct;
-	cout << "Next chessman able to move: ";
-	for (int i=0; i<nextMoveCnt; i++)
-		cout << i << ")" << this->movableChs_[i].symbol << " ";
-	cout << endl;
-	cout << "Choose: ";
-	cin >> chs;
-
-	if (!this->turn_)
-		cout << "Direction: 0)Right 1)Down 2)Right-down" << endl;
-	else
-		cout << "Direction: 0)Left 1)Up 2)Left-up" << endl;
-	cout << "Choose: ";
-	cin >> direct;
-
-	Movement mvmt(chs, direct);
-	while (isLegalMove(mvmt) == false) {
-		cout << "Illegal move!!" << endl << endl;
-		cout << "Next chessman able to move: ";
-		for (int i=0; i<nextMoveCnt; i++)
-			cout << i << ")" << this->movableChs_[i].symbol << " ";
-		cout << endl;
-		cout << "Choose: ";
-		cin >> chs;
-		if (!this->turn_)
-			cout << "Direction: 0)Right 1)Down 2)Right-down" << endl;
-		else
-			cout << "Direction: 0)Left 1)Up 2)Left-up" << endl;
-		cout << "Choose: ";
-		cin >> direct;
-		mvmt.first = chs;
-		mvmt.second = direct;
-	}
-	return mvmt ;
-}
-
-
-
-// int Game::autoPlay(int dice) {
-
-// 	// Run AI and get chosen.
-// 	return move(chosenChessman, chosenDirection);
-// }
-
-void Game::twoPlayers() {
-	while (1) {
-		//update: 0(game continues), 1(A wins), 2(B wins)
-		int win = update(playerPlay(rollTheDice()));
-		checkStatus();
-		printBoard();
-		if (win!=0) {
-			cout << "====================================" << endl;
-			if (win==1) cout << "A is the winner!!!" << endl;
-			else cout << "B is the winner!!!" << endl;
-			cout << "====================================" << endl;
-			return;
-		}
-		switchPlayer();
-	}
-}
-
-// void Game::playerAI() {
-// 	while (1) {
-// 		//ask for the next chessman to move
-
-// 		//update, 0(game continues), 1(A wins), 2(B wins)
-// 		//int win = move(chs, direct);
-// 		int dice = rollTheDice();
-// 		int win =(this->turn_ == true )? autoPlay(dice) : playerPlay(dice);
-// 		cout << "turn_, win :" << turn_ << " " << win << endl;
-// 		checkStatus();
-// 		printBoard();
-// 		if (win!=0) {
-// 			cout << "====================================" << endl;
-// 			if (win==1) cout << "A is the winner!!!" << endl;
-// 			else cout << "B is the winner!!!" << endl;
-// 			cout << "====================================" << endl;
-// 			return;
-// 		}
-// 		switchPlayer();
-// 	}
-// }
-
-// void Game::twoAIs() {
-// 	while (1) {
-// 		//ask for the next chessman to move
-
-// 		//update, 0(game continues), 1(A wins), 2(B wins)
-// 		//int win = move(chs, direct);
-// 		int dice = rollTheDice();
-// 		int win = autoPlay(dice);
-// 		printBoard();
-// 		if (win!=0) {
-// 			cout << "====================================" << endl;
-// 			if (win==1) cout << "A is the winner!!!" << endl;
-// 			else cout << "B is the winner!!!" << endl;
-// 			cout << "====================================" << endl;
-// 			return;
-// 		}
-// 		switchPlayer();
-// 	}
-// }
-
-bool Game::isLegalMove(Movement mvmt) {
-	Chess chess = this->movableChs_[mvmt.first];
-	int posneg = (this->turn_ == false) ? 1 : -1;
-	int x = chess.x, y = chess.y;
-	x += (mvmt.second == 1) ? 0 : posneg;
-	y += (mvmt.second == 0) ? 0 : posneg;
-	return ( x >= 0 && x < 5 && y >= 0 && y < 5);
-}
-
-void Game::setBoard(Chess chs) {
-	this->board_[chs.x][chs.y] = chs.symbol;
-}
-
-char Game::getChessOnBoard(Chess chs) {
-	return this->board_[chs.x][chs.y];
-}
-
-
-//int Game::move(int choice, int cmd) {
-//	//You'll know availiableMoveCnt in AI
-//	//int availiableMoveCnt = availiableMove()
-//	char eatenChs = moveChess(this->movableChs_[choice], cmd);
-//	return updatePlayer(eatenChs);
-//}
-
-int Game::rollTheDice() {
+int Game::rollTheDice()
+{
 	return rand()%6;
 }
 
-int Game::availiableMove(int dice) {
+int Game::availiableMove(int dice)
+{
 	printf("result: %d \n", dice+1);
 	for(int i = 0; i < 2; i++)
 		this->movableChs_[i].assign(0, false, 0, 0);
@@ -305,7 +192,28 @@ int Game::availiableMove(int dice) {
 	}
 }
 
-int Game::update(Movement mvmt){
+bool Game::isLegalMove(Movement mvmt)
+{
+	Chess chess = this->movableChs_[mvmt.first];
+	int posneg = (this->turn_ == false) ? 1 : -1;
+	int x = chess.x, y = chess.y;
+	x += (mvmt.second == 1) ? 0 : posneg;
+	y += (mvmt.second == 0) ? 0 : posneg;
+	return ( x >= 0 && x < 5 && y >= 0 && y < 5);
+}
+
+void Game::setBoard(Chess chs)
+{
+	this->board_[chs.x][chs.y] = chs.symbol;
+}
+
+char Game::getChessOnBoard(Chess chs)
+{
+	return this->board_[chs.x][chs.y];
+}
+
+int Game::update(Movement mvmt)
+{
 	Chess chessToGo = this->movableChs_[mvmt.first];
 	char replacedChess;
 	int direct = mvmt.second;
@@ -396,7 +304,8 @@ int Game::update(Movement mvmt){
 	return 0;
 }
 
-void Game::switchPlayer() {
+void Game::switchPlayer()
+{
 	if (this->turn_) {	//now is B
 		this->currentPlayer_ = this->playerA_;
 		this->turn_ = false;
@@ -420,5 +329,111 @@ void Game::checkStatus()
 		cout << this->playerB_[i].symbol << " is at (" << this->playerB_[i].x << ", " << this->playerB_[i].y << ")   [exist : " << this->playerB_[i].exist << "] ;" <<endl;
 	}
 	cout <<"/*    --------    */" << endl;
-
 }
+
+Movement Game::playerPlay(int dice)
+{
+	int nextMoveCnt = availiableMove(dice);
+	int chs, direct;
+	cout << "Next chessman able to move: ";
+	for (int i=0; i<nextMoveCnt; i++)
+		cout << i << ")" << this->movableChs_[i].symbol << " ";
+	cout << endl;
+	cout << "Choose: ";
+	cin >> chs;
+
+	if (!this->turn_)
+		cout << "Direction: 0)Right 1)Down 2)Right-down" << endl;
+	else
+		cout << "Direction: 0)Left 1)Up 2)Left-up" << endl;
+	cout << "Choose: ";
+	cin >> direct;
+
+	Movement mvmt(chs, direct);
+	while (isLegalMove(mvmt) == false) {
+		cout << "Illegal move!!" << endl << endl;
+		cout << "Next chessman able to move: ";
+		for (int i=0; i<nextMoveCnt; i++)
+			cout << i << ")" << this->movableChs_[i].symbol << " ";
+		cout << endl;
+		cout << "Choose: ";
+		cin >> chs;
+		if (!this->turn_)
+			cout << "Direction: 0)Right 1)Down 2)Right-down" << endl;
+		else
+			cout << "Direction: 0)Left 1)Up 2)Left-up" << endl;
+		cout << "Choose: ";
+		cin >> direct;
+		mvmt.first = chs;
+		mvmt.second = direct;
+	}
+	return mvmt ;
+}
+/*
+int Game::autoPlay(int dice)
+{
+
+	// Run AI and get chosen.
+	return move(chosenChessman, chosenDirection);
+}
+*/
+void Game::twoPlayers()
+{
+	while (1) {
+		//update: 0(game continues), 1(A wins), 2(B wins)
+		int win = update(playerPlay(rollTheDice()));
+		printBoard();
+		if (win!=0) {
+			cout << "====================================" << endl;
+			if (win==1) cout << "A is the winner!!!" << endl;
+			else cout << "B is the winner!!!" << endl;
+			cout << "====================================" << endl;
+			return;
+		}
+		switchPlayer();
+	}
+}
+/*
+void Game::playerAI()
+{
+	while (1) {
+		//ask for the next chessman to move
+
+		//update, 0(game continues), 1(A wins), 2(B wins)
+		//int win = move(chs, direct);
+		int dice = rollTheDice();
+		int win =(this->turn_ == true )? autoPlay(dice) : playerPlay(dice);
+		cout << "turn_, win :" << turn_ << " " << win << endl;
+		printBoard();
+		if (win!=0) {
+			cout << "====================================" << endl;
+			if (win==1) cout << "A is the winner!!!" << endl;
+			else cout << "B is the winner!!!" << endl;
+			cout << "====================================" << endl;
+			return;
+		}
+		switchPlayer();
+	}
+}
+*//*
+void Game::twoAIs()
+{
+	while (1) {
+		//ask for the next chessman to move
+
+		//update, 0(game continues), 1(A wins), 2(B wins)
+		//int win = move(chs, direct);
+		int dice = rollTheDice();
+		int win = autoPlay(dice);
+		printBoard();
+		if (win!=0) {
+			cout << "====================================" << endl;
+			if (win==1) cout << "A is the winner!!!" << endl;
+			else cout << "B is the winner!!!" << endl;
+			cout << "====================================" << endl;
+			return;
+		}
+		switchPlayer();
+	}
+}
+*/
