@@ -82,7 +82,23 @@ Game::Game()
 	}
 	printBoard();
 }
-
+Game::Game(Game game) {
+	for(int i=0; i<5; i++) {
+		for(int j=0; j<5; j++) {
+			this->board_[i][j] = game.board_[i][j];
+		}
+	}
+	for(int i=0; i<2; i++) {
+		this->movableChs_[i] = game.movableChs_[i];
+	}
+	for(int i=0; i<6; i++) {
+		this->playerA_[i] = game.playerA_[i];
+		this->playerB_[i] = game.playerB_[i];
+	}
+	this->turn_ = game.turn;
+	this->chsNumA_ = game.chsNumA_;
+	this->chsNumB_ = game.chsNumB_;
+}
 void Game::copyBoard(char** boardTmp) {
 	for(int i=0; i<5; i++) {
 		for(int j=0; j<5; j++) {
