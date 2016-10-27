@@ -47,17 +47,20 @@ int EwnAI::minimax(Game& current_game, int height) {
 
 	int bestValue = 0;
 	// if false(0): A`s turn, find max, else find min.
-	if (current_game->turn_ == false) {
-
+	if (current_game.getTurn() == false) {
+		// roll
+		// nextCnt
 		bestValue = -1e9;
 		// for #chess and direction 
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j < 3; j++) {
 				Game next_step = current_game;
+
+				// roll a 
 				next_step.move(i,j);
 				
 				// switch player;
-				next_step->switchPlayer();
+				next_step.switchPlayer();
 
 				// return child value.
 				int child_value = minimax(next_step, height-1);
@@ -76,7 +79,7 @@ int EwnAI::minimax(Game& current_game, int height) {
 				next_step.move(i,j);
 				
 				// switch player;
-				next_step->switchPlayer();
+				next_step.switchPlayer();
 
 				// return child value.
 				int child_value = minimax(next_step, height-1);
