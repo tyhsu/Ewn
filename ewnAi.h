@@ -10,17 +10,18 @@ typedef map<Pos , int> Hmap;
 
 class EwnAI
 {
-public:
-  //the result after the simulation
-  Chess chosenChs_;
-  int chosenDirct_;
-  Hmap hv;
+	public:
+		//the result after the simulation
+		Chess chosenChs_;
+		int chosenDirct_;
+		Hmap hv;
 
-  EwnAI();
-  ~EwnAI();
-  int feature(char board[5][5]);
-  int simulate(int height);
+		EwnAI();
+		~EwnAI();
+		int feature(char board[5][5]);
+		int simulate(int height);
 
-  int minimax(Game& origin_game, int h);
-  int evaluate(Game& current_game);
+		int minimax(Game& originGame, int h);
+		int evaluate(Game& currentGame);
+		int EwnAI::chooseDirection();
 };

@@ -13,7 +13,7 @@ Movement Play::playerPlay(const int& dice)
 	cout << endl;
 	cout << "Choose: ";
 	cin >> chs;
-
+	
 	if (!this->game_.getTurn())
 		cout << "Direction: 0)Right 1)Down 2)Right-down" << endl;
 	else
