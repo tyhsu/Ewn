@@ -11,7 +11,7 @@
 #include <utility>
 using namespace std;
 
-// 
+//
 typedef pair<int, int> Movement;
 
 struct Chess
@@ -69,4 +69,3 @@ public:
 };
 
 #endif
-

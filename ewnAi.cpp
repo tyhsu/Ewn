@@ -6,7 +6,7 @@
 
 int EwnAI::beforeMinimax() {
 	Game currentGame;
-	for ( /*avaliable chs*/ ) {
+	for () {
 		for (int direct = 0; direction < 3; direction++) {
 			Movement mvmt(chs, direct);
 			if (currentGame.isLegalMove(mvmt)) {
@@ -14,7 +14,6 @@ int EwnAI::beforeMinimax() {
 			}
 		}
 	}
-
 		choose max(x, y)
 }
 
@@ -45,7 +44,7 @@ int EwnAI::minimax(Game& currentGame, int height) {
 		                int child_value = minimax(next_step, height-1);
 		                bestValue = min(bestValue, child_value);
 	                }
-	            }        		
+	            }
         	}
         }
         return bestValue;

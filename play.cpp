@@ -13,14 +13,15 @@ Movement Play::playerPlay(const int& dice)
 	cout << endl;
 	cout << "Choose: ";
 	cin >> chs;
-	
+
 	if (!this->game_.getTurn())
 		cout << "Direction: 0)Right 1)Down 2)Right-down" << endl;
 	else
 		cout << "Direction: 0)Left 1)Up 2)Left-up" << endl;
 	cout << "Choose: ";
 	cin >> direct;
-
+	// get index
+	chs = (this->turn_ == false) ? this->movableChs_[chs].symbol - '0' : this->movableChs_[chs].symbol - 'A';
 	Movement mvmt(chs, direct);
 	while (this->game_.isLegalMove(mvmt) == false) {
 		cout << "Illegal move!!" << endl << endl;

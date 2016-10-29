@@ -194,7 +194,7 @@ int Game::availiableMove(const int& dice)
 
 bool Game::isLegalMove(const Movement& mvmt)
 {
-	Chess chess = this->movableChs_[mvmt.first];
+	Chess chess = this->currentPlayer_[mvmt.first];
 	int posneg = (this->turn_ == false) ? 1 : -1;
 	int x = chess.x, y = chess.y;
 	x += (mvmt.second == 1) ? 0 : posneg;
@@ -214,7 +214,7 @@ char Game::getChessOnBoard(const Chess& chs)
 
 int Game::update(const Movement& mvmt)
 {
-	Chess chessToGo = this->movableChs_[mvmt.first];
+	Chess chessToGo = this->currentPlayer_[mvmt.first];
 	char replacedChess;
 	int direct = mvmt.second;
 	int posneg = (this->turn_ == false)? 1 : -1;
