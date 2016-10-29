@@ -1,3 +1,5 @@
+#ifndef EWNAI_H
+#define EWNAI_H
 #include <iostream>
 #include <cstdio>
 #include <utility>
@@ -19,7 +21,7 @@ class EwnAI
 
 		EwnAI();
 		~EwnAI();
-		int beforeMinimax(Game currentGame, int dice);
+		Movement autoPlay(Game currentGame, int dice);
 		int minimax(Game& originGame, int h);
 		int evaluate(Game& currentGame);
 		int feature(char board[5][5]);
@@ -27,3 +29,5 @@ class EwnAI
 
 		int chooseDirection();
 };
+
+#endif

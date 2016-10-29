@@ -24,20 +24,25 @@ EwnAI::EwnAI() {
 	}
 }
 
-int EwnAI::beforeMinimax(Game currentGame, int dice) {
+Movement EwnAI::autoPlay(Game currentGame, int dice) {
 	aiTurn_ = currentGame.getTurn();
+	Movement answer;//the best move will return
+	int bestValue = -1e9;
 	int nextMoveCnt = currentGame.availiableMove(dice);
 	for (int i=0; i<nextMoveCnt; i++) {
 		for (int direct = 0; direct < 3; direct++) {
 			int chs = (currentGame.getTurn() == false) ? currentGame.getMovableChs(chs).symbol - '1' : currentGame.getMovableChs(chs).symbol - 'A';
-
 			Movement mvmt(chs, direct);
 			if (currentGame.isLegalMove(mvmt)) {
-				minimax(currentGame, HEIGHT);
+				int tmp = minimax(currentGame, HEIGHT);
+				if(bestValue < tmp) { // update
+					bestValue = tmp;
+					answer = mvmt;
+				}
 			}
 		}
 	}
-	choose max(x, y)
+	return answer;
 }
 
 int EwnAI::minimax(Game& currentGame, int height) {
@@ -80,7 +85,7 @@ int EwnAI::minimax(Game& currentGame, int height) {
 						Game nextStep = currentGame;
 						nextStep.update(mvmt);
 						nextStep.switchPlayer();
-					
+
 						int childValue = minimax(nextStep, height-1);
 						bestValue = min(bestValue, childValue);
 					}

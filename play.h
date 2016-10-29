@@ -3,23 +3,24 @@
 
 #include <iostream>
 #include "game.h"
+#include "ewnAi.h"
 using namespace std;
 
 class Play
 {
 private:
 	Game game_;
-public:	
+
+public:
 	//One player plays the game (the integration)
 	Movement playerPlay(const int& dice);
 	//int autoPlay(int dice);
 	//Two players fight!
 	void twoPlayers();
 	//One player fight with AI
-	//void playerAI();
+	void playerAI();
 	//Two AIs fight
-	//void twoAIs();
-
+	void twoAIs();
 };
 
 #endif

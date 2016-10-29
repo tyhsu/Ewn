@@ -1,5 +1,6 @@
 #include <iostream>
 #include "game.h"
+//#include "ewnAi.h"
 #include "play.h"
 using namespace std;
 
@@ -43,14 +44,7 @@ Movement Play::playerPlay(const int& dice)
 	}
 	return mvmt ;
 }
-/*
-int Play::autoPlay(int dice)
-{
 
-	// Run AI and get chosen.
-	return move(chosenChessman, chosenDirection);
-}
-*/
 void Play::twoPlayers()
 {
 	while (1) {
@@ -70,13 +64,13 @@ void Play::twoPlayers()
 /*
 void Play::playerAI()
 {
+	EwnAI ewnAI;
 	while (1) {
 		//ask for the next chessman to move
 
 		//update, 0(game continues), 1(A wins), 2(B wins)
 		int dice = this->game_.rollTheDice();
-		int win =(this->turn_ == true )? autoPlay(dice) : playerPlay(dice);
-		cout << "turn_, win :" << turn_ << " " << win << endl;
+		int win =(this->game_.getTurn() == true )? this->game_.update(ewnAI.autoPlay(this->game_, dice)) :this->game_.update(playerPlay(this->game_.rollTheDice()));
 		this->game_.printBoard();
 		if (win!=0) {
 			cout << "====================================" << endl;
@@ -88,15 +82,16 @@ void Play::playerAI()
 		this->game_.switchPlayer();
 	}
 }
-*//*
+
 void Play::twoAIs()
 {
+	EwnAI ewnAI;
 	while (1) {
 		//ask for the next chessman to move
 
 		//update, 0(game continues), 1(A wins), 2(B wins)
 		int dice = this->game_.rollTheDice();
-		int win = autoPlay(dice);
+		int win = this->game_.update(ewnAI.autoPlay(this->game_, dice));
 		this->game_.printBoard();
 		if (win!=0) {
 			cout << "====================================" << endl;
