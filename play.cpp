@@ -61,7 +61,7 @@ void Play::twoPlayers()
 		this->game_.switchPlayer();
 	}
 }
-/*
+
 void Play::playerAI()
 {
 	EwnAI ewnAI;
@@ -70,7 +70,11 @@ void Play::playerAI()
 
 		//update, 0(game continues), 1(A wins), 2(B wins)
 		int dice = this->game_.rollTheDice();
-		int win =(this->game_.getTurn() == true )? this->game_.update(ewnAI.autoPlay(this->game_, dice)) :this->game_.update(playerPlay(this->game_.rollTheDice()));
+		int win;
+			if (this->game_.getTurn() == true)
+				win = this->game_.update(ewnAI.autoPlay(this->game_, dice));
+			else
+				win = this->game_.update(playerPlay(dice));
 		this->game_.printBoard();
 		if (win!=0) {
 			cout << "====================================" << endl;
@@ -103,4 +107,4 @@ void Play::twoAIs()
 		this->game_.switchPlayer();
 	}
 }
-*/
+

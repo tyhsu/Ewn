@@ -20,7 +20,7 @@ class EwnAI
 		Hmap hv_;
 
 		EwnAI();
-		~EwnAI();
+		~EwnAI() {}
 		Movement autoPlay(Game currentGame, int dice);
 		int minimax(Game& originGame, int h);
 		int evaluate(Game& currentGame);
