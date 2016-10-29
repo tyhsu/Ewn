@@ -4,9 +4,28 @@
 #include "ewnAi.h"
 #define H = 4
 
-int EwnAI::beforeMinimax() {
-	Game currentGame;
-	for () {
+EwnAI::EwnAI() {
+	// pos: a <int,int> , <x,y> coord;
+	// insert to map => hv;
+	for (int i = 0; i < 5; i++) {
+		for (int j = 0;j < 5; j++) {
+
+			// get the smallest of (x,y)
+			int k = (i > j ? j : i);
+
+			k = k * k;
+			Pos chess_pos;
+			chess_pos.first = i;
+			chess_pos.second = j;
+
+			hv.insert(make_pair(chess_pos, k));
+		}
+	}
+}
+
+int EwnAI::beforeMinimax(Game currentGame, int dice) {
+	int nextMoveCnt = currentGame.availiableMove(dice);
+	for (int i=0; i<nextMoveCnt; i++) {
 		for (int direct = 0; direction < 3; direction++) {
 			Movement mvmt(chs, direct);
 			if (currentGame.isLegalMove(mvmt)) {
@@ -83,23 +102,4 @@ int EwnAI::evaluate(Game& currentGame) {
         }
     }
     return val;
-}
-
-EwnAI::EwnAI() {
-    // pos: a <int,int> , <x,y> coord;
-    // insert to map => hv;
-    for (int i = 0; i < 5; i++) {
-        for (int j = 0;j < 5; j++) {
-
-            // get the smallest of (x,y)
-            int k = (i > j ? j : i);
-
-            k = k * k;
-            Pos chess_pos;
-            chess_pos.first = i;
-            chess_pos.second = j;
-
-            hv.insert(make_pair(chess_pos, k));
-        }
-    }
 }
