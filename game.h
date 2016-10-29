@@ -11,7 +11,7 @@
 #include <utility>
 using namespace std;
 
-//
+// < the index of the currentPlayer, direction >
 typedef pair<int, int> Movement;
 
 struct Chess

@@ -12,9 +12,10 @@ class EwnAI
 {
 	public:
 		//the result after the simulation
+		const bool aiTurn_;
 		Chess chosenChs_;
 		int chosenDirct_;
-		Hmap hv;
+		Hmap hv_;
 
 		EwnAI();
 		~EwnAI();
