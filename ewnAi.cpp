@@ -3,7 +3,7 @@
 #include <algorithm>
 #include "game.h"
 #include "ewnAi.h"
-#define H = 4
+const int HEIGHT = 4;
 
 EwnAI::EwnAI() {
 	// pos: a <int,int> , <x,y> coord;
@@ -19,12 +19,13 @@ EwnAI::EwnAI() {
 			chess_pos.first = i;
 			chess_pos.second = j;
 
-			hv.insert(make_pair(chess_pos, k));
+			hv_.insert(make_pair(chess_pos, k));
 		}
 	}
 }
 
 int EwnAI::beforeMinimax(Game currentGame, int dice) {
+	aiTurn_ = currentGame.getTurn();
 	int nextMoveCnt = currentGame.availiableMove(dice);
 	for (int i=0; i<nextMoveCnt; i++) {
 		for (int direct = 0; direct < 3; direct++) {
@@ -32,11 +33,11 @@ int EwnAI::beforeMinimax(Game currentGame, int dice) {
 
 			Movement mvmt(chs, direct);
 			if (currentGame.isLegalMove(mvmt)) {
-				minimax(currentGame, H);
+				minimax(currentGame, HEIGHT);
 			}
 		}
 	}
-		choose max(x, y)
+	choose max(x, y)
 }
 
 int EwnAI::minimax(Game& currentGame, int height) {
