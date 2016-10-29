@@ -52,7 +52,7 @@ int EwnAI::minimax(Game& currentGame, int height) {
 		bestValue = -1e9;
 		// for #chess and direction
 		for (int chs = 0; chs < 6; chs++) {
-			if (currentGame.currentPlayer_[chs].exist) {
+			if (currentGame.getCurrPlayer(chs).exist) {
 				for (int direct = 0; direct < 3; direct++) {
 					Movement mvmt(chs, direct);
 					if (currentGame.isLegalMove(mvmt)) {
@@ -73,7 +73,7 @@ int EwnAI::minimax(Game& currentGame, int height) {
 		bestValue = 1e9;
 		// for #chess and direction
 		for (int chs = 0; chs < 6; chs++) {
-			if (currentGame.currentPlayer_[chs].exist) {
+			if (currentGame.getCurrPlayer(chs).exist) {
 				for (int direct = 0; direct < 3; direct++) {
 					Movement mvmt(chs, direct);
 					if (currentGame.isLegalMove(mvmt)) {
@@ -94,11 +94,11 @@ int EwnAI::minimax(Game& currentGame, int height) {
 int EwnAI::evaluate(Game& currentGame) {
 	int val = 0;
 
-	for(int dice = 0; dice < currentGame.currentPlayer_; dice++) {
-		if(currentGame.currentPlayer_[dice].exist) {
+	for(int dice = 0; dice < 6; dice++) {
+		if(currentGame.getCurrPlayer(dice).exist) {
 			Pos temp;
-			temp.first = currentGame.currentPlayer_[dice].x;
-			temp.second = currentGame.currentPlayer_[dice].y;
+			temp.first = currentGame.getCurrPlayer(dice).x;
+			temp.second = currentGame.getCurrPlayer(dice).y;
 			val += hv_[temp];
 		}
 	}

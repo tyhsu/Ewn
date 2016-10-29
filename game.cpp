@@ -337,6 +337,11 @@ Chess Game::getMovableChs(const int& k)
 	return this->movableChs_[k];
 }
 
+Chess Game::getCurrPlayer(const int& k)
+{
+	return this->currentPlayer_[k];
+}
+
 bool Game::getTurn()
 {
 	return this->turn_;

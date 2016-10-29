@@ -65,6 +65,7 @@ public:
 	void checkStatus();
 
 	Chess getMovableChs(const int& k);
+	Chess getCurrPlayer(const int& k);
 	bool getTurn();
 };
 
