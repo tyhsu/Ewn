@@ -33,7 +33,11 @@ Movement EwnAI::autoPlay(Game currentGame, int dice) {
 	int nextMoveCnt = currentGame.availiableMove(dice);
 	for (int i=0; i<nextMoveCnt; i++) {
 		for (int direct = 0; direct < 3; direct++) {
-			int chs = (currentGame.getTurn() == false) ? currentGame.getMovableChs(i).symbol - '1' : currentGame.getMovableChs(i).symbol - 'A';
+			int chs;
+			if (currentGame.getTurn() == false)
+				chs = currentGame.getMovableChs(i).symbol - '1';
+			else
+				chs = currentGame.getMovableChs(i).symbol - 'A';
 			Movement mvmt(chs, direct);
 			if (currentGame.isLegalMove(mvmt)) {
 				int tmp = minimax(currentGame, HEIGHT);

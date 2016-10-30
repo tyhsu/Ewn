@@ -71,14 +71,14 @@ void Play::playerAI()
 		//update, 0(game continues), 1(A wins), 2(B wins)
 		int dice = this->game_.rollTheDice();
 		int win;
-			if (this->game_.getTurn() == true)
-				win = this->game_.update(playerPlay(dice));
-			else
-				win = this->game_.update(ewnAI.autoPlay(this->game_, dice));
+		if (this->game_.getTurn() == true)
+			win = this->game_.update(playerPlay(dice));
+		else
+			win = this->game_.update(ewnAI.autoPlay(this->game_, dice));
 		this->game_.printBoard();
 		if (win!=0) {
 			cout << "====================================" << endl;
-			if (win==1) cout << "A is the winner!!!" << endl;
+			if (win==1) cout << "AI is the winner!!!" << endl;
 			else cout << "B is the winner!!!" << endl;
 			cout << "====================================" << endl;
 			return;

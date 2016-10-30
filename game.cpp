@@ -143,7 +143,7 @@ void Game::printBoard()
 		cout << "|" << endl;
 	}
 	cout << "     \\-----/" << endl;
-	cout << "================/====================" << endl;
+	cout << "====================================" << endl;
 }
 
 int Game::rollTheDice()
@@ -153,7 +153,7 @@ int Game::rollTheDice()
 
 int Game::availiableMove(const int& dice)
 {
-	printf("result: %d \n", dice+1);
+	printf("dice: %d \n", dice+1);
 	for(int i = 0; i < 2; i++)
 		this->movableChs_[i].assign(0, false, 0, 0);
 
