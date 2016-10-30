@@ -6,7 +6,7 @@ using namespace std;
 
 Movement Play::playerPlay(const int& dice)
 {
-	int nextMoveCnt = this->game_.availiableMove(dice);
+	int nextMoveCnt = this->game_.availableMove(dice);
 	int chs, direct;
 	cout << "Next chessman able to move: ";
 	for (int i=0; i<nextMoveCnt; i++)

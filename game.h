@@ -50,7 +50,7 @@ public:
 	//Roll the dice
 	int rollTheDice();
 	//Input the result of dice and return how many chessmen the player can move
-	int availiableMove(const int& dice);
+	int availableMove(const int& dice);
 	//Check if the chessman is out of the board
 	bool isLegalMove(const Movement& mvmt);
 	//Synchronize the chessman and the board

@@ -28,16 +28,14 @@ EwnAI::EwnAI() {
 
 Movement EwnAI::autoPlay(Game currentGame, int dice) {
 	aiTurn_ = currentGame.getTurn();
+	aiSymbol_ = aiTurn_? 'A': '1';
+
 	Movement answer;//the best move will return
 	int bestValue = -1e9;
-	int nextMoveCnt = currentGame.availiableMove(dice);
+	int nextMoveCnt = currentGame.availableMove(dice);
 	for (int i=0; i<nextMoveCnt; i++) {
 		for (int direct = 0; direct < 3; direct++) {
-			int chs;
-			if (currentGame.getTurn() == false)
-				chs = currentGame.getMovableChs(i).symbol - '1';
-			else
-				chs = currentGame.getMovableChs(i).symbol - 'A';
+			int chs = currentGame.getMovableChs(i).symbol - aiSymbol_;
 			Movement mvmt(chs, direct);
 			if (currentGame.isLegalMove(mvmt)) {
 				int tmp = minimax(currentGame, HEIGHT);
@@ -61,14 +59,20 @@ int EwnAI::minimax(Game& currentGame, int height) {
 	if (currentGame.getTurn() == aiTurn_) {
 		// ai's turn, find the max
 		bestValue = -1e9;
+		int win = aiTurn_? 2: 1;
 		// for #chess and direction
-		for (int chs = 0; chs < 6; chs++) {
-			if (currentGame.getCurrPlayer(chs).exist) {
+		for (int dice = 0; dice < 6; dice++) {
+			int availableNum = currentGame.availableMove(dice);
+			for (int i=0; i<availableNum; i++) {
+				int chs = currentGame.getMovableChs(i).symbol - aiSymbol_;
 				for (int direct = 0; direct < 3; direct++) {
 					Movement mvmt(chs, direct);
 					if (currentGame.isLegalMove(mvmt)) {
 						Game nextStep = currentGame;
-						nextStep.update(mvmt);
+						int end = nextStep.update(mvmt);
+						// check if the game ends
+						if (end == win) return 1000;
+						else if (end != 0) continue;
 						nextStep.switchPlayer();
 
 						// return child value.
@@ -82,16 +86,24 @@ int EwnAI::minimax(Game& currentGame, int height) {
 	else {
 		// the opponent's turn, find the min
 		bestValue = 1e9;
+		int lose = aiTurn_? 1: 2;
 		// for #chess and direction
-		for (int chs = 0; chs < 6; chs++) {
-			if (currentGame.getCurrPlayer(chs).exist) {
+		for (int dice = 0; dice < 6; dice++) {
+			int availableNum = currentGame.availableMove(dice);
+			for (int i=0; i<availableNum; i++) {
+				int oppntSymbol = aiTurn_? '1': 'A';
+				int chs = currentGame.getMovableChs(i).symbol - oppntSymbol;
 				for (int direct = 0; direct < 3; direct++) {
 					Movement mvmt(chs, direct);
 					if (currentGame.isLegalMove(mvmt)) {
 						Game nextStep = currentGame;
-						nextStep.update(mvmt);
+						int end = nextStep.update(mvmt);
+						// check if the game ends
+						if (end == lose) return -1000;
+						else if (end != 0) continue;
 						nextStep.switchPlayer();
 
+						// return child value.
 						int childValue = minimax(nextStep, height-1);
 						bestValue = min(bestValue, childValue);
 					}

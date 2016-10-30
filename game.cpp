@@ -151,9 +151,9 @@ int Game::rollTheDice()
 	return rand()%6;
 }
 
-int Game::availiableMove(const int& dice)
+int Game::availableMove(const int& dice)
 {
-	printf("dice: %d \n", dice+1);
+	//printf("dice: %d \n", dice+1);
 	for(int i = 0; i < 2; i++)
 		this->movableChs_[i].assign(0, false, 0, 0);
 
@@ -165,7 +165,7 @@ int Game::availiableMove(const int& dice)
 		return 1;
 	}
 	else {
-		cout << "Chessman " << this->currentPlayer_[dice].symbol << " doesn't exist" << endl;
+		//cout << "Chessman " << this->currentPlayer_[dice].symbol << " doesn't exist" << endl;
 		int move = 2;
 
 		// search for maybe other two.

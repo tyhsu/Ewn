@@ -15,6 +15,7 @@ class EwnAI
 	public:
 		//the result after the simulation
 		bool aiTurn_;
+		char aiSymbol_;
 		Chess chosenChs_;
 		int chosenDirct_;
 		Hmap hv_;
