@@ -72,9 +72,9 @@ void Play::playerAI()
 		int dice = this->game_.rollTheDice();
 		int win;
 			if (this->game_.getTurn() == true)
-				win = this->game_.update(ewnAI.autoPlay(this->game_, dice));
-			else
 				win = this->game_.update(playerPlay(dice));
+			else
+				win = this->game_.update(ewnAI.autoPlay(this->game_, dice));
 		this->game_.printBoard();
 		if (win!=0) {
 			cout << "====================================" << endl;
@@ -107,4 +107,3 @@ void Play::twoAIs()
 		this->game_.switchPlayer();
 	}
 }
-

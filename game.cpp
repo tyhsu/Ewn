@@ -100,6 +100,7 @@ Game::Game(const Game& game)
 		this->playerB_[i] = game.playerB_[i];
 	}
 	this->turn_ = game.turn_;
+	this->currentPlayer_ = (this->turn_ == false) ? this->playerA_ :  this->playerB_;
 	this->chsNumA_ = game.chsNumA_;
 	this->chsNumB_ = game.chsNumB_;
 }
@@ -195,7 +196,6 @@ int Game::availiableMove(const int& dice)
 bool Game::isLegalMove(const Movement& mvmt)
 {
 	Chess chess = this->currentPlayer_[mvmt.first];
-	cout <<"this is : "<< chess.symbol << endl;
 	int posneg = (this->turn_ == false) ? 1 : -1;
 	int x = chess.x, y = chess.y;
 	x += (mvmt.second == 1) ? 0 : posneg;

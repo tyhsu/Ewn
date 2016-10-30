@@ -8,6 +8,7 @@ const int HEIGHT = 4;
 EwnAI::EwnAI() {
 	// pos: a <int,int> , <x,y> coord;
 	// insert to map => hv;
+	cout << "create AI." << endl;
 	for (int i = 0; i < 5; i++) {
 		for (int j = 0;j < 5; j++) {
 
@@ -18,9 +19,10 @@ EwnAI::EwnAI() {
 			Pos chess_pos;
 			chess_pos.first = i;
 			chess_pos.second = j;
-
+			printf("%2d", k);
 			hv_.insert(make_pair(chess_pos, k));
 		}
+		cout << endl;
 	}
 }
 
@@ -31,7 +33,7 @@ Movement EwnAI::autoPlay(Game currentGame, int dice) {
 	int nextMoveCnt = currentGame.availiableMove(dice);
 	for (int i=0; i<nextMoveCnt; i++) {
 		for (int direct = 0; direct < 3; direct++) {
-			int chs = (currentGame.getTurn() == false) ? currentGame.getMovableChs(chs).symbol - '1' : currentGame.getMovableChs(chs).symbol - 'A';
+			int chs = (currentGame.getTurn() == false) ? currentGame.getMovableChs(i).symbol - '1' : currentGame.getMovableChs(i).symbol - 'A';
 			Movement mvmt(chs, direct);
 			if (currentGame.isLegalMove(mvmt)) {
 				int tmp = minimax(currentGame, HEIGHT);
