@@ -356,6 +356,10 @@ Chess Game::getCurrPlayer(const int& k)
 	return this->currentPlayer_[k];
 }
 
+int Game::getCurrentExist() {
+	return currentExist_;
+}
+
 bool Game::getTurn()
 {
 	return this->turn_;
