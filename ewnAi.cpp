@@ -3,7 +3,8 @@
 #include <algorithm>
 #include "game.h"
 #include "ewnAi.h"
-const int HEIGHT = 1;
+const int HEIGHT = 2;
+const float chance_weight = 1/6;
 
 EwnAI::EwnAI() {
 	// pos: a <int,int> , <x,y> coord;
@@ -54,17 +55,23 @@ int EwnAI::minimax(Game& currentGame, int height) {
 	if (height == 0) {
 		return evaluate(currentGame);
 	}
-
+	cout << "========== a minimax ===========" << endl;
 	int bestValue;
+	int diceArray[6] = {0};
+	int lookahead = 0;
+
 	if (currentGame.getTurn() == aiTurn_) {
 		// ai's turn, find the max
 		bestValue = -1e9;
 		int win = aiTurn_? 2: 1;
 		// for #chess and direction
 		for (int dice = 0; dice < 6; dice++) {
-			int availableNum = currentGame.availableMove(dice);
-			for (int i=0; i<availableNum; i++) {
-				int chs = currentGame.getMovableChs(i).symbol - aiSymbol_;
+			bool isThisChsMovable = currentGame.getCurrPlayer(dice).exist;
+
+			if(isThisChsMovable) {
+				char thisSymbol = currentGame.getCurrPlayer(dice).symbol;
+				int chs = thisSymbol - aiSymbol_;
+				cout << "[char value] " << chs << endl;
 				for (int direct = 0; direct < 3; direct++) {
 					Movement mvmt(chs, direct);
 					if (currentGame.isLegalMove(mvmt)) {
@@ -78,10 +85,24 @@ int EwnAI::minimax(Game& currentGame, int height) {
 						// return child value.
 						int childValue = minimax(nextStep, height-1);
 						bestValue = max(bestValue, childValue);
+						cout << "[max]in 3 direction, return bestvalue. " << bestValue << endl;
+					} else {
+						cout << "nope, the chs can`t be move." << endl;
 					}
+				}
+				diceArray[dice] = bestValue;
+			}
+			else {
+				// this chs can`t move, use other`s value
+				if(dice - lookahead - 1 < 0) {
+					diceArray[dice] = 0;
+				}
+				else if(){
+					diceArray[dice] = diceArray[dice - diceArray];
 				}
 			}
 		}
+
     }
 	else {
 		// the opponent's turn, find the min
@@ -89,6 +110,7 @@ int EwnAI::minimax(Game& currentGame, int height) {
 		int lose = aiTurn_? 1: 2;
 		// for #chess and direction
 		for (int dice = 0; dice < 6; dice++) {
+
 			int availableNum = currentGame.availableMove(dice);
 			for (int i=0; i<availableNum; i++) {
 				int oppntSymbol = aiTurn_? '1': 'A';
@@ -106,11 +128,18 @@ int EwnAI::minimax(Game& currentGame, int height) {
 						// return child value.
 						int childValue = minimax(nextStep, height-1);
 						bestValue = min(bestValue, childValue);
+						cout << "[min]in 3 direction, return bestvalue. " << bestValue << endl;
 					}
 				}
 			}
 		}
 	}
+	cout << "feature value:[ ";
+	for(int i = 0; i < 6; i++){
+		cout << dice_array[i] << " ";
+	}
+	cout << "]" << endl;
+	cout << "========== a minimax ===========" << endl;
 	return bestValue;
 }
 
