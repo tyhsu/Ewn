@@ -3,7 +3,7 @@
 #include <algorithm>
 #include "game.h"
 #include "ewnAi.h"
-const int HEIGHT = 3;
+const int HEIGHT = 1;
 const float chance_weight = 1/6;
 
 EwnAI::EwnAI() {
@@ -73,6 +73,7 @@ int EwnAI::minimax(Game& currentGame, int height) {
 				int chs = thisSymbol - aiSymbol_;
 				cout << "[**Mine** char value] " << chs << endl;
 				for (int direct = 0; direct < 3; direct++) {
+					cout << "[**Mine** direction value] " << direct << endl;
 					Movement mvmt(chs, direct);
 					if (currentGame.isLegalMove(mvmt)) {
 						Game nextStep = currentGame;
@@ -135,6 +136,7 @@ int EwnAI::minimax(Game& currentGame, int height) {
 				cout << "[**Opp** char value] " << chs << endl;
 
 				for (int direct = 0; direct < 3; direct++) {
+					cout << "[**Opp** direction value] " << direct << endl;
 					Movement mvmt(chs, direct);
 					if (currentGame.isLegalMove(mvmt)) {
 						Game nextStep = currentGame;
@@ -197,8 +199,10 @@ int EwnAI::evaluate(Game& currentGame) {
 			Pos temp;
 			temp.first = currentGame.getCurrPlayer(dice).x;
 			temp.second = currentGame.getCurrPlayer(dice).y;
+			cout << temp.first << ", " << temp.second << endl;
 			val += hv_[temp];
 		}
 	}
+	cout << "[calc] " << val << endl;
 	return val;
 }
