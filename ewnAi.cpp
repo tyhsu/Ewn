@@ -19,19 +19,26 @@ Movement EwnAI::autoPlay(Game currentGame, int dice) {
 	aiTurn_ = currentGame.getTurn();
 	aiSymbol_ = aiTurn_? 'A': '1';
 
-	Movement answer;//the best move will return
+	Movement answer;	//the best move will return
 	int bestValue = -1e9;
+	int win = aiTurn_? 2: 1;
 	int nextMoveCnt = currentGame.availableMove(dice);
 
 	for (int i=0; i<nextMoveCnt; i++) {
+		int chs = currentGame.getMovableChs(i).symbol - aiSymbol_;
 		for (int direct = 0; direct < 3; direct++) {
-			int chs = currentGame.getMovableChs(i).symbol - aiSymbol_;
 			Movement mvmt(chs, direct);
 			if (currentGame.isLegalMove(mvmt)) {
-				currentGame.switchPlayer();
-				int tmp = minimax(currentGame, HEIGHT);
-				if(bestValue < tmp) { // update
-					bestValue = tmp;
+				Game nextStep = currentGame;
+				int end = nextStep.update(mvmt);
+				// check if the game ends
+				if (end == win) return mvmt;
+				else if (end != 0) continue;	// lose the game
+				nextStep.switchPlayer();
+				
+				int childValue = minimax(nextStep, HEIGHT);
+				if(childValue > bestValue) {	// update
+					bestValue = childValue;
 					answer = mvmt;
 				}
 			}
@@ -41,9 +48,6 @@ Movement EwnAI::autoPlay(Game currentGame, int dice) {
 }
 
 int EwnAI::minimax(Game& currentGame, int height) {
-	string space = "";
-	for (int i=HEIGHT; i>height; i--) space += " ";
-
 	// check if end;
 	if (height == 0) {
 		return evaluate(currentGame);
@@ -52,6 +56,9 @@ int EwnAI::minimax(Game& currentGame, int height) {
 	int bestValue;
 	int diceArray[6] = {0};
 	int lookahead = 0;
+	string space = "";
+	for (int i=HEIGHT; i>height; i--) space += " ";
+
 
 	if (currentGame.getTurn() == aiTurn_) {
 		// ai's turn, find the max
@@ -59,11 +66,9 @@ int EwnAI::minimax(Game& currentGame, int height) {
 		int win = aiTurn_? 2: 1;
 		// for #chess and direction
 		for (int dice = 0; dice < 6; dice++) {
-			bool isThisChsMovable = currentGame.getCurrPlayer(dice).exist;
-
-			if (isThisChsMovable) {
-				char thisSymbol = currentGame.getCurrPlayer(dice).symbol;
-				int chs = thisSymbol - aiSymbol_;
+			Chess currChess = currentGame.getCurrPlayer(dice);
+			if (currChess.exist) {
+				int chs = currChess.symbol - aiSymbol_;
 				cout << space << "[**Mine** char value] " << chs << endl;
 				for (int direct = 0; direct < 3; direct++) {
 					cout << space << "[**Mine** direction value] " << direct << endl;
@@ -120,12 +125,10 @@ int EwnAI::minimax(Game& currentGame, int height) {
 		int lose = aiTurn_? 1: 2;
 		// for #chess and direction
 		for (int dice = 0; dice < 6; dice++) {
-			bool isThisChsMovable = currentGame.getCurrPlayer(dice).exist;
-
-			if (isThisChsMovable) {
-				char thisSymbol = currentGame.getCurrPlayer(dice).symbol;
+			Chess currChess = currentGame.getCurrPlayer(dice);
+			if (currChess.exist) {
 				int oppntSymbol = aiTurn_? '1': 'A';
-				int chs = thisSymbol - oppntSymbol;
+				int chs = currChess.symbol - oppntSymbol;
 				cout << space << "[**Opp** char value] " << chs << endl;
 
 				for (int direct = 0; direct < 3; direct++) {
@@ -181,7 +184,6 @@ int EwnAI::minimax(Game& currentGame, int height) {
 		cout << diceArray[i] << " ";
 	}
 	cout << "]" << endl;
-	cout << "========== a minimax ===========" << endl;
 	return bestValue;
 }
 
