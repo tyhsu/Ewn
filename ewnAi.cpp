@@ -3,6 +3,7 @@
 #include <algorithm>
 #include "game.h"
 #include "ewnAi.h"
+#include <string>
 const int HEIGHT = 1;
 const float chance_weight = 1/6;
 
@@ -26,6 +27,7 @@ Movement EwnAI::autoPlay(Game currentGame, int dice) {
 			int chs = currentGame.getMovableChs(i).symbol - aiSymbol_;
 			Movement mvmt(chs, direct);
 			if (currentGame.isLegalMove(mvmt)) {
+				currentGame.switchPlayer();
 				int tmp = minimax(currentGame, HEIGHT);
 				if(bestValue < tmp) { // update
 					bestValue = tmp;
@@ -38,6 +40,9 @@ Movement EwnAI::autoPlay(Game currentGame, int dice) {
 }
 
 int EwnAI::minimax(Game& currentGame, int height) {
+	string space = "";
+	for (int i=HEIGHT; i>height; i--) space += " ";
+
 	// check if end;
 	if (height == 0) {
 		return evaluate(currentGame);
@@ -58,9 +63,9 @@ int EwnAI::minimax(Game& currentGame, int height) {
 			if (isThisChsMovable) {
 				char thisSymbol = currentGame.getCurrPlayer(dice).symbol;
 				int chs = thisSymbol - aiSymbol_;
-				cout << "[**Mine** char value] " << chs << endl;
+				cout << space << "[**Mine** char value] " << chs << endl;
 				for (int direct = 0; direct < 3; direct++) {
-					cout << "[**Mine** direction value] " << direct << endl;
+					cout << space << "[**Mine** direction value] " << direct << endl;
 					Movement mvmt(chs, direct);
 					if (currentGame.isLegalMove(mvmt)) {
 						Game nextStep = currentGame;
@@ -73,9 +78,9 @@ int EwnAI::minimax(Game& currentGame, int height) {
 						// return child value.
 						int childValue = minimax(nextStep, height-1);
 						bestValue = max(bestValue, childValue);
-						cout << "[max]in 3 direction, return bestvalue. " << bestValue << endl;
+						cout << space << "[max]in 3 direction, return bestvalue. " << bestValue << endl;
 					} else {
-						cout << "nope, the chs can`t be move." << endl;
+						cout << space << "nope, the chs can`t be move." << endl;
 					}
 				}
 				diceArray[dice] = bestValue;
@@ -94,7 +99,7 @@ int EwnAI::minimax(Game& currentGame, int height) {
 				}
 			}
 			else {
-				cout << "[**Mine** not exist] " << dice << endl;
+				cout << space << "[**Mine** not exist] " << dice << endl;
 				// this chs can`t move, use other`s value
 				lookahead++;
 				if (dice - lookahead < 0) {
@@ -120,10 +125,10 @@ int EwnAI::minimax(Game& currentGame, int height) {
 				char thisSymbol = currentGame.getCurrPlayer(dice).symbol;
 				int oppntSymbol = aiTurn_? '1': 'A';
 				int chs = thisSymbol - oppntSymbol;
-				cout << "[**Opp** char value] " << chs << endl;
+				cout << space << "[**Opp** char value] " << chs << endl;
 
 				for (int direct = 0; direct < 3; direct++) {
-					cout << "[**Opp** direction value] " << direct << endl;
+					cout << space << "[**Opp** direction value] " << direct << endl;
 					Movement mvmt(chs, direct);
 					if (currentGame.isLegalMove(mvmt)) {
 						Game nextStep = currentGame;
@@ -136,10 +141,10 @@ int EwnAI::minimax(Game& currentGame, int height) {
 						// return child value.
 						int childValue = minimax(nextStep, height-1);
 						bestValue = min(bestValue, childValue);
-						cout << "[min]in 3 direction, return bestvalue. " << bestValue << endl;
+						cout << space << "[min]in 3 direction, return bestvalue. " << bestValue << endl;
 					}
 					else {
-						cout << "nope, the chs can`t be move." << endl;
+						cout << space << "nope, the chs can`t be move." << endl;
 					}
 				}
 				diceArray[dice] = bestValue;
@@ -158,7 +163,7 @@ int EwnAI::minimax(Game& currentGame, int height) {
 				}
 			}
 			else {
-				cout << "[**Opp** not exist] " << dice << endl;
+				cout << space << "[**Opp** not exist] " << dice << endl;
 				// this chs can`t move, use other`s value
 				lookahead++;
 				if (dice - lookahead < 0) {
