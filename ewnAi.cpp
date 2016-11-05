@@ -3,7 +3,7 @@
 #include <algorithm>
 #include "game.h"
 #include "ewnAi.h"
-const int HEIGHT = 4;
+const int HEIGHT = 1;
 
 EwnAI::EwnAI() {
 	// pos: a <int,int> , <x,y> coord;
@@ -116,7 +116,6 @@ int EwnAI::minimax(Game& currentGame, int height) {
 
 int EwnAI::evaluate(Game& currentGame) {
 	int val = 0;
-
 	for(int dice = 0; dice < 6; dice++) {
 		if(currentGame.getCurrPlayer(dice).exist) {
 			Pos temp;
