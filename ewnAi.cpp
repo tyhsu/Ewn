@@ -21,6 +21,7 @@ Movement EwnAI::autoPlay(Game currentGame, int dice) {
 	Movement answer;//the best move will return
 	int bestValue = -1e9;
 	int nextMoveCnt = currentGame.availableMove(dice);
+
 	for (int i=0; i<nextMoveCnt; i++) {
 		for (int direct = 0; direct < 3; direct++) {
 			int chs = currentGame.getMovableChs(i).symbol - aiSymbol_;
@@ -102,7 +103,7 @@ int EwnAI::minimax(Game& currentGame, int height) {
 				}
 				else {
 					diceArray[dice] = diceArray[dice - lookahead];
-				}				
+				}
 			}
 		}
 
@@ -166,7 +167,7 @@ int EwnAI::minimax(Game& currentGame, int height) {
 				}
 				else {
 					diceArray[dice] = diceArray[dice - lookahead];
-				}				
+				}
 			}
 		}
 	}
@@ -211,7 +212,7 @@ void EwnAI::createHeuristicT() {
 void EwnAI::createAvailableT() {
 	for(int exist=0; exist<(1<<6); exist++) { // each exist status
 		for(int dice=0; dice<6; dice++) {
-			int availableFormer = dice, availableLatter = dice;
+			int availableFormer = -1, availableLatter = -1;
 			int tmp = exist;
 			int bin[6];
 			int f = exist, l = exist;
@@ -227,6 +228,8 @@ void EwnAI::createAvailableT() {
 					break;
 				}
 			}
+			availableFormer = (availableFormer == -1) ? availableLatter : availableFormer;
+			availableLatter = (availableLatter == -1) ? availableFormer : availableLatter;
 			pair<int, int> fir(dice, exist), sec(availableFormer, availableLatter);
 			am_.insert(make_pair(fir, sec));
 		}
