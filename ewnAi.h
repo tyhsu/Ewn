@@ -11,7 +11,7 @@ typedef pair<int, int> Pos;
 //Heuristic map
 typedef map<Pos, int> Hmap;
 //Available move map
-typedef map< pair<int, Chess*>, pair<int, int> > Amap;
+typedef map< pair<int, int>, pair<int, int> > Amap;
 class EwnAI
 {
 	public:
@@ -29,8 +29,10 @@ class EwnAI
 		int evaluate(Game& currentGame);
 		int feature(char board[5][5]);
 		int simulate(int height);
-
 		int chooseDirection();
+		//making table
+		void createHeuristicT();
+		void createAvailableT();
 };
 
 #endif
