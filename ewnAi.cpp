@@ -68,7 +68,7 @@ int EwnAI::minimax(Game& currentGame, int height) {
 		for (int dice = 0; dice < 6; dice++) {
 			bool isThisChsMovable = currentGame.getCurrPlayer(dice).exist;
 
-			if(isThisChsMovable) {
+			if (isThisChsMovable) {
 				char thisSymbol = currentGame.getCurrPlayer(dice).symbol;
 				int chs = thisSymbol - aiSymbol_;
 				cout << "[char value] " << chs << endl;
@@ -91,15 +91,30 @@ int EwnAI::minimax(Game& currentGame, int height) {
 					}
 				}	
 				diceArray[dice] = bestValue;
+
+				// if there is lookhead, modify those value 
+				// if current is bigger than the front.
+				if (lookahead) {
+					int offset;
+					for (int j = 0; j < lookahead; j++){
+						offset = dice - j;
+						if(bestvalue > diceArray[offset]) {
+							diceArray[offset]
+						}
+					}
+					lookahead = 0;
+				}
 			} 
 			else {
 				// this chs can`t move, use other`s value
-				if(dice - lookahead - 1 < 0) {
-					diceArray[dice] = 0;
+				if (dice - lookahead - 1 < 0) {
+					// diceArray[dice] = 0;
+					continue;
 				}
-				else if(){
-					diceArray[dice] = diceArray[dice - diceArray];
+				else {
+					diceArray[dice] = diceArray[dice - lookahead];
 				}				
+				lookahead++;
 			}
 		}
 
