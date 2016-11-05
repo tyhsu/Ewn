@@ -11,7 +11,7 @@ EwnAI::EwnAI() {
 	// insert to map => hv;
 	cout << "create AI." << endl;
 	createHeuristicT();
-
+	createAvailableT();
 }
 
 Movement EwnAI::autoPlay(Game currentGame, int dice) {
@@ -194,7 +194,7 @@ int EwnAI::evaluate(Game& currentGame) {
 	return val;
 }
 
-void EwnAI::createHeuristicT {
+void EwnAI::createHeuristicT() {
 	for (int i = 0; i < 5; i++) {
 		for (int j = 0;j < 5; j++) {
 			// get the smallest of (x,y)
@@ -208,29 +208,6 @@ void EwnAI::createHeuristicT {
 	}
 }
 
-void EwnAI::createAvailableT {
-	for(int exist=0; exist<1<<6; exist++) { // each exist status
-		for(int dice=0; dice<6; dice++) {
-			int availableFormer = dice, availableLatter = dice;
-			for(int i=dice; i>=0; i--) {
-				if(exist/(1<<i) == true) {
-					availableFormer = i;
-					break;
-				}
-			}
-			for(int i=dice; i<6; i++) {
-				if(exist>>(i%2) == true) {
-					availableLatter = i;
-					break;
-				}
-			}
-			pair<int, int> fir, sec;
-			fir = <dice, exist>;
-			sec = <availableFormer, availableLatter>;
-			am_.insert(make_pair(fir, sec));
-		}
-	}
-}
 void EwnAI::createAvailableT() {
 	for(int exist=0; exist<(1<<6); exist++) { // each exist status
 		for(int dice=0; dice<6; dice++) {
@@ -250,7 +227,6 @@ void EwnAI::createAvailableT() {
 					break;
 				}
 			}
-			cout << endl;
 			pair<int, int> fir(dice, exist), sec(availableFormer, availableLatter);
 			am_.insert(make_pair(fir, sec));
 		}
