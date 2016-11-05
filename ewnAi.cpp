@@ -3,15 +3,28 @@
 #include <algorithm>
 #include "game.h"
 #include "ewnAi.h"
-const int HEIGHT = 1;
+const int HEIGHT = ;
 const float chance_weight = 1/6;
 
 EwnAI::EwnAI() {
 	// pos: a <int,int> , <x,y> coord;
 	// insert to map => hv;
 	cout << "create AI." << endl;
-	createHeuristicT();
-	createAvailableT();
+	for (int i = 0; i < 5; i++) {
+		for (int j = 0;j < 5; j++) {
+
+			// get the smallest of (x,y)
+			int k = (i > j ? j : i);
+
+			k = k * k;
+			Pos chess_pos;
+			chess_pos.first = i;
+			chess_pos.second = j;
+			printf("%2d", k);
+			hv_.insert(make_pair(chess_pos, k));
+		}
+		cout << endl;
+	}
 }
 
 Movement EwnAI::autoPlay(Game currentGame, int dice) {
@@ -192,43 +205,4 @@ int EwnAI::evaluate(Game& currentGame) {
 	}
 	cout << "[calc] " << val << endl;
 	return val;
-}
-
-void EwnAI::createHeuristicT() {
-	for (int i = 0; i < 5; i++) {
-		for (int j = 0;j < 5; j++) {
-			// get the smallest of (x,y)
-			int k = (i > j ? j : i);
-			k = k * k;
-			Pos chess_pos;
-			chess_pos.first = i;
-			chess_pos.second = j;
-			hv_.insert(make_pair(chess_pos, k));
-		}
-	}
-}
-
-void EwnAI::createAvailableT() {
-	for(int exist=0; exist<(1<<6); exist++) { // each exist status
-		for(int dice=0; dice<6; dice++) {
-			int availableFormer = dice, availableLatter = dice;
-			int tmp = exist;
-			int bin[6];
-			int f = exist, l = exist;
-			for(int i=dice; i>=0; i--) {
-				if((exist%(1<<(i+1)))/(1<<i) == true) {
-					availableFormer = i;
-					break;
-				}
-			}
-			for(int i=dice; i<6; i++) {
-				if((exist>>i)%2 == true) {
-					availableLatter = i;
-					break;
-				}
-			}
-			pair<int, int> fir(dice, exist), sec(availableFormer, availableLatter);
-			am_.insert(make_pair(fir, sec));
-		}
-	}
 }
