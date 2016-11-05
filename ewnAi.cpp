@@ -55,10 +55,10 @@ int EwnAI::minimax(Game& currentGame, int height) {
 		for (int dice = 0; dice < 6; dice++) {
 			bool isThisChsMovable = currentGame.getCurrPlayer(dice).exist;
 
-			if(isThisChsMovable) {
+			if (isThisChsMovable) {
 				char thisSymbol = currentGame.getCurrPlayer(dice).symbol;
 				int chs = thisSymbol - aiSymbol_;
-				cout << "[char value] " << chs << endl;
+				cout << "[**Mine** char value] " << chs << endl;
 				for (int direct = 0; direct < 3; direct++) {
 					cout << "[**Mine** direction value] " << direct << endl;
 					Movement mvmt(chs, direct);
@@ -79,15 +79,30 @@ int EwnAI::minimax(Game& currentGame, int height) {
 					}
 				}
 				diceArray[dice] = bestValue;
+
+				// if there is lookahead, compare those value of the non-existing
+				// if current is bigger than the front value.
+				if (lookahead) {
+					int offset;
+					if (bestValue > diceArray[dice - 1]) {
+						for (int j = 1; j <= lookahead; j++){
+							offset = dice - j;
+							diceArray[offset] = bestValue;
+						}
+					}
+					lookahead = 0;
+				}
 			}
 			else {
+				cout << "[**Mine** not exist] " << dice << endl;
 				// this chs can`t move, use other`s value
-				if(dice - lookahead - 1 < 0) {
-					diceArray[dice] = 0;
+				lookahead++;
+				if (dice - lookahead < 0) {
+					continue;
 				}
-				else if(){
-					diceArray[dice] = diceArray[dice - diceArray];
-				}
+				else {
+					diceArray[dice] = diceArray[dice - lookahead];
+				}				
 			}
 		}
 
@@ -95,14 +110,18 @@ int EwnAI::minimax(Game& currentGame, int height) {
 	else {
 		// the opponent's turn, find the min
 		bestValue = 1e9;
+
 		int lose = aiTurn_? 1: 2;
 		// for #chess and direction
 		for (int dice = 0; dice < 6; dice++) {
+			bool isThisChsMovable = currentGame.getCurrPlayer(dice).exist;
 
-			int availableNum = currentGame.availableMove(dice);
-			for (int i=0; i<availableNum; i++) {
+			if (isThisChsMovable) {
+				char thisSymbol = currentGame.getCurrPlayer(dice).symbol;
 				int oppntSymbol = aiTurn_? '1': 'A';
-				int chs = currentGame.getMovableChs(i).symbol - oppntSymbol;
+				int chs = thisSymbol - oppntSymbol;
+				cout << "[**Opp** char value] " << chs << endl;
+
 				for (int direct = 0; direct < 3; direct++) {
 					cout << "[**Opp** direction value] " << direct << endl;
 					Movement mvmt(chs, direct);
@@ -119,13 +138,41 @@ int EwnAI::minimax(Game& currentGame, int height) {
 						bestValue = min(bestValue, childValue);
 						cout << "[min]in 3 direction, return bestvalue. " << bestValue << endl;
 					}
+					else {
+						cout << "nope, the chs can`t be move." << endl;
+					}
 				}
+				diceArray[dice] = bestValue;
+
+				// if there is lookahead, compare those value of the non-existing
+				// if current is bigger than the front value.
+				if (lookahead) {
+					int offset;
+					if (bestValue < diceArray[dice - 1]) {
+						for (int j = 1; j <= lookahead; j++){
+							offset = dice - j;
+							diceArray[offset] = bestValue;
+						}
+					}
+					lookahead = 0;
+				}
+			}
+			else {
+				cout << "[**Opp** not exist] " << dice << endl;
+				// this chs can`t move, use other`s value
+				lookahead++;
+				if (dice - lookahead < 0) {
+					continue;
+				}
+				else {
+					diceArray[dice] = diceArray[dice - lookahead];
+				}				
 			}
 		}
 	}
 	cout << "feature value:[ ";
 	for(int i = 0; i < 6; i++){
-		cout << dice_array[i] << " ";
+		cout << diceArray[i] << " ";
 	}
 	cout << "]" << endl;
 	cout << "========== a minimax ===========" << endl;
