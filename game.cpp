@@ -46,7 +46,12 @@ Game::Game()
 		this->playerA_[i].assign('1'+i, true, 0, 0);
 	for (int i=0; i<6; i++)
 		this->playerB_[i].assign('A'+i, true, 0, 0);
+
+	this->existA_ = 0b111111;
+	this->existB_ = 0b111111;
+
 	this->currentPlayer_ = playerA_;
+	this->currentExist_ = existA_;
 	this->turn_ = false;
 
 	//Initialize the positions of the chessmen
@@ -99,8 +104,11 @@ Game::Game(const Game& game)
 		this->playerA_[i] = game.playerA_[i];
 		this->playerB_[i] = game.playerB_[i];
 	}
+	this->existA_ = game.existA_;
+	this->existB_ = game.existB_;
 	this->turn_ = game.turn_;
 	this->currentPlayer_ = (this->turn_ == false) ? this->playerA_ :  this->playerB_;
+	this->currentExist_ = (this->turn_ == false) ? this->existA_ :  this->existB_;
 	this->chsNumA_ = game.chsNumA_;
 	this->chsNumB_ = game.chsNumB_;
 }
@@ -119,6 +127,8 @@ void Game::operator=(const Game& game)
 		this->playerA_[i] = game.playerA_[i];
 		this->playerB_[i] = game.playerB_[i];
 	}
+	this->existA_ = game.existA_;
+	this->existB_ = game.existB_;
 	this->turn_ = game.turn_;
 	this->chsNumA_ = game.chsNumA_;
 	this->chsNumB_ = game.chsNumB_;
@@ -278,11 +288,13 @@ int Game::update(const Movement& mvmt)
 		if (replacedChess < 'A') {
 			// this Play is A
 			this->playerA_[replacedChess-'1'].exist = false;
+			this->existA_ -= 1<<int(replacedChess-'1');
 			this->chsNumA_--;
 		}
 		else {
 			// this Play is B
 			this->playerB_[replacedChess-'A'].exist = false;
+			this->existB_-= 1<<int(replacedChess-'A');
 			this->chsNumB_--;
 		}
 	}
@@ -309,10 +321,12 @@ void Game::switchPlayer()
 {
 	if (this->turn_) {	//now is B
 		this->currentPlayer_ = this->playerA_;
+		this->currentExist_ = this->existA_;
 		this->turn_ = false;
 	}
 	else {				//now is A
 		this->currentPlayer_ = this->playerB_;
+		this->currentExist_ = this->existB_;
 		this->turn_ = true;
 	}
 }
