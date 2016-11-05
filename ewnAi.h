@@ -8,8 +8,10 @@
 using namespace std;
 
 typedef pair<int, int> Pos;
-typedef map<Pos , int> Hmap;
-
+//Heuristic map
+typedef map<Pos, int> Hmap;
+//Available move map
+typedef map< pair<int, Chess*>, pair<int, int> > Amap;
 class EwnAI
 {
 	public:
@@ -19,7 +21,7 @@ class EwnAI
 		Chess chosenChs_;
 		int chosenDirct_;
 		Hmap hv_;
-
+		Amap am_;
 		EwnAI();
 		~EwnAI() {}
 		Movement autoPlay(Game currentGame, int dice);

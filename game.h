@@ -33,6 +33,10 @@ private:
 	int chsNumA_, chsNumB_;
 	Chess playerA_[6], playerB_[6];
 	Chess* currentPlayer_;
+
+	// exist array for mapping in AI
+	int existA_, existB_;
+	int currentExist_;
 	//false(0): A, true(1): B
 	bool turn_;
 
@@ -66,7 +70,9 @@ public:
 
 	Chess getMovableChs(const int& k);
 	Chess getCurrPlayer(const int& k);
+	bool* getCUrrentExist();
 	bool getTurn();
+
 };
 
 #endif

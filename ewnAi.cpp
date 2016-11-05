@@ -89,7 +89,7 @@ int EwnAI::minimax(Game& currentGame, int height) {
 					} else {
 						cout << "nope, the chs can`t be move." << endl;
 					}
-				}	
+				}
 				diceArray[dice] = bestValue;
 
 				// if there is lookhead, modify those value 
@@ -104,7 +104,7 @@ int EwnAI::minimax(Game& currentGame, int height) {
 					}
 					lookahead = 0;
 				}
-			} 
+			}
 			else {
 				// this chs can`t move, use other`s value
 				if (dice - lookahead - 1 < 0) {
@@ -125,7 +125,7 @@ int EwnAI::minimax(Game& currentGame, int height) {
 		int lose = aiTurn_? 1: 2;
 		// for #chess and direction
 		for (int dice = 0; dice < 6; dice++) {
-			
+
 			int availableNum = currentGame.availableMove(dice);
 			for (int i=0; i<availableNum; i++) {
 				int oppntSymbol = aiTurn_? '1': 'A';
@@ -160,7 +160,6 @@ int EwnAI::minimax(Game& currentGame, int height) {
 
 int EwnAI::evaluate(Game& currentGame) {
 	int val = 0;
-
 	for(int dice = 0; dice < 6; dice++) {
 		if(currentGame.getCurrPlayer(dice).exist) {
 			Pos temp;
