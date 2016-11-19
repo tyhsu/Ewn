@@ -4,7 +4,7 @@
 #include "game.h"
 #include "ewnAi.h"
 #include <string>
-const int HEIGHT = 1;
+const int HEIGHT = 2;
 const float chance_weight = 1/6;
 
 EwnAI::EwnAI() {
@@ -39,6 +39,7 @@ Movement EwnAI::autoPlay(Game currentGame, int dice) {
 
 	for (int i=0; i<nextMoveCnt; i++) {
 		int chs = currentGame.getMovableChs(i).symbol - aiSymbol_;
+		cout << "select: " << chs+1 << endl;
 		for (int direct = 0; direct < 3; direct++) {
 			Movement mvmt(chs, direct);
 			if (currentGame.isLegalMove(mvmt)) {
@@ -63,9 +64,12 @@ Movement EwnAI::autoPlay(Game currentGame, int dice) {
 int EwnAI::minimax(Game& currentGame, int height) {
 	// check if end;
 	if (height == 0) {
+		// Game nextStep = currentGame;
+		currentGame.switchPlayer();
 		return evaluate(currentGame);
 	}
-	cout << "========== a minimax ===========" << endl;
+	// cout << "========== a minimax ===========" << endl;
+	// cout << aiTurn_ << endl;
 	int bestValue;
 	int diceArray[6] = {0};
 	int lookahead = 0;
@@ -82,9 +86,9 @@ int EwnAI::minimax(Game& currentGame, int height) {
 			Chess currChess = currentGame.getCurrPlayer(dice);
 			if (currChess.exist) {
 				int chs = currChess.symbol - aiSymbol_;
-				cout << space << "[**Mine** char value] " << chs << endl;
+				// cout << space << "[**Mine** char value] " << chs << endl;
 				for (int direct = 0; direct < 3; direct++) {
-					cout << space << "[**Mine** direction value] " << direct << endl;
+					// cout << space << "[**Mine** direction value] " << direct << endl;
 					Movement mvmt(chs, direct);
 					if (currentGame.isLegalMove(mvmt)) {
 						Game nextStep = currentGame;
@@ -97,9 +101,9 @@ int EwnAI::minimax(Game& currentGame, int height) {
 						// return child value.
 						int childValue = minimax(nextStep, height-1);
 						bestValue = max(bestValue, childValue);
-						cout << space << "[max]in 3 direction, return bestvalue. " << bestValue << endl;
+						// cout << space << "[max]in 3 direction, return bestvalue. " << bestValue << endl;
 					} else {
-						cout << space << "nope, the chs can`t be move." << endl;
+						// cout << space << "nope, the chs can`t be move." << endl;
 					}
 				}
 				diceArray[dice] = bestValue;
@@ -118,7 +122,7 @@ int EwnAI::minimax(Game& currentGame, int height) {
 				}
 			}
 			else {
-				cout << space << "[**Mine** not exist] " << dice << endl;
+				// cout << space << "[**Mine** not exist] " << dice << endl;
 				// this chs can`t move, use other`s value
 				lookahead++;
 				if (dice - lookahead < 0) {
@@ -142,10 +146,10 @@ int EwnAI::minimax(Game& currentGame, int height) {
 			if (currChess.exist) {
 				int oppntSymbol = aiTurn_? '1': 'A';
 				int chs = currChess.symbol - oppntSymbol;
-				cout << space << "[**Opp** char value] " << chs << endl;
+				// cout << space << "[**Opp** char value] " << chs << endl;
 
 				for (int direct = 0; direct < 3; direct++) {
-					cout << space << "[**Opp** direction value] " << direct << endl;
+					// cout << space << "[**Opp** direction value] " << direct << endl;
 					Movement mvmt(chs, direct);
 					if (currentGame.isLegalMove(mvmt)) {
 						Game nextStep = currentGame;
@@ -158,10 +162,10 @@ int EwnAI::minimax(Game& currentGame, int height) {
 						// return child value.
 						int childValue = minimax(nextStep, height-1);
 						bestValue = min(bestValue, childValue);
-						cout << space << "[min]in 3 direction, return bestvalue. " << bestValue << endl;
+						// cout << space << "[min]in 3 direction, return bestvalue. " << bestValue << endl;
 					}
 					else {
-						cout << space << "nope, the chs can`t be move." << endl;
+						// cout << space << "nope, the chs can`t be move." << endl;
 					}
 				}
 				diceArray[dice] = bestValue;
@@ -180,7 +184,7 @@ int EwnAI::minimax(Game& currentGame, int height) {
 				}
 			}
 			else {
-				cout << space << "[**Opp** not exist] " << dice << endl;
+				// cout << space << "[**Opp** not exist] " << dice << endl;
 				// this chs can`t move, use other`s value
 				lookahead++;
 				if (dice - lookahead < 0) {
@@ -192,11 +196,11 @@ int EwnAI::minimax(Game& currentGame, int height) {
 			}
 		}
 	}
-	cout << "feature value:[ ";
-	for(int i = 0; i < 6; i++){
-		cout << diceArray[i] << " ";
-	}
-	cout << "]" << endl;
+	// cout << "feature value:[ ";
+	// for(int i = 0; i < 6; i++){
+	// 	cout << diceArray[i] << " ";
+	// }
+	// cout << "]" << endl;
 	return bestValue;
 }
 
@@ -207,11 +211,11 @@ int EwnAI::evaluate(Game& currentGame) {
 			Pos temp;
 			temp.first = currentGame.getCurrPlayer(dice).x;
 			temp.second = currentGame.getCurrPlayer(dice).y;
-			cout << temp.first << ", " << temp.second << endl;
+			// cout << "dice: " << dice+1 << "=> " << temp.first << ", " << temp.second << endl;
 			val += hv_[temp];
 		}
 	}
-	cout << "[calc] " << val << endl;
+	// cout << "[calc] " << val << endl;
 	return val;
 }
 
