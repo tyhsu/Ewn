@@ -121,11 +121,38 @@ void Play::twoAIs()
 void Play::contestAI()
 {
 	int firstPlay;
-	cout << "Whose AI goes first? 0)Ours 1)Opponent's" << endl;
+	cout << "Whose AI goes first?" << endl;
+	cout << "=>Who is A? 0)Ours 1)Opponent's" << endl;
 	cin >> firstPlay;
 
-	EwnAI ewnAI;
+	int initial, turn;
+	cout << "Do you need to set the board? 0)No 1)Yes" << endl;
+	cin >> initial;
+	if (initial == 1) {
+		char board[5][5];
+		do {
+			cout << "Please give values for the 5x5 array" << endl;
+			char c;
+			for (int i=0; i<5; i++) {
+				for (int j=0; j<5; j++) {
+					cin >> c;
+					if (c=='0')
+						board[i][j] = 0;
+					else
+						board[i][j] = c;
+				}
+			}
+			cout << "Are you ready to set the board? 0)No 1)Yes" << endl;
+			cin >> initial;
+		} while (initial == 0);
+		cout << "Whose turn is it now? 0)A 1)B" << endl;
+		cin >> turn;
+		game_.setBoard(board, turn);
+	}
+	game_.checkStatus();
 	game_.printBoard();
+	
+	EwnAI ewnAI;
 	if (firstPlay) {	//A: Opponent's, B: Ours
 		while (1) {
 			int win;
@@ -151,16 +178,19 @@ void Play::contestAI()
 			}
 				
 			else {	//AI's turn (B)
-				int dice = this->game_.rollTheDice();
+				int dice;
+				cout << "Set the dice: ";
+				cin >> dice;
 				win = this->game_.update(ewnAI.autoPlay(this->game_, dice));
 			}
 			
 			this->game_.printBoard();
 			//update: 0(game continues), 1(A wins), 2(B wins)
 			if (win!=0) {
+				this->game_.checkStatus();
 				cout << "====================================" << endl;
-				if (win==1) cout << "AI is the winner!!!" << endl;
-				else cout << "B is the winner!!!" << endl;
+				if (win==1) cout << "The opponent is the winner!!!" << endl;
+				else cout << "Our AI is the winner!!!" << endl;
 				cout << "====================================" << endl;
 				return;
 			}
@@ -193,16 +223,19 @@ void Play::contestAI()
 			}
 				
 			else {	//AI's turn (A)
-				int dice = this->game_.rollTheDice();
+				int dice;
+				cout << "Set the dice: ";
+				cin >> dice;
 				win = this->game_.update(ewnAI.autoPlay(this->game_, dice));
 			}
 			
 			this->game_.printBoard();
 			//update: 0(game continues), 1(A wins), 2(B wins)
 			if (win!=0) {
+				this->game_.checkStatus();
 				cout << "====================================" << endl;
-				if (win==1) cout << "AI is the winner!!!" << endl;
-				else cout << "B is the winner!!!" << endl;
+				if (win==2) cout << "The opponent is the winner!!!" << endl;
+				else cout << "Our AI is the winner!!!" << endl;
 				cout << "====================================" << endl;
 				return;
 			}

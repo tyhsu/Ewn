@@ -49,6 +49,8 @@ public:
 	//Copy operator
 	void operator=(const Game& game);
 
+	//Directly set the board
+	void setBoard(char board[5][5], int turn);
 	//Print the board
 	void printBoard();
 	//Roll the dice
@@ -58,7 +60,7 @@ public:
 	//Check if the chessman is out of the board
 	bool isLegalMove(const Movement& mvmt);
 	//Synchronize the chessman and the board
-	void setBoard(const Chess& chs);
+	void setChessOnBoard(const Chess& chs);
 	//Get the symbol of the chessman originally on the board
 	char getChessOnBoard(const Chess& chs);
 	//Update the board(have a movement), chsNum, playerA/playerB. Return 0(game continues), 1(A wins), 2(B wins)

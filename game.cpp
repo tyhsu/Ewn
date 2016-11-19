@@ -133,6 +133,52 @@ void Game::operator=(const Game& game)
 	this->chsNumB_ = game.chsNumB_;
 }
 
+void Game::setBoard(char board[5][5], int turn)
+{
+	int chsNumA = 0, chsNumB = 0;
+	int existA = 0, existB = 0;
+	for (int i=0; i<6; i++) {
+		this->playerA_[i].assign(0, false, 0, 0);
+		this->playerB_[i].assign(0, false, 4, 4);
+	}
+
+	for (int i=0; i<5; i++) {
+		for (int j=0; j<5; j++) {
+			char c = board[j][i];
+
+			//Set the board
+			this->board_[i][j] = c;
+
+			//Update other information
+			if (c>='1' && c<='6') {
+				chsNumA++;
+				this->playerA_[c-'1'].assign(c, true, i, j);
+				existA |= 1 << (c-'1');
+			}
+			else if (c>='A' && c<='f') {
+				chsNumB++;
+				this->playerB_[c-'A'].assign(c, true, i, j);
+				existB |= 1 << (c-'A');
+			}
+		}
+	}
+	this->chsNumA_ = chsNumA;
+	this->chsNumB_ = chsNumB;
+	this->existA_ = existA;
+	this->existB_ = existB;
+
+	if (turn) {
+		this->currentPlayer_ = this->playerB_;
+		this->currentExist_ = this->existB_;
+		this->turn_ = true;
+	}
+	else {
+		this->currentPlayer_ = this->playerA_;
+		this->currentExist_ = this->existA_;
+		this->turn_ = false;
+	}
+}
+
 void Game::printBoard()
 {
 	cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
@@ -212,7 +258,7 @@ bool Game::isLegalMove(const Movement& mvmt)
 	return ( x >= 0 && x < 5 && y >= 0 && y < 5);
 }
 
-void Game::setBoard(const Chess& chs)
+void Game::setChessOnBoard(const Chess& chs)
 {
 	this->board_[chs.x][chs.y] = chs.symbol;
 }
@@ -235,7 +281,7 @@ int Game::update(const Movement& mvmt)
 		// clear previous location
 		Chess previous = chessToGo;
 		previous.symbol = 0;
-		this->setBoard(previous);
+		this->setChessOnBoard(previous);
 
 		int playerIndex = 0;
 		if (!this->turn_)	//playerA_
@@ -244,14 +290,14 @@ int Game::update(const Movement& mvmt)
 			playerIndex = chessToGo.symbol - 'A';
 		this->currentPlayer_[playerIndex].moveX(posneg);
 		replacedChess = this->getChessOnBoard(this->currentPlayer_[playerIndex]);
-		this->setBoard(this->currentPlayer_[playerIndex]);
+		this->setChessOnBoard(this->currentPlayer_[playerIndex]);
 	}
 	else if (direct == 1) {
 		/* ----------move down---------- */
 		// clear previous location
 		Chess previous = chessToGo;
 		previous.symbol = 0;
-		this->setBoard(previous);
+		this->setChessOnBoard(previous);
 
 		int playerIndex = 0;
 		if (!this->turn_)	//playerA_
@@ -260,7 +306,7 @@ int Game::update(const Movement& mvmt)
 			playerIndex = chessToGo.symbol - 'A';
 		this->currentPlayer_[playerIndex].moveY(posneg);
 		replacedChess = this->getChessOnBoard(this->currentPlayer_[playerIndex]);
-		this->setBoard(this->currentPlayer_[playerIndex]);
+		this->setChessOnBoard(this->currentPlayer_[playerIndex]);
 
 	}
 	else if (direct == 2) {
@@ -268,7 +314,7 @@ int Game::update(const Movement& mvmt)
 		// clear previous location
 		Chess previous = chessToGo;
 		previous.symbol = 0;
-		this->setBoard(previous);
+		this->setChessOnBoard(previous);
 
 		int playerIndex = 0;
 		if (!this->turn_)	//playerA_
@@ -278,7 +324,7 @@ int Game::update(const Movement& mvmt)
 		this->currentPlayer_[playerIndex].moveX(posneg);
 		this->currentPlayer_[playerIndex].moveY(posneg);
 		replacedChess = this->getChessOnBoard(this->currentPlayer_[playerIndex]);
-		this->setBoard(this->currentPlayer_[playerIndex]);
+		this->setChessOnBoard(this->currentPlayer_[playerIndex]);
 	}
 
 	// Update the eaten chessman
@@ -333,14 +379,16 @@ void Game::switchPlayer()
 void Game::checkStatus()
 {
 	cout <<"/*    Player A    */" <<endl;
-	for(int i=0; i<6; i++){
-		cout << this->playerA_[i].symbol << " is at (" << this->playerA_[i].x << ", " << this->playerA_[i].y << ")   [exist : " << this->playerA_[i].exist << "] ;" <<endl;
+	for(int i=0; i<6; i++) {
+		printf("%c", '1'+i);
+		cout << " is at (" << this->playerA_[i].x << ", " << this->playerA_[i].y << ")   [exist : " << this->playerA_[i].exist << "] ;" <<endl;
 	}
 	cout <<"/*    --------    */" << endl;
 
 	cout <<"/*    Player B    */" <<endl;
-	for(int i=0; i<6; i++){
-		cout << this->playerB_[i].symbol << " is at (" << this->playerB_[i].x << ", " << this->playerB_[i].y << ")   [exist : " << this->playerB_[i].exist << "] ;" <<endl;
+	for(int i=0; i<6; i++) {
+		printf("%c", 'A'+i);
+		cout << " is at (" << this->playerB_[i].x << ", " << this->playerB_[i].y << ")   [exist : " << this->playerB_[i].exist << "] ;" <<endl;
 	}
 	cout <<"/*    --------    */" << endl;
 }

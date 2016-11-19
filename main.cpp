@@ -17,6 +17,7 @@ int main() {
 	cout << "3)Contest mode" << endl;
 	cout << "Choose: ";
 	cin >> cmd;
+	cout << endl;
 	Play ewn;
 	if (cmd == 0)
 		ewn.twoPlayers();
