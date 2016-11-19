@@ -3,7 +3,8 @@
 #include <algorithm>
 #include "game.h"
 #include "ewnAi.h"
-const int HEIGHT = ;
+#include <string>
+const int HEIGHT = 1;
 const float chance_weight = 1/6;
 
 EwnAI::EwnAI() {
@@ -31,17 +32,26 @@ Movement EwnAI::autoPlay(Game currentGame, int dice) {
 	aiTurn_ = currentGame.getTurn();
 	aiSymbol_ = aiTurn_? 'A': '1';
 
-	Movement answer;//the best move will return
+	Movement answer;	//the best move will return
 	int bestValue = -1e9;
+	int win = aiTurn_? 2: 1;
 	int nextMoveCnt = currentGame.availableMove(dice);
+
 	for (int i=0; i<nextMoveCnt; i++) {
+		int chs = currentGame.getMovableChs(i).symbol - aiSymbol_;
 		for (int direct = 0; direct < 3; direct++) {
-			int chs = currentGame.getMovableChs(i).symbol - aiSymbol_;
 			Movement mvmt(chs, direct);
 			if (currentGame.isLegalMove(mvmt)) {
-				int tmp = minimax(currentGame, HEIGHT);
-				if(bestValue < tmp) { // update
-					bestValue = tmp;
+				Game nextStep = currentGame;
+				int end = nextStep.update(mvmt);
+				// check if the game ends
+				if (end == win) return mvmt;
+				else if (end != 0) continue;	// lose the game
+				nextStep.switchPlayer();
+				
+				int childValue = minimax(nextStep, HEIGHT);
+				if(childValue > bestValue) {	// update
+					bestValue = childValue;
 					answer = mvmt;
 				}
 			}
@@ -59,6 +69,9 @@ int EwnAI::minimax(Game& currentGame, int height) {
 	int bestValue;
 	int diceArray[6] = {0};
 	int lookahead = 0;
+	string space = "";
+	for (int i=HEIGHT; i>height; i--) space += " ";
+
 
 	if (currentGame.getTurn() == aiTurn_) {
 		// ai's turn, find the max
@@ -66,14 +79,12 @@ int EwnAI::minimax(Game& currentGame, int height) {
 		int win = aiTurn_? 2: 1;
 		// for #chess and direction
 		for (int dice = 0; dice < 6; dice++) {
-			bool isThisChsMovable = currentGame.getCurrPlayer(dice).exist;
-
-			if (isThisChsMovable) {
-				char thisSymbol = currentGame.getCurrPlayer(dice).symbol;
-				int chs = thisSymbol - aiSymbol_;
-				cout << "[**Mine** char value] " << chs << endl;
+			Chess currChess = currentGame.getCurrPlayer(dice);
+			if (currChess.exist) {
+				int chs = currChess.symbol - aiSymbol_;
+				cout << space << "[**Mine** char value] " << chs << endl;
 				for (int direct = 0; direct < 3; direct++) {
-					cout << "[**Mine** direction value] " << direct << endl;
+					cout << space << "[**Mine** direction value] " << direct << endl;
 					Movement mvmt(chs, direct);
 					if (currentGame.isLegalMove(mvmt)) {
 						Game nextStep = currentGame;
@@ -86,9 +97,9 @@ int EwnAI::minimax(Game& currentGame, int height) {
 						// return child value.
 						int childValue = minimax(nextStep, height-1);
 						bestValue = max(bestValue, childValue);
-						cout << "[max]in 3 direction, return bestvalue. " << bestValue << endl;
+						cout << space << "[max]in 3 direction, return bestvalue. " << bestValue << endl;
 					} else {
-						cout << "nope, the chs can`t be move." << endl;
+						cout << space << "nope, the chs can`t be move." << endl;
 					}
 				}
 				diceArray[dice] = bestValue;
@@ -107,7 +118,7 @@ int EwnAI::minimax(Game& currentGame, int height) {
 				}
 			}
 			else {
-				cout << "[**Mine** not exist] " << dice << endl;
+				cout << space << "[**Mine** not exist] " << dice << endl;
 				// this chs can`t move, use other`s value
 				lookahead++;
 				if (dice - lookahead < 0) {
@@ -115,7 +126,7 @@ int EwnAI::minimax(Game& currentGame, int height) {
 				}
 				else {
 					diceArray[dice] = diceArray[dice - lookahead];
-				}				
+				}
 			}
 		}
 
@@ -127,16 +138,14 @@ int EwnAI::minimax(Game& currentGame, int height) {
 		int lose = aiTurn_? 1: 2;
 		// for #chess and direction
 		for (int dice = 0; dice < 6; dice++) {
-			bool isThisChsMovable = currentGame.getCurrPlayer(dice).exist;
-
-			if (isThisChsMovable) {
-				char thisSymbol = currentGame.getCurrPlayer(dice).symbol;
+			Chess currChess = currentGame.getCurrPlayer(dice);
+			if (currChess.exist) {
 				int oppntSymbol = aiTurn_? '1': 'A';
-				int chs = thisSymbol - oppntSymbol;
-				cout << "[**Opp** char value] " << chs << endl;
+				int chs = currChess.symbol - oppntSymbol;
+				cout << space << "[**Opp** char value] " << chs << endl;
 
 				for (int direct = 0; direct < 3; direct++) {
-					cout << "[**Opp** direction value] " << direct << endl;
+					cout << space << "[**Opp** direction value] " << direct << endl;
 					Movement mvmt(chs, direct);
 					if (currentGame.isLegalMove(mvmt)) {
 						Game nextStep = currentGame;
@@ -149,10 +158,10 @@ int EwnAI::minimax(Game& currentGame, int height) {
 						// return child value.
 						int childValue = minimax(nextStep, height-1);
 						bestValue = min(bestValue, childValue);
-						cout << "[min]in 3 direction, return bestvalue. " << bestValue << endl;
+						cout << space << "[min]in 3 direction, return bestvalue. " << bestValue << endl;
 					}
 					else {
-						cout << "nope, the chs can`t be move." << endl;
+						cout << space << "nope, the chs can`t be move." << endl;
 					}
 				}
 				diceArray[dice] = bestValue;
@@ -171,7 +180,7 @@ int EwnAI::minimax(Game& currentGame, int height) {
 				}
 			}
 			else {
-				cout << "[**Opp** not exist] " << dice << endl;
+				cout << space << "[**Opp** not exist] " << dice << endl;
 				// this chs can`t move, use other`s value
 				lookahead++;
 				if (dice - lookahead < 0) {
@@ -179,7 +188,7 @@ int EwnAI::minimax(Game& currentGame, int height) {
 				}
 				else {
 					diceArray[dice] = diceArray[dice - lookahead];
-				}				
+				}
 			}
 		}
 	}
@@ -188,7 +197,6 @@ int EwnAI::minimax(Game& currentGame, int height) {
 		cout << diceArray[i] << " ";
 	}
 	cout << "]" << endl;
-	cout << "========== a minimax ===========" << endl;
 	return bestValue;
 }
 
@@ -205,4 +213,45 @@ int EwnAI::evaluate(Game& currentGame) {
 	}
 	cout << "[calc] " << val << endl;
 	return val;
+}
+
+void EwnAI::createHeuristicT() {
+	for (int i = 0; i < 5; i++) {
+		for (int j = 0;j < 5; j++) {
+			// get the smallest of (x,y)
+			int k = (i > j ? j : i);
+			k = k * k;
+			Pos chess_pos;
+			chess_pos.first = i;
+			chess_pos.second = j;
+			hv_.insert(make_pair(chess_pos, k));
+		}
+	}
+}
+
+void EwnAI::createAvailableT() {
+	for(int exist=0; exist<(1<<6); exist++) { // each exist status
+		for(int dice=0; dice<6; dice++) {
+			int availableFormer = -1, availableLatter = -1;
+			int tmp = exist;
+			int bin[6];
+			int f = exist, l = exist;
+			for(int i=dice; i>=0; i--) {
+				if((exist%(1<<(i+1)))/(1<<i) == true) {
+					availableFormer = i;
+					break;
+				}
+			}
+			for(int i=dice; i<6; i++) {
+				if((exist>>i)%2 == true) {
+					availableLatter = i;
+					break;
+				}
+			}
+			availableFormer = (availableFormer == -1) ? availableLatter : availableFormer;
+			availableLatter = (availableLatter == -1) ? availableFormer : availableLatter;
+			pair<int, int> fir(dice, exist), sec(availableFormer, availableLatter);
+			am_.insert(make_pair(fir, sec));
+		}
+	}
 }
