@@ -139,11 +139,15 @@ void Play::contestAI()
 				cout << "Choose: ";
 				cin >> direct;
 
-				win = this->game_.update(make_pair(chs, direct));
+				win = this->game_.update(make_pair(chs-1, direct));
 				char cmd;
 				cout << "Press z to recover, or the other to continue : ";
 				cin >> cmd;
-				if (cmd == 'z') recover();
+				if (cmd == 'z') {			
+					recover();
+					this->game_.printBoard();
+					continue;
+				} 
 			}
 				
 			else {	//AI's turn (B)
@@ -181,7 +185,11 @@ void Play::contestAI()
 				char cmd;
 				cout << "Press z to recover, or the other to continue : ";
 				cin >> cmd;
-				if (cmd == 'z') recover();
+				if (cmd == 'z') {
+					recover();
+					this->game_.printBoard();
+					continue;
+				} 
 			}
 				
 			else {	//AI's turn (A)
