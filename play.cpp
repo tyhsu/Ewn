@@ -48,8 +48,13 @@ Movement Play::playerPlay(const int& dice)
 	return mvmt;
 }
 
+void Play::recover() {
+	this->game_ = this->recoverBuffer_;
+}
+
 void Play::twoPlayers()
 {
+	game_.printBoard();
 	while (1) {
 		//update: 0(game continues), 1(A wins), 2(B wins)
 		int win = this->game_.update(playerPlay(this->game_.rollTheDice()));
@@ -68,22 +73,18 @@ void Play::twoPlayers()
 void Play::playerAI()
 {
 	EwnAI ewnAI;
+	game_.printBoard();
 	while (1) {
-		//ask for the next chessman to move
-
-		//update, 0(game continues), 1(A wins), 2(B wins)
 		int dice = this->game_.rollTheDice();
 		int win;
 		if (this->game_.getTurn() == true) {
-			this->recoverBuffer_ = this->game;
 			win = this->game_.update(playerPlay(dice));
-			char cmd;
-			cout<<"press z to recover, or any other keys to continue : ";
 		}
-			
 		else
 			win = this->game_.update(ewnAI.autoPlay(this->game_, dice));
+
 		this->game_.printBoard();
+		//update: 0(game continues), 1(A wins), 2(B wins)
 		if (win!=0) {
 			cout << "====================================" << endl;
 			if (win==1) cout << "AI is the winner!!!" << endl;
@@ -98,6 +99,7 @@ void Play::playerAI()
 void Play::twoAIs()
 {
 	EwnAI ewnAI;
+	game_.printBoard();
 	while (1) {
 		//ask for the next chessman to move
 
@@ -123,11 +125,12 @@ void Play::contestAI()
 	cin >> firstPlay;
 
 	EwnAI ewnAI;
+	game_.printBoard();
 	if (firstPlay) {	//A: Opponent's, B: Ours
 		while (1) {
 			int win;
-			if (this->game_.getTurn() == true) {	//The opponent's turn
-				this->recoverBuffer_ = this->game;
+			if (!this->game_.getTurn()) {	//The opponent's turn (A)
+				this->recoverBuffer_ = this->game_;
 
 				int chs, direct;
 				cout << "Choose the chessman(1~6): ";
@@ -138,10 +141,12 @@ void Play::contestAI()
 
 				win = this->game_.update(make_pair(chs, direct));
 				char cmd;
-				cout<<"press z to recover, or any other keys to continue : ";
+				cout << "Press z to recover, or the other to continue : ";
+				cin >> cmd;
+				if (cmd == 'z') recover();
 			}
 				
-			else {	//AI's turn
+			else {	//AI's turn (B)
 				int dice = this->game_.rollTheDice();
 				win = this->game_.update(ewnAI.autoPlay(this->game_, dice));
 			}
@@ -161,8 +166,8 @@ void Play::contestAI()
 	else {				//A: Ours, B: Opponent's
 		while (1) {
 			int win;
-			if (this->game_.getTurn() == false) {	//The opponent's turn
-				this->recoverBuffer_ = this->game;
+			if (this->game_.getTurn()) {	//The opponent's turn (B)
+				this->recoverBuffer_ = this->game_;
 
 				char chs;
 				int direct;
@@ -174,10 +179,12 @@ void Play::contestAI()
 
 				win = this->game_.update(make_pair(chs-'A', direct));
 				char cmd;
-				cout<<"press z to recover, or any other keys to continue : ";
+				cout << "Press z to recover, or the other to continue : ";
+				cin >> cmd;
+				if (cmd == 'z') recover();
 			}
 				
-			else {	//AI's turn
+			else {	//AI's turn (A)
 				int dice = this->game_.rollTheDice();
 				win = this->game_.update(ewnAI.autoPlay(this->game_, dice));
 			}
@@ -195,8 +202,4 @@ void Play::contestAI()
 		}
 
 	}
-}
-
-void Play::recover() {
-	this->game_ = this->recoverBuffer_;
 }

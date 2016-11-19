@@ -14,6 +14,7 @@ int main() {
 	cout << "0)Player v.s Player" << endl;
 	cout << "1)AI v.s Player" << endl;
 	cout << "2)AI v.s AI" << endl;
+	cout << "3)Contest mode" << endl;
 	cout << "Choose: ";
 	cin >> cmd;
 	Play ewn;
@@ -23,6 +24,8 @@ int main() {
 		ewn.playerAI();
 	else if (cmd == 2)
 		ewn.twoAIs();
+	else if (cmd == 3)
+		ewn.contestAI();
 	else
 		cout << "It's not a command" << endl;
 	return 0;

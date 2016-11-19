@@ -87,7 +87,6 @@ Game::Game()
 			six = six ^ (1<<number);	//The used number is discarded
 		}
 	}
-	printBoard();
 }
 
 Game::Game(const Game& game)
