@@ -34,7 +34,7 @@ private:
 	Chess playerA_[6], playerB_[6];
 	Chess* currentPlayer_;
 
-	// exist array for mapping in AI
+	// bitwisw: store the existance of the chessman the player has
 	int existA_, existB_;
 	int currentExist_;
 	//false(0): A, true(1): B

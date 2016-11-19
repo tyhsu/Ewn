@@ -15,15 +15,18 @@ private:
 public:
 	//One player plays the game (the integration)
 	Movement playerPlay(const int& dice);
-	//int autoPlay(int dice);
+	//To recover one step
+	void recover();
+
+	/*-----------the Modes-----------*/
 	//Two players fight!
 	void twoPlayers();
 	//One player fight with AI
 	void playerAI();
 	//Two AIs fight
 	void twoAIs();
-	//To recover one step
-	void recover();
+	//One player fight with AI in the contest
+	void contestAI();
 };
 
 #endif
