@@ -71,8 +71,13 @@ void Play::playerAI()
 		//update, 0(game continues), 1(A wins), 2(B wins)
 		int dice = this->game_.rollTheDice();
 		int win;
-		if (this->game_.getTurn() == true)
+		if (this->game_.getTurn() == true) {
+			this->recoverBuffer_ = this->game;
 			win = this->game_.update(playerPlay(dice));
+			char cmd;
+			cout<<"press z to recover, or any other keys to continue : ";
+		}
+			
 		else
 			win = this->game_.update(ewnAI.autoPlay(this->game_, dice));
 		this->game_.printBoard();
@@ -106,4 +111,8 @@ void Play::twoAIs()
 		}
 		this->game_.switchPlayer();
 	}
+}
+
+void Play::recover() {
+	this->game_ = this->recoverBuffer_;
 }

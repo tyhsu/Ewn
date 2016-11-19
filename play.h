@@ -10,6 +10,7 @@ class Play
 {
 private:
 	Game game_;
+	Game recoverBuffer_;
 
 public:
 	//One player plays the game (the integration)
@@ -21,6 +22,8 @@ public:
 	void playerAI();
 	//Two AIs fight
 	void twoAIs();
+	//To recover one step
+	void recover();
 };
 
 #endif
