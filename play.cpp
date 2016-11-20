@@ -8,49 +8,36 @@ Movement Play::playerPlay(const int& dice)
 {
 	int nextMoveCnt = this->game_.availableMove(dice);
 	int chs, direct;
+	Movement mvmt;
 
-	cout << "Next chessman able to move: ";
-	for (int i=0; i<nextMoveCnt; i++)
-		cout << i << ")" << this->game_.getMovableChs(i).symbol << " ";
-	cout << endl;
-	cout << "Choose: ";
-	cin >> chs;
-
-	if (!this->game_.getTurn())
-		cout << "Direction: 0)Right 1)Down 2)Right-down" << endl;
-	else
-		cout << "Direction: 0)Left 1)Up 2)Left-up" << endl;
-	cout << "Choose: ";
-	cin >> direct;
-
-	// get index
-	chs = (this->game_.getTurn() == false) ? this->game_.getMovableChs(chs).symbol - '1' : this->game_.getMovableChs(chs).symbol - 'A';
-	Movement mvmt(chs, direct);
-	//If the movement is illegal, run the loop
-	while (this->game_.isLegalMove(mvmt) == false) {
-		cout << "Illegal move!!" << endl << endl;
-		cout << "Next chessman able to move: ";
+	do {
+		cout << endl << "Next chessman able to move: ";
 		for (int i=0; i<nextMoveCnt; i++)
 			cout << i << ")" << this->game_.getMovableChs(i).symbol << " ";
 		cout << endl;
 		cout << "Choose: ";
 		cin >> chs;
-		chs = (this->game_.getTurn() == false) ? this->game_.getMovableChs(chs).symbol - '0' : this->game_.getMovableChs(chs).symbol - 'A';
+
 		if (!this->game_.getTurn())
 			cout << "Direction: 0)Right 1)Down 2)Right-down" << endl;
 		else
 			cout << "Direction: 0)Left 1)Up 2)Left-up" << endl;
 		cout << "Choose: ";
 		cin >> direct;
+
+		// get index
+		chs = (this->game_.getTurn() == false) ? this->game_.getMovableChs(chs).symbol - '1' : this->game_.getMovableChs(chs).symbol - 'A';
 		mvmt.first = chs;
 		mvmt.second = direct;
-	}
+		//If the movement is illegal, run the loop
+	} while (!this->game_.isLegalMove(mvmt));
+
 	return mvmt;
 }
 
-void Play::recover() {
-	this->game_ = this->recoverBuffer_;
-}
+// void Play::recover() {
+// 	this->game_ = this->recoverBuffer_;
+// }
 
 void Play::twoPlayers()
 {
@@ -123,15 +110,17 @@ void Play::contestAI()
 	int firstPlay;
 	cout << "Whose AI goes first?" << endl;
 	cout << "=>Who is A? 0)Ours 1)Opponent's" << endl;
+	cout << "Choose: ";
 	cin >> firstPlay;
 
 	int initial, turn;
 	cout << "Do you need to set the board? 0)No 1)Yes" << endl;
+	cout << "Choose: ";
 	cin >> initial;
 	if (initial == 1) {
 		char board[5][5];
 		do {
-			cout << "Please give values for the 5x5 array" << endl;
+			cout << endl << "Please give values for the 5x5 array" << endl;
 			char c;
 			for (int i=0; i<5; i++) {
 				for (int j=0; j<5; j++) {
@@ -143,12 +132,16 @@ void Play::contestAI()
 				}
 			}
 			cout << "Are you ready to set the board? 0)No 1)Yes" << endl;
+			cout << "Choose: ";
 			cin >> initial;
 		} while (initial == 0);
-		cout << "Whose turn is it now? 0)A 1)B" << endl;
+
+		cout << endl << "Whose turn is it now? 0)A 1)B" << endl;
+		cout << "Choose: ";
 		cin >> turn;
 		game_.setBoard(board, turn);
 	}
+	cout << endl;
 	game_.checkStatus();
 	game_.printBoard();
 	
@@ -157,31 +150,36 @@ void Play::contestAI()
 		while (1) {
 			int win;
 			if (!this->game_.getTurn()) {	//The opponent's turn (A)
-				this->recoverBuffer_ = this->game_;
-
 				int chs, direct;
-				cout << "Choose the chessman(1~6): ";
+				cout << endl << "Choose the chessman(1~6): ";
 				cin >> chs;
+				if (!(chs>=1 && chs<=6))
+					continue;
+
 				cout << "Direction: 0)Right 1)Down 2)Right-down" << endl;
 				cout << "Choose: ";
 				cin >> direct;
-
-				win = this->game_.update(make_pair(chs-1, direct));
-				char cmd;
-				cout << "Press z to recover, or the other to continue : ";
-				cin >> cmd;
-				if (cmd == 'z') {			
-					recover();
-					this->game_.printBoard();
+				if (!(direct>=0 && direct<=2))
 					continue;
-				} 
-			}
+
+				int re;
+				cout << "Do you want to recover? 0)No 1)Yes" << endl;
+				cout << "Choose: ";
+				cin >> re;
+				if (re != 0)
+					continue;
 				
+				win = this->game_.update(make_pair(chs-1, direct));
+			}
+
 			else {	//AI's turn (B)
 				int dice;
-				cout << "Set the dice: ";
+				cout << endl << "Set the dice(1~6): ";
 				cin >> dice;
-				win = this->game_.update(ewnAI.autoPlay(this->game_, dice));
+				if (!(dice>=1 && dice<=6))
+					continue;
+
+				win = this->game_.update(ewnAI.autoPlay(this->game_, dice-1));
 			}
 			
 			this->game_.printBoard();
@@ -201,32 +199,37 @@ void Play::contestAI()
 		while (1) {
 			int win;
 			if (this->game_.getTurn()) {	//The opponent's turn (B)
-				this->recoverBuffer_ = this->game_;
-
 				char chs;
 				int direct;
-				cout << "Choose the chessman(A~F): ";
+				cout << endl << "Choose the chessman(A~F): ";
 				cin >> chs;
+				if (!(chs>='A' && chs<='F'))
+					continue;
+
 				cout << "Direction: 0)Left 1)Up 2)Left-up" << endl;
 				cout << "Choose: ";
 				cin >> direct;
-
-				win = this->game_.update(make_pair(chs-'A', direct));
-				char cmd;
-				cout << "Press z to recover, or the other to continue : ";
-				cin >> cmd;
-				if (cmd == 'z') {
-					recover();
-					this->game_.printBoard();
+				if (!(direct>=0 && direct<=2))
 					continue;
-				} 
+
+				int re;
+				cout << "Do you want to recover? 0)No 1)Yes" << endl;
+				cout << "Choose: ";
+				cin >> re;
+				if (re != 0)
+					continue;
+				
+				win = this->game_.update(make_pair(chs-'A', direct));
 			}
 				
 			else {	//AI's turn (A)
 				int dice;
-				cout << "Set the dice: ";
+				cout << endl << "Set the dice(1~6): ";
 				cin >> dice;
-				win = this->game_.update(ewnAI.autoPlay(this->game_, dice));
+				if (!(dice>=1 && dice<=6))
+					continue;
+
+				win = this->game_.update(ewnAI.autoPlay(this->game_, dice-1));
 			}
 			
 			this->game_.printBoard();
