@@ -69,7 +69,6 @@ int EwnAI::minimax(Game& currentGame, int height) {
 		return feature(currentGame);
 	}
 	// cout << "========== a minimax ===========" << endl;
-	// cout << aiTurn_ << endl;
 	int bestValue;
 	int diceArray[6] = {0};
 	int lookahead = 0;
@@ -86,9 +85,7 @@ int EwnAI::minimax(Game& currentGame, int height) {
 			Chess currChess = currentGame.getCurrPlayer(dice);
 			if (currChess.exist) {
 				int chs = currChess.symbol - aiSymbol_;
-				// cout << space << "[**Mine** char value] " << chs << endl;
 				for (int direct = 0; direct < 3; direct++) {
-					// cout << space << "[**Mine** direction value] " << direct << endl;
 					Movement mvmt(chs, direct);
 					if (currentGame.isLegalMove(mvmt)) {
 						Game nextStep = currentGame;
@@ -101,7 +98,6 @@ int EwnAI::minimax(Game& currentGame, int height) {
 						// return child value.
 						int childValue = minimax(nextStep, height-1);
 						bestValue = max(bestValue, childValue);
-						// cout << space << "[max]in 3 direction, return bestvalue. " << bestValue << endl;
 					} else {
 						// cout << space << "nope, the chs can`t be move." << endl;
 					}
@@ -146,10 +142,8 @@ int EwnAI::minimax(Game& currentGame, int height) {
 			if (currChess.exist) {
 				int oppntSymbol = aiTurn_? '1': 'A';
 				int chs = currChess.symbol - oppntSymbol;
-				// cout << space << "[**Opp** char value] " << chs << endl;
 
 				for (int direct = 0; direct < 3; direct++) {
-					// cout << space << "[**Opp** direction value] " << direct << endl;
 					Movement mvmt(chs, direct);
 					if (currentGame.isLegalMove(mvmt)) {
 						Game nextStep = currentGame;
@@ -162,7 +156,6 @@ int EwnAI::minimax(Game& currentGame, int height) {
 						// return child value.
 						int childValue = minimax(nextStep, height-1);
 						bestValue = min(bestValue, childValue);
-						// cout << space << "[min]in 3 direction, return bestvalue. " << bestValue << endl;
 					}
 					else {
 						// cout << space << "nope, the chs can`t be move." << endl;
@@ -184,7 +177,6 @@ int EwnAI::minimax(Game& currentGame, int height) {
 				}
 			}
 			else {
-				// cout << space << "[**Opp** not exist] " << dice << endl;
 				// this chs can`t move, use other`s value
 				lookahead++;
 				if (dice - lookahead < 0) {
@@ -207,53 +199,51 @@ int EwnAI::minimax(Game& currentGame, int height) {
 int EwnAI::feature(Game& currentGame) {
 	int val = 0;
 	int dice_count = 0;
-	// cout << "hv0--------------------------------" << endl;
-	for(int dice = 0; dice < 6; dice++) {
-		if(currentGame.getCurrPlayer(dice).exist) {
+	cout << "hv0--------------------------------" << endl;
+	for (int dice = 0; dice < 6; dice++) {
+		if (currentGame.getCurrPlayer(dice).exist) {
+			// [exist] chess calc function.
 			Pos temp;
 			temp.first = currentGame.getCurrPlayer(dice).x;
 			temp.second = currentGame.getCurrPlayer(dice).y;
-			// cout << "dice#" << dice+1 << " : (" << temp.first << ", " << temp.second << ") score:" << hv_[temp] << endl;
+			cout << "dice#" << dice+1 << " : (" << temp.first << ", " << temp.second << ") score:" << hv_[temp] << endl;
 			val += hv_[temp];
 			dice_count++;
-		} else {
-			int sp_num = 0, bp_num = 0;
-			// get small part of chess.
-			for(int sp = dice; sp > 0; sp--) {
-				if(currentGame.getCurrPlayer(sp).exist) {
+		} 
+		else {	
+			// [non-exist] chess calc function.
+			// spVal: find closest, small chess num`s value.
+			// bpVal: find closest, big chess num`s value.
+			int spVal = 0, bpVal = 0;
+			// get small part of chess list.
+			for (int sp = dice; sp > 0; sp--) {
+				if (currentGame.getCurrPlayer(sp).exist) {
 					Pos temp;
 					temp.first = currentGame.getCurrPlayer(sp).x;
 					temp.second = currentGame.getCurrPlayer(sp).y;
-					sp_num = hv_[temp];
+					spVal = hv_[temp];
 					break;
 				}
 			}
 
-			// get big part of chess.
-			for(int bp = dice; bp < 6; bp++) {
-				if(currentGame.getCurrPlayer(bp).exist) {
+			// get big part of chess list.
+			for (int bp = dice; bp < 6; bp++) {
+				if (currentGame.getCurrPlayer(bp).exist) {
 					Pos temp;
 					temp.first = currentGame.getCurrPlayer(bp).x;
 					temp.second = currentGame.getCurrPlayer(bp).y;
-					bp_num = hv_[temp];
+					bpVal = hv_[temp];
 					break;	
 				}
 			}
+
 			// select one.
-			sp_num = (sp_num > bp_num ? sp_num : bp_num);
-			// cout << "dice#" << dice+1 << ", score:" << sp_num << endl;
-			val += sp_num;
+			spVal = (spVal > bpVal ? spVal : bpVal);
+			cout << "dice#" << dice+1 << ", score:" << spVal << endl;
+			val += spVal;
 		}
 	}
-	// if(dice_count > 5 || dice_count < 2) {
-	// 	// continue;
-	// } else if(dice_count > 4 || dice_count < 3) {
-	// 	val *= 1;
-	// } else {
-	// 	val *= 2;
-	// }
-	// cout << "hv" << val << "--------------------------------" << endl << endl;
-	// cout << "[calc] " << val << endl;
+	cout << "hv" << val << "--------------------------------" << endl << endl;
 	return val;
 }
 
