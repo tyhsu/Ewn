@@ -88,12 +88,10 @@ void Play::twoAIs()
 	EwnAI ewnAI;
 	game_.printBoard();
 	while (1) {
-		//ask for the next chessman to move
-
-		//update, 0(game continues), 1(A wins), 2(B wins)
 		int dice = this->game_.rollTheDice();
 		int win = this->game_.update(ewnAI.autoPlay(this->game_, dice));
 		this->game_.printBoard();
+		//update: 0(game continues), 1(A wins), 2(B wins)
 		if (win!=0) {
 			cout << "====================================" << endl;
 			if (win==1) cout << "A is the winner!!!" << endl;

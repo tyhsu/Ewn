@@ -188,11 +188,11 @@ int EwnAI::minimax(Game& currentGame, int height) {
 			}
 		}
 	}
-	// cout << "feature value:[ ";
-	// for(int i = 0; i < 6; i++){
-	// 	cout << diceArray[i] << " ";
-	// }
-	// cout << "]" << endl;
+
+	bestValue = 0;
+	for(int i = 0; i < 6; i++)
+		bestValue += diceArray[i];
+	
 	return bestValue;
 }
 
