@@ -10,13 +10,13 @@ class Play
 {
 private:
 	Game game_;
-	Game recoverBuffer_;
+	//Game recoverBuffer_;
 
 public:
 	//One player plays the game (the integration)
 	Movement playerPlay(const int& dice);
 	//To recover one step
-	void recover();
+	//void recover();
 
 	/*-----------the Modes-----------*/
 	//Two players fight!
