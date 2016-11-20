@@ -216,16 +216,43 @@ int EwnAI::feature(Game& currentGame) {
 			// cout << "dice#" << dice+1 << " : (" << temp.first << ", " << temp.second << ") score:" << hv_[temp] << endl;
 			val += hv_[temp];
 			dice_count++;
+		} else {
+			int sp_num = 0, bp_num = 0;
+			// get small part of chess.
+			for(int sp = dice; sp > 0; sp--) {
+				if(currentGame.getCurrPlayer(sp).exist) {
+					Pos temp;
+					temp.first = currentGame.getCurrPlayer(sp).x;
+					temp.second = currentGame.getCurrPlayer(sp).y;
+					sp_num = hv_[temp];
+					break;
+				}
+			}
+
+			// get big part of chess.
+			for(int bp = dice; bp < 6; bp++) {
+				if(currentGame.getCurrPlayer(bp).exist) {
+					Pos temp;
+					temp.first = currentGame.getCurrPlayer(bp).x;
+					temp.second = currentGame.getCurrPlayer(bp).y;
+					bp_num = hv_[temp];
+					break;	
+				}
+			}
+			// select one.
+			sp_num = (sp_num > bp_num ? sp_num : bp_num);
+			// cout << "dice#" << dice+1 << ", score:" << sp_num << endl;
+			val += sp_num;
 		}
 	}
-	if(dice_count > 5 || dice_count < 2) {
-		// continue;
-	} else if(dice_count > 4 || dice_count < 3) {
-		val *= 1;
-	} else {
-		val *= 2;
-	}
-	// cout << "hv" << val << "--------------------------------" << endl;
+	// if(dice_count > 5 || dice_count < 2) {
+	// 	// continue;
+	// } else if(dice_count > 4 || dice_count < 3) {
+	// 	val *= 1;
+	// } else {
+	// 	val *= 2;
+	// }
+	// cout << "hv" << val << "--------------------------------" << endl << endl;
 	// cout << "[calc] " << val << endl;
 	return val;
 }
