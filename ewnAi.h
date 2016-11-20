@@ -29,8 +29,8 @@ class EwnAI
 		~EwnAI() {}
 		Movement autoPlay(Game currentGame, int dice);
 		int minimax(Game& originGame, int h);
-		int evaluate(Game& currentGame);
-		int feature(char board[5][5]);
+		int feature(Game& currentGame);
+		// int feature(char board[5][5]);
 		int simulate(int height);
 		int chooseDirection();
 		//making table

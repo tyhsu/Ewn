@@ -66,7 +66,7 @@ int EwnAI::minimax(Game& currentGame, int height) {
 	if (height == 0) {
 		// Game nextStep = currentGame;
 		currentGame.switchPlayer();
-		return evaluate(currentGame);
+		return feature(currentGame);
 	}
 	// cout << "========== a minimax ===========" << endl;
 	// cout << aiTurn_ << endl;
@@ -204,17 +204,28 @@ int EwnAI::minimax(Game& currentGame, int height) {
 	return bestValue;
 }
 
-int EwnAI::evaluate(Game& currentGame) {
+int EwnAI::feature(Game& currentGame) {
 	int val = 0;
+	int dice_count = 0;
+	// cout << "hv0--------------------------------" << endl;
 	for(int dice = 0; dice < 6; dice++) {
 		if(currentGame.getCurrPlayer(dice).exist) {
 			Pos temp;
 			temp.first = currentGame.getCurrPlayer(dice).x;
 			temp.second = currentGame.getCurrPlayer(dice).y;
-			// cout << "dice: " << dice+1 << "=> " << temp.first << ", " << temp.second << endl;
+			// cout << "dice#" << dice+1 << " : (" << temp.first << ", " << temp.second << ") score:" << hv_[temp] << endl;
 			val += hv_[temp];
+			dice_count++;
 		}
 	}
+	if(dice_count > 5 || dice_count < 2) {
+		// continue;
+	} else if(dice_count > 4 || dice_count < 3) {
+		val *= 1;
+	} else {
+		val *= 2;
+	}
+	// cout << "hv" << val << "--------------------------------" << endl;
 	// cout << "[calc] " << val << endl;
 	return val;
 }
