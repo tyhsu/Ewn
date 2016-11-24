@@ -11,6 +11,7 @@ typedef pair<int, int> Pos;
 // Heuristic map
 typedef map<Pos, int> Hmap;
 // Available move map
+// typedef map<Hmap, int> OurOppScoreMap;
 // <dice, exist_status> maps to <available_chess, available_chess>
 typedef map< pair<int, int>, pair<int, int> > Amap;
 
@@ -22,9 +23,10 @@ class Minimax
 		char aiSymbol_;
 		Chess chosenChs_;
 		int chosenDirct_;
-		Hmap hv_;
+		Hmap hvA_;
+		Hmap hvB_; 
 		Amap am_;
-		
+		// OurOppScoreMap sm_;
 		Minimax();
 		~Minimax() {}
 		Movement autoPlay(Game currentGame, int dice);

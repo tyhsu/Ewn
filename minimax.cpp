@@ -14,18 +14,32 @@ Minimax::Minimax() {
 	for (int i = 0; i < 5; i++) {
 		for (int j = 0;j < 5; j++) {
 
-			// get the smallest of (x,y)
+			// get the smaller of (x,y)
 			int k = (i > j ? j : i);
-
 			k = k * k;
 			Pos chess_pos;
 			chess_pos.first = i;
 			chess_pos.second = j;
 			printf("%2d", k);
-			hv_.insert(make_pair(chess_pos, k));
+			hvA_.insert(make_pair(chess_pos, k));
 		}
 		cout << endl;
 	}
+	// insert to map => hv;
+	for (int i = 0; i < 5; i++) {
+		for (int j = 0;j < 5; j++) {
+
+			// get the bigger of (x,y)
+			int k = (i > j ? i : j);
+			k = (4-k) * (4-k);
+			Pos chess_pos;
+			chess_pos.first = i;
+			chess_pos.second = j;
+			printf("%2d", k);
+			hvB_.insert(make_pair(chess_pos, k));
+		}
+		cout << endl;
+	}	
 }
 
 Movement Minimax::autoPlay(Game currentGame, int dice)
@@ -203,6 +217,7 @@ int Minimax::feature(Game& currentGame)
 	int val = 0;
 	int dice_count = 0;
 	cout << "hv0--------------------------------" << endl;
+	Hmap hv_ = (currentGame.getTurn() ? hvB_ : hvA_);
 	for (int dice = 0; dice < 6; dice++) {
 		if (currentGame.getCurrPlayer(dice).exist) {
 			// [exist] chess calc function.
@@ -252,17 +267,46 @@ int Minimax::feature(Game& currentGame)
 
 void Minimax::createHeuristicT()
 {
+	// for (int i = 0; i < 5; i++) {
+	// 	for (int j = 0;j < 5; j++) {
+	// 		// get the smallest of (x,y)
+	// 		int k = (i > j ? j : i);
+	// 		k = k * k;
+	// 		Pos chess_pos;
+	// 		chess_pos.first = i;
+	// 		chess_pos.second = j;
+	// 		hv_.insert(make_pair(chess_pos, k));
+	// 	}
+	// }
 	for (int i = 0; i < 5; i++) {
 		for (int j = 0;j < 5; j++) {
-			// get the smallest of (x,y)
+
+			// get the smaller of (x,y)
 			int k = (i > j ? j : i);
 			k = k * k;
 			Pos chess_pos;
 			chess_pos.first = i;
 			chess_pos.second = j;
-			hv_.insert(make_pair(chess_pos, k));
+			printf("%2d", k);
+			hvA_.insert(make_pair(chess_pos, k));
 		}
+		cout << endl;
 	}
+	// insert to map => hv;
+	for (int i = 0; i < 5; i++) {
+		for (int j = 0;j < 5; j++) {
+
+			// get the bigger of (x,y)
+			int k = (i > j ? i : j);
+			k = (4-k) * (4-k);
+			Pos chess_pos;
+			chess_pos.first = i;
+			chess_pos.second = j;
+			printf("%2d", k);
+			hvB_.insert(make_pair(chess_pos, k));
+		}
+		cout << endl;
+	}	
 }
 
 void Minimax::createAvailableT()
