@@ -83,11 +83,18 @@ void Play::playerAI()
 
 void Play::twoAIs()
 {
-	EwnAI ewnAI;
+	cout << "==========The first AI (A)==========" << endl;
+	EwnAI ewnAI1;
+	cout << "==========The second AI (B)==========" << endl;
+	EwnAI ewnAI2;
 	game_.printBoard();
 	while (1) {
 		int dice = this->game_.rollTheDice();
-		int win = this->game_.update(ewnAI.autoPlay(this->game_, dice));
+		int win;
+		if (!game_.getTurn())	// the first AI (A)
+			win = this->game_.update(ewnAI1.autoPlay(this->game_, dice));
+		else					// the second AI (B)
+			win = this->game_.update(ewnAI2.autoPlay(this->game_, dice));
 		this->game_.printBoard();
 		//update: 0(game continues), 1(A wins), 2(B wins)
 		if (win!=0) {

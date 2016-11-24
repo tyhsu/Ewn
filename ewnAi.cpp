@@ -7,6 +7,7 @@ EwnAI::EwnAI()
 	int cmd;
 	cout << "Please choose an AI:" << endl;
 	cout << "0)Minimax" << endl;
+	cout << "Choose: ";
 	cin >> cmd;
 	if (cmd == 0)
 		this->ai_ = 0;
