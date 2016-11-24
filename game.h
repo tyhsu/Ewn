@@ -72,6 +72,7 @@ public:
 
 	Chess getMovableChs(const int& k);
 	Chess getCurrPlayer(const int& k);
+	Chess getOppPlayer(const int& k);
 	int getCurrentExist();
 	bool getTurn();
 

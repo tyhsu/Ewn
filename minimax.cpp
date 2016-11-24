@@ -4,12 +4,12 @@
 #include "game.h"
 #include "minimax.h"
 #include <string>
-const int HEIGHT = 2;
+const int HEIGHT = 1;
 const float chance_weight = 1/6;
 
 Minimax::Minimax() {
 	// pos: a <int,int> , <x,y> coord;
-	// insert to map => hv;
+	// insert to map => hvA;
 	cout << "create AI." << endl;
 	for (int i = 0; i < 5; i++) {
 		for (int j = 0;j < 5; j++) {
@@ -25,7 +25,8 @@ Minimax::Minimax() {
 		}
 		cout << endl;
 	}
-	// insert to map => hv;
+	cout << endl;
+	// insert to map => hvB;
 	for (int i = 0; i < 5; i++) {
 		for (int j = 0;j < 5; j++) {
 
@@ -214,18 +215,29 @@ int Minimax::minimax(Game& currentGame, int height)
 
 int Minimax::feature(Game& currentGame)
 {
-	int val = 0;
+	int valMy = 0, valOpp = 0;
 	int dice_count = 0;
 	cout << "hv0--------------------------------" << endl;
-	Hmap hv_ = (currentGame.getTurn() ? hvB_ : hvA_);
+	Hmap hvMy, hvOpp;
+	if (!currentGame.getTurn()) {
+		hvMy = hvA_;
+		hvOpp = hvB_;
+	}
+	else {
+		hvMy = hvB_;
+		hvOpp = hvA_;
+	}
+
 	for (int dice = 0; dice < 6; dice++) {
-		if (currentGame.getCurrPlayer(dice).exist) {
+		// calculate the score of our side
+		Chess chs = currentGame.getCurrPlayer(dice);
+		if (chs.exist) {
 			// [exist] chess calc function.
 			Pos temp;
-			temp.first = currentGame.getCurrPlayer(dice).x;
-			temp.second = currentGame.getCurrPlayer(dice).y;
-			cout << "dice#" << dice+1 << " : (" << temp.first << ", " << temp.second << ") score:" << hv_[temp] << endl;
-			val += hv_[temp];
+			temp.first = chs.x;
+			temp.second = chs.y;
+			cout << "dice#" << dice+1 << " : (" << temp.first << ", " << temp.second << ") score:" << hvMy[temp] << endl;
+			valMy += hvMy[temp];
 			dice_count++;
 		} 
 		else {	
@@ -235,22 +247,24 @@ int Minimax::feature(Game& currentGame)
 			int spVal = 0, bpVal = 0;
 			// get small part of chess list.
 			for (int sp = dice; sp > 0; sp--) {
-				if (currentGame.getCurrPlayer(sp).exist) {
+				Chess ctmp = currentGame.getCurrPlayer(sp);
+				if (ctmp.exist) {
 					Pos temp;
-					temp.first = currentGame.getCurrPlayer(sp).x;
-					temp.second = currentGame.getCurrPlayer(sp).y;
-					spVal = hv_[temp];
+					temp.first = ctmp.x;
+					temp.second = ctmp.y;
+					spVal = hvMy[temp];
 					break;
 				}
 			}
 
 			// get big part of chess list.
 			for (int bp = dice; bp < 6; bp++) {
-				if (currentGame.getCurrPlayer(bp).exist) {
+				Chess ctmp = currentGame.getCurrPlayer(bp);
+				if (ctmp.exist) {
 					Pos temp;
-					temp.first = currentGame.getCurrPlayer(bp).x;
-					temp.second = currentGame.getCurrPlayer(bp).y;
-					bpVal = hv_[temp];
+					temp.first = ctmp.x;
+					temp.second = ctmp.y;
+					bpVal = hvMy[temp];
 					break;	
 				}
 			}
@@ -258,26 +272,61 @@ int Minimax::feature(Game& currentGame)
 			// select one.
 			spVal = (spVal > bpVal ? spVal : bpVal);
 			cout << "dice#" << dice+1 << ", score:" << spVal << endl;
-			val += spVal;
+			valMy += spVal;
+		}
+
+		// calculate the score of opponent's side
+		chs = currentGame.getOppPlayer(dice);
+		if (chs.exist) {
+			// [exist] chess calc function.
+			Pos temp;
+			temp.first = chs.x;
+			temp.second = chs.y;
+			cout << "Opp dice#" << dice+1 << " : (" << temp.first << ", " << temp.second << ") score:" << hvOpp[temp] << endl;
+			valOpp += hvOpp[temp];
+			dice_count++;
+		} 
+		else {	
+			// [non-exist] chess calc function.
+			// spVal: find closest, small chess num`s value.
+			// bpVal: find closest, big chess num`s value.
+			int spVal = 0, bpVal = 0;
+			// get small part of chess list.
+			for (int sp = dice; sp > 0; sp--) {
+				Chess ctmp = currentGame.getOppPlayer(sp);
+				if (ctmp.exist) {
+					Pos temp;
+					temp.first = ctmp.x;
+					temp.second = ctmp.y;
+					spVal = hvOpp[temp];
+					break;
+				}
+			}
+
+			// get big part of chess list.
+			for (int bp = dice; bp < 6; bp++) {
+				Chess ctmp = currentGame.getOppPlayer(bp);
+				if (ctmp.exist) {
+					Pos temp;
+					temp.first = ctmp.x;
+					temp.second = ctmp.y;
+					bpVal = hvOpp[temp];
+					break;	
+				}
+			}
+
+			// select one.
+			spVal = (spVal > bpVal ? spVal : bpVal);
+			cout << "Opp dice#" << dice+1 << ", score:" << spVal << endl;
+			valOpp += spVal;
 		}
 	}
-	cout << "hv" << val << "--------------------------------" << endl << endl;
-	return val;
+	cout << "hv " << valMy << " - " << valOpp << "---------------------------" << endl << endl;
+	return valMy - valOpp;
 }
 
 void Minimax::createHeuristicT()
 {
-	// for (int i = 0; i < 5; i++) {
-	// 	for (int j = 0;j < 5; j++) {
-	// 		// get the smallest of (x,y)
-	// 		int k = (i > j ? j : i);
-	// 		k = k * k;
-	// 		Pos chess_pos;
-	// 		chess_pos.first = i;
-	// 		chess_pos.second = j;
-	// 		hv_.insert(make_pair(chess_pos, k));
-	// 	}
-	// }
 	for (int i = 0; i < 5; i++) {
 		for (int j = 0;j < 5; j++) {
 
