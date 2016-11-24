@@ -1,6 +1,4 @@
 #include <iostream>
-#include "game.h"
-//#include "ewnAi.h"
 #include "play.h"
 using namespace std;
 
