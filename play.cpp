@@ -42,7 +42,9 @@ void Play::twoPlayers()
 	game_.printBoard();
 	while (1) {
 		//update: 0(game continues), 1(A wins), 2(B wins)
-		int win = this->game_.update(playerPlay(this->game_.rollTheDice()));
+		int dice = this->game_.rollTheDice();
+		cout << "dice: " << dice+1 << endl;
+		int win = this->game_.update(playerPlay(dice));
 		this->game_.printBoard();
 		if (win!=0) {
 			cout << "====================================" << endl;
@@ -61,6 +63,7 @@ void Play::playerAI()
 	game_.printBoard();
 	while (1) {
 		int dice = this->game_.rollTheDice();
+		cout << "dice: " << dice+1 << endl;
 		int win;
 		if (this->game_.getTurn() == true) {
 			win = this->game_.update(playerPlay(dice));
@@ -90,6 +93,7 @@ void Play::twoAIs()
 	game_.printBoard();
 	while (1) {
 		int dice = this->game_.rollTheDice();
+		cout << "dice: " << dice+1 << endl;
 		int win;
 		if (!game_.getTurn())	// the first AI (A)
 			win = this->game_.update(ewnAI1.autoPlay(this->game_, dice));
@@ -145,7 +149,7 @@ void Play::contestAI()
 		game_.setBoard(board, turn);
 	}
 	cout << endl;
-	game_.checkStatus();
+	//game_.checkStatus();
 	game_.printBoard();
 	
 	EwnAI ewnAI;
@@ -188,7 +192,7 @@ void Play::contestAI()
 			this->game_.printBoard();
 			//update: 0(game continues), 1(A wins), 2(B wins)
 			if (win!=0) {
-				this->game_.checkStatus();
+				//this->game_.checkStatus();
 				cout << "====================================" << endl;
 				if (win==1) cout << "The opponent is the winner!!!" << endl;
 				else cout << "Our AI is the winner!!!" << endl;
@@ -238,7 +242,7 @@ void Play::contestAI()
 			this->game_.printBoard();
 			//update: 0(game continues), 1(A wins), 2(B wins)
 			if (win!=0) {
-				this->game_.checkStatus();
+				//this->game_.checkStatus();
 				cout << "====================================" << endl;
 				if (win==2) cout << "The opponent is the winner!!!" << endl;
 				else cout << "Our AI is the winner!!!" << endl;

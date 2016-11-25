@@ -181,7 +181,7 @@ void Game::setBoard(char board[5][5], int turn)
 
 void Game::printBoard()
 {
-	cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+	cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 	cout << "The current board:" << endl;
 	cout << "     /-----\\" << endl;
 	for (int i=0; i<5; i++) {

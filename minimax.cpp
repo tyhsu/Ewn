@@ -3,14 +3,15 @@
 #include <algorithm>
 #include "game.h"
 #include "minimax.h"
+#include <time.h>
 #include <string>
-const int HEIGHT = 1;
+const int HEIGHT = 4;
 const float chance_weight = 1/6;
 
 Minimax::Minimax() {
 	// pos: a <int,int> , <x,y> coord;
 	// insert to map => hvA;
-	cout << "create AI." << endl;
+	//cout << "create AI." << endl;
 	for (int i = 0; i < 5; i++) {
 		for (int j = 0;j < 5; j++) {
 
@@ -20,12 +21,12 @@ Minimax::Minimax() {
 			Pos chess_pos;
 			chess_pos.first = i;
 			chess_pos.second = j;
-			printf("%2d", k);
+			//printf("%2d", k);
 			hvA_.insert(make_pair(chess_pos, k));
 		}
-		cout << endl;
+		//cout << endl;
 	}
-	cout << endl;
+	//cout << endl;
 	// insert to map => hvB;
 	for (int i = 0; i < 5; i++) {
 		for (int j = 0;j < 5; j++) {
@@ -36,15 +37,18 @@ Minimax::Minimax() {
 			Pos chess_pos;
 			chess_pos.first = i;
 			chess_pos.second = j;
-			printf("%2d", k);
+			//printf("%2d", k);
 			hvB_.insert(make_pair(chess_pos, k));
 		}
-		cout << endl;
+		//cout << endl;
 	}	
 }
 
 Movement Minimax::autoPlay(Game currentGame, int dice)
 {
+    cerr << "calculating..." ;
+    cerr.flush();
+	clock_t timeInit = clock();
 	aiTurn_ = currentGame.getTurn();
 	aiSymbol_ = aiTurn_? 'A': '1';
 
@@ -55,7 +59,7 @@ Movement Minimax::autoPlay(Game currentGame, int dice)
 
 	for (int i=0; i<nextMoveCnt; i++) {
 		int chs = currentGame.getMovableChs(i).symbol - aiSymbol_;
-		cout << "select: " << chs+1 << endl;
+		//cout << "select: " << chs+1 << endl;
 		for (int direct = 0; direct < 3; direct++) {
 			Movement mvmt(chs, direct);
 			if (currentGame.isLegalMove(mvmt)) {
@@ -74,6 +78,8 @@ Movement Minimax::autoPlay(Game currentGame, int dice)
 			}
 		}
 	}
+	double timeCost = (double)(clock() - timeInit) / CLOCKS_PER_SEC;
+	printf("\ntime cost: %.2fs\n", timeCost);
 	return answer;
 }
 
@@ -217,7 +223,7 @@ int Minimax::feature(Game& currentGame)
 {
 	int valMy = 0, valOpp = 0;
 	int dice_count = 0;
-	cout << "hv0--------------------------------" << endl;
+	//cout << "hv0--------------------------------" << endl;
 	Hmap hvMy, hvOpp;
 	if (!currentGame.getTurn()) {
 		hvMy = hvA_;
@@ -236,7 +242,7 @@ int Minimax::feature(Game& currentGame)
 			Pos temp;
 			temp.first = chs.x;
 			temp.second = chs.y;
-			cout << "dice#" << dice+1 << " : (" << temp.first << ", " << temp.second << ") score:" << hvMy[temp] << endl;
+			//cout << "dice#" << dice+1 << " : (" << temp.first << ", " << temp.second << ") score:" << hvMy[temp] << endl;
 			valMy += hvMy[temp];
 			dice_count++;
 		} 
@@ -271,7 +277,7 @@ int Minimax::feature(Game& currentGame)
 
 			// select one.
 			spVal = (spVal > bpVal ? spVal : bpVal);
-			cout << "dice#" << dice+1 << ", score:" << spVal << endl;
+			//cout << "dice#" << dice+1 << ", score:" << spVal << endl;
 			valMy += spVal;
 		}
 
@@ -282,7 +288,7 @@ int Minimax::feature(Game& currentGame)
 			Pos temp;
 			temp.first = chs.x;
 			temp.second = chs.y;
-			cout << "Opp dice#" << dice+1 << " : (" << temp.first << ", " << temp.second << ") score:" << hvOpp[temp] << endl;
+			//cout << "Opp dice#" << dice+1 << " : (" << temp.first << ", " << temp.second << ") score:" << hvOpp[temp] << endl;
 			valOpp += hvOpp[temp];
 			dice_count++;
 		} 
@@ -317,11 +323,11 @@ int Minimax::feature(Game& currentGame)
 
 			// select one.
 			spVal = (spVal > bpVal ? spVal : bpVal);
-			cout << "Opp dice#" << dice+1 << ", score:" << spVal << endl;
+			//cout << "Opp dice#" << dice+1 << ", score:" << spVal << endl;
 			valOpp += spVal;
 		}
 	}
-	cout << "hv " << valMy << " - " << valOpp << "---------------------------" << endl << endl;
+	//cout << "hv " << valMy << " - " << valOpp << "---------------------------" << endl << endl;
 	return valMy - valOpp;
 }
 
@@ -336,10 +342,10 @@ void Minimax::createHeuristicT()
 			Pos chess_pos;
 			chess_pos.first = i;
 			chess_pos.second = j;
-			printf("%2d", k);
+			//printf("%2d", k);
 			hvA_.insert(make_pair(chess_pos, k));
 		}
-		cout << endl;
+		//cout << endl;
 	}
 	// insert to map => hv;
 	for (int i = 0; i < 5; i++) {
@@ -351,10 +357,10 @@ void Minimax::createHeuristicT()
 			Pos chess_pos;
 			chess_pos.first = i;
 			chess_pos.second = j;
-			printf("%2d", k);
+			//printf("%2d", k);
 			hvB_.insert(make_pair(chess_pos, k));
 		}
-		cout << endl;
+		//cout << endl;
 	}	
 }
 
