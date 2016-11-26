@@ -411,6 +411,16 @@ Chess Game::getOppPlayer(const int& k)
 		return this->playerB_[k];
 }
 
+Chess Game::getPlayerA(const int& k)
+{
+	return this->playerA_[k];
+}
+
+Chess Game::getPlayerB(const int& k)
+{
+	return this->playerB_[k];
+}
+
 int Game::getCurrentExist() {
 	return currentExist_;
 }
