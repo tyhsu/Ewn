@@ -96,6 +96,7 @@ int Minimax::minimax(Game& currentGame, int height)
 	int bestValue;
 	int diceArray[6] = {0};
 	int lookahead = 0;
+	bool head = false;
 	string space = "";
 	for (int i=HEIGHT; i>height; i--) space += " ";
 	// for (int i=0; i<6; i++)
@@ -135,11 +136,12 @@ int Minimax::minimax(Game& currentGame, int height)
 					int offset;
 					//cout << "lookahead " << lookahead << endl;
 					//cout << "dice " << dice << ": " << bestValue << "/ " << diceArray[dice-1] << endl;
-					if (bestValue > diceArray[dice - 1]) {
+					if (head || bestValue < diceArray[dice - 1]) {
 						for (int j = 1; j <= lookahead; j++){
 							offset = dice - j;
 							diceArray[offset] = bestValue;
 						}
+						head = false;
 					}
 					lookahead = 0;
 				}
@@ -149,6 +151,7 @@ int Minimax::minimax(Game& currentGame, int height)
 				// this chs can`t move, use other`s value
 				lookahead++;
 				if (dice - lookahead < 0) {
+					head = true;
 					continue;
 				}
 				else {
@@ -197,12 +200,13 @@ int Minimax::minimax(Game& currentGame, int height)
 					int offset;
 					//cout << "lookahead " << lookahead << endl;
 					//cout << "dice " << dice << ": " << bestValue << "/ " << diceArray[dice-1] << endl;
-					if (bestValue > diceArray[dice - 1]) {
+					if (head || bestValue > diceArray[dice - 1]) {
 						for (int j = 1; j <= lookahead; j++){
 							offset = dice - j;
 							diceArray[offset] = bestValue;
 							//cout << ">> dice " << offset << ": " << diceArray[offset] << endl;
 						}
+						head = false;
 					}
 					lookahead = 0;
 				}
@@ -212,6 +216,7 @@ int Minimax::minimax(Game& currentGame, int height)
 				//cout << space << "[**Mine** not exist] " << dice << endl;
 				lookahead++;
 				if (dice - lookahead < 0) {
+					head = true;
 					continue;
 				}
 				else {
