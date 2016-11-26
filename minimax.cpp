@@ -41,7 +41,7 @@ Minimax::Minimax() {
 			hvB_.insert(make_pair(chess_pos, k));
 		}
 		//cout << endl;
-	}	
+	}
 }
 
 Movement Minimax::autoPlay(Game currentGame, int dice)
@@ -69,7 +69,7 @@ Movement Minimax::autoPlay(Game currentGame, int dice)
 				if (end == win) return mvmt;
 				else if (end != 0) continue;	// lose the game
 				nextStep.switchPlayer();
-				
+
 				int childValue = minimax(nextStep, HEIGHT);
 				//cout << endl << "direction " << direct << ": " << childValue << endl;
 				if(childValue >= bestValue) {	// update
@@ -136,7 +136,7 @@ int Minimax::minimax(Game& currentGame, int height)
 					int offset;
 					//cout << "lookahead " << lookahead << endl;
 					//cout << "dice " << dice << ": " << bestValue << "/ " << diceArray[dice-1] << endl;
-					if (head || bestValue < diceArray[dice - 1]) {
+					if (head || bestValue > diceArray[dice - 1]) {
 						for (int j = 1; j <= lookahead; j++){
 							offset = dice - j;
 							diceArray[offset] = bestValue;
@@ -200,7 +200,7 @@ int Minimax::minimax(Game& currentGame, int height)
 					int offset;
 					//cout << "lookahead " << lookahead << endl;
 					//cout << "dice " << dice << ": " << bestValue << "/ " << diceArray[dice-1] << endl;
-					if (head || bestValue > diceArray[dice - 1]) {
+					if (head || bestValue < diceArray[dice - 1]) {
 						for (int j = 1; j <= lookahead; j++){
 							offset = dice - j;
 							diceArray[offset] = bestValue;
@@ -230,7 +230,7 @@ int Minimax::minimax(Game& currentGame, int height)
 		//if (height == HEIGHT) cout << i+1 << ":" << diceArray[i] << endl;
 		bestValue += diceArray[i];
 	}
-	
+
 	return bestValue;
 }
 
@@ -255,8 +255,8 @@ int Minimax::feature(Game& currentGame)
 				//cout << "dice#" << dice+1 << " : (" << temp.first << ", " << temp.second << ") score:" << hvMy[temp] << endl;
 				valMy += hvMy[temp];
 				dice_count++;
-			} 
-			else {	
+			}
+			else {
 				// [non-exist] chess calc function.
 				// spVal: find closest, small chess num`s value.
 				// bpVal: find closest, big chess num`s value.
@@ -281,7 +281,7 @@ int Minimax::feature(Game& currentGame)
 						temp.first = ctmp.x;
 						temp.second = ctmp.y;
 						bpVal = hvMy[temp];
-						break;	
+						break;
 					}
 				}
 
@@ -301,8 +301,8 @@ int Minimax::feature(Game& currentGame)
 				//cout << "Opp dice#" << dice+1 << " : (" << temp.first << ", " << temp.second << ") score:" << hvOpp[temp] << endl;
 				valOpp += hvOpp[temp];
 				dice_count++;
-			} 
-			else {	
+			}
+			else {
 				// [non-exist] chess calc function.
 				// spVal: find closest, small chess num`s value.
 				// bpVal: find closest, big chess num`s value.
@@ -327,7 +327,7 @@ int Minimax::feature(Game& currentGame)
 						temp.first = ctmp.x;
 						temp.second = ctmp.y;
 						bpVal = hvOpp[temp];
-						break;	
+						break;
 					}
 				}
 
@@ -352,8 +352,8 @@ int Minimax::feature(Game& currentGame)
 				//cout << "dice#" << dice+1 << " : (" << temp.first << ", " << temp.second << ") score:" << hvMy[temp] << endl;
 				valMy += hvMy[temp];
 				dice_count++;
-			} 
-			else {	
+			}
+			else {
 				// [non-exist] chess calc function.
 				// spVal: find closest, small chess num`s value.
 				// bpVal: find closest, big chess num`s value.
@@ -378,7 +378,7 @@ int Minimax::feature(Game& currentGame)
 						temp.first = ctmp.x;
 						temp.second = ctmp.y;
 						bpVal = hvMy[temp];
-						break;	
+						break;
 					}
 				}
 
@@ -398,8 +398,8 @@ int Minimax::feature(Game& currentGame)
 				//cout << "Opp dice#" << dice+1 << " : (" << temp.first << ", " << temp.second << ") score:" << hvOpp[temp] << endl;
 				valOpp += hvOpp[temp];
 				dice_count++;
-			} 
-			else {	
+			}
+			else {
 				// [non-exist] chess calc function.
 				// spVal: find closest, small chess num`s value.
 				// bpVal: find closest, big chess num`s value.
@@ -424,7 +424,7 @@ int Minimax::feature(Game& currentGame)
 						temp.first = ctmp.x;
 						temp.second = ctmp.y;
 						bpVal = hvOpp[temp];
-						break;	
+						break;
 					}
 				}
 
@@ -437,7 +437,7 @@ int Minimax::feature(Game& currentGame)
 	}
 
 	//cout << "hv " << valMy << " - " << valOpp << "---------------------------" << endl << endl;
-	return valMy - valOpp;
+	return valMy - (int)(valOpp*1.2);
 }
 
 void Minimax::createHeuristicT()
@@ -470,7 +470,7 @@ void Minimax::createHeuristicT()
 			hvB_.insert(make_pair(chess_pos, k));
 		}
 		//cout << endl;
-	}	
+	}
 }
 
 void Minimax::createAvailableT()
