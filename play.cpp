@@ -114,11 +114,11 @@ void Play::twoAIs()
 
 void Play::contestAI()
 {
-	int firstPlay;
-	cout << "Whose AI goes first?" << endl;
-	cout << "=>Who is A? 0)Ours 1)Opponent's" << endl;
+	int leftUpper;
+	cout << "Whose AI is at the left upper section?" << endl;
+	cout << "=>Who is A (1~6)? 0)Ours 1)Opponent's" << endl;
 	cout << "Choose: ";
-	cin >> firstPlay;
+	cin >> leftUpper;
 
 	int initial, turn;
 	cout << "Do you need to set the board? 0)No 1)Yes" << endl;
@@ -153,14 +153,15 @@ void Play::contestAI()
 	game_.printBoard();
 	
 	EwnAI ewnAI;
-	if (firstPlay) {	//A: Opponent's, B: Ours
+	if (leftUpper) {	//A: Opponent's, B: Ours
 		while (1) {
 			int win;
 			if (!this->game_.getTurn()) {	//The opponent's turn (A)
-				int chs, direct;
+				char chs;
+				int direct;
 				cout << endl << "Choose the chessman(1~6): ";
 				cin >> chs;
-				if (!(chs>=1 && chs<=6))
+				if (!(chs>='1' && chs<='6'))
 					continue;
 
 				cout << "Direction: 0)Right 1)Down 2)Right-down" << endl;
@@ -176,7 +177,7 @@ void Play::contestAI()
 				if (re != 0)
 					continue;
 				
-				win = this->game_.update(make_pair(chs-1, direct));
+				win = this->game_.update(make_pair(chs-'1', direct));
 			}
 
 			else {	//AI's turn (B)

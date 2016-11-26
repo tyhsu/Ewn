@@ -71,7 +71,7 @@ Movement Minimax::autoPlay(Game currentGame, int dice)
 				nextStep.switchPlayer();
 				
 				int childValue = minimax(nextStep, HEIGHT);
-				if(childValue > bestValue) {	// update
+				if(childValue >= bestValue) {	// update
 					bestValue = childValue;
 					answer = mvmt;
 				}
