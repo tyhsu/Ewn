@@ -17,11 +17,11 @@ Minimax::Minimax() {
 
 			// get the smaller of (x,y)
 			int k = (i > j ? j : i);
-			k = k * k * k;
+			k = (k+1) * (k+1) * 3;
 			Pos chess_pos;
 			chess_pos.first = i;
 			chess_pos.second = j;
-			//printf("%2d", k);
+			//printf("%3d", k);
 			hvA_.insert(make_pair(chess_pos, k));
 		}
 		//cout << endl;
@@ -33,11 +33,11 @@ Minimax::Minimax() {
 
 			// get the bigger of (x,y)
 			int k = (i > j ? i : j);
-			k = (4-k) * (4-k) * (4-k);
+			k = (5-k) * (5-k) * 3;
 			Pos chess_pos;
 			chess_pos.first = i;
 			chess_pos.second = j;
-			//printf("%2d", k);
+			//printf("%3d", k);
 			hvB_.insert(make_pair(chess_pos, k));
 		}
 		//cout << endl;
@@ -71,6 +71,7 @@ Movement Minimax::autoPlay(Game currentGame, int dice)
 				nextStep.switchPlayer();
 				
 				int childValue = minimax(nextStep, HEIGHT);
+				//cout << endl << "direction " << direct << ": " << childValue << endl;
 				if(childValue >= bestValue) {	// update
 					bestValue = childValue;
 					answer = mvmt;
@@ -91,13 +92,14 @@ int Minimax::minimax(Game& currentGame, int height)
 		currentGame.switchPlayer();
 		return feature(currentGame);
 	}
-	// cout << "========== a minimax ===========" << endl;
+	//cout << "========== a minimax ===========" << endl;
 	int bestValue;
 	int diceArray[6] = {0};
 	int lookahead = 0;
 	string space = "";
 	for (int i=HEIGHT; i>height; i--) space += " ";
-
+	// for (int i=0; i<6; i++)
+	// 	diceArray[i] = -500000;
 
 	if (currentGame.getTurn() == aiTurn_) {
 		// ai's turn, find the max
@@ -131,6 +133,8 @@ int Minimax::minimax(Game& currentGame, int height)
 				// if current is bigger than the front value.
 				if (lookahead) {
 					int offset;
+					//cout << "lookahead " << lookahead << endl;
+					//cout << "dice " << dice << ": " << bestValue << "/ " << diceArray[dice-1] << endl;
 					if (bestValue > diceArray[dice - 1]) {
 						for (int j = 1; j <= lookahead; j++){
 							offset = dice - j;
@@ -141,7 +145,7 @@ int Minimax::minimax(Game& currentGame, int height)
 				}
 			}
 			else {
-				// cout << space << "[**Mine** not exist] " << dice << endl;
+				 //cout << space << "[**Mine** not exist] " << dice << endl;
 				// this chs can`t move, use other`s value
 				lookahead++;
 				if (dice - lookahead < 0) {
@@ -163,6 +167,7 @@ int Minimax::minimax(Game& currentGame, int height)
 		for (int dice = 0; dice < 6; dice++) {
 			Chess currChess = currentGame.getCurrPlayer(dice);
 			if (currChess.exist) {
+				//cout << space << "[**Mine** exist] " << dice << endl;
 				int oppntSymbol = aiTurn_? '1': 'A';
 				int chs = currChess.symbol - oppntSymbol;
 
@@ -190,10 +195,13 @@ int Minimax::minimax(Game& currentGame, int height)
 				// if current is bigger than the front value.
 				if (lookahead) {
 					int offset;
-					if (bestValue < diceArray[dice - 1]) {
+					//cout << "lookahead " << lookahead << endl;
+					//cout << "dice " << dice << ": " << bestValue << "/ " << diceArray[dice-1] << endl;
+					if (bestValue > diceArray[dice - 1]) {
 						for (int j = 1; j <= lookahead; j++){
 							offset = dice - j;
 							diceArray[offset] = bestValue;
+							//cout << ">> dice " << offset << ": " << diceArray[offset] << endl;
 						}
 					}
 					lookahead = 0;
@@ -201,6 +209,7 @@ int Minimax::minimax(Game& currentGame, int height)
 			}
 			else {
 				// this chs can`t move, use other`s value
+				//cout << space << "[**Mine** not exist] " << dice << endl;
 				lookahead++;
 				if (dice - lookahead < 0) {
 					continue;
@@ -211,10 +220,11 @@ int Minimax::minimax(Game& currentGame, int height)
 			}
 		}
 	}
-
 	bestValue = 0;
-	for(int i = 0; i < 6; i++)
+	for(int i = 0; i < 6; i++) {
+		//if (height == HEIGHT) cout << i+1 << ":" << diceArray[i] << endl;
 		bestValue += diceArray[i];
+	}
 	
 	return bestValue;
 }
@@ -228,7 +238,8 @@ int Minimax::feature(Game& currentGame)
 	if (!aiTurn_) {
 		hvMy = hvA_;
 		hvOpp = hvB_;
-			for (int dice = 0; dice < 6; dice++) {
+
+		for (int dice = 0; dice < 6; dice++) {
 			// calculate the score of our side
 			Chess chs = currentGame.getPlayerA(dice);
 			if (chs.exist) {
@@ -325,7 +336,7 @@ int Minimax::feature(Game& currentGame)
 	else {
 		hvMy = hvB_;
 		hvOpp = hvA_;
-			for (int dice = 0; dice < 6; dice++) {
+		for (int dice = 0; dice < 6; dice++) {
 			// calculate the score of our side
 			Chess chs = currentGame.getPlayerB(dice);
 			if (chs.exist) {
