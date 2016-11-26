@@ -17,7 +17,7 @@ Minimax::Minimax() {
 
 			// get the smaller of (x,y)
 			int k = (i > j ? j : i);
-			k = k * k * 3;
+			k = k * k * k;
 			Pos chess_pos;
 			chess_pos.first = i;
 			chess_pos.second = j;
@@ -33,7 +33,7 @@ Minimax::Minimax() {
 
 			// get the bigger of (x,y)
 			int k = (i > j ? i : j);
-			k = (4-k) * (4-k) * 3;
+			k = (4-k) * (4-k) * (4-k);
 			Pos chess_pos;
 			chess_pos.first = i;
 			chess_pos.second = j;
