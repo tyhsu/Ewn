@@ -26,7 +26,7 @@ Minimax::Minimax() {
 		}
 		//cout << endl;
 	}
-	//cout << endl;
+	// cout << endl;
 	// insert to map => hvB;
 	for (int i = 0; i < 5; i++) {
 		for (int j = 0;j < 5; j++) {
@@ -92,50 +92,67 @@ int Minimax::minimax(Game& currentGame, int height)
 		currentGame.switchPlayer();
 		return feature(currentGame);
 	}
-	//cout << "========== a minimax ===========" << endl;
+	// cout << "========== a minimax =========== height:" << height << endl;
 	int bestValue;
 	int diceArray[6] = {0};
 	int lookahead = 0;
 	bool head = false;
 	string space = "";
 	for (int i=HEIGHT; i>height; i--) space += " ";
-	// for (int i=0; i<6; i++)
-	// 	diceArray[i] = -500000;
 
+	int minimaxTurnFlag = 0, goal_flag;
+	char minimaxSymbol;
 	if (currentGame.getTurn() == aiTurn_) {
-		// ai's turn, find the max
+		minimaxTurnFlag = 0;
 		bestValue = -1e9;
-		int win = aiTurn_? 2: 1;
-		// for #chess and direction
-		for (int dice = 0; dice < 6; dice++) {
-			Chess currChess = currentGame.getCurrPlayer(dice);
-			if (currChess.exist) {
-				int chs = currChess.symbol - aiSymbol_;
-				for (int direct = 0; direct < 3; direct++) {
-					Movement mvmt(chs, direct);
-					if (currentGame.isLegalMove(mvmt)) {
-						Game nextStep = currentGame;
-						int end = nextStep.update(mvmt);
-						// check if the game ends
-						if (end == win) return feature(nextStep);
-						else if (end != 0) continue;
-						nextStep.switchPlayer();
+		goal_flag = aiTurn_ ? 2 : 1;
+		minimaxSymbol = aiSymbol_;
+	}
+	else {
+		minimaxTurnFlag = 1;
+		bestValue = 1e9;
+		goal_flag = aiTurn_ ? 1 : 2;
+		minimaxSymbol = aiTurn_? '1' : 'A';
+	}
 
-						// return child value.
-						int childValue = minimax(nextStep, height-1);
+	// ai's turn, find the max
+	// for #chess and direction
+	for (int dice = 0; dice < 6; dice++) {
+		Chess currChess = currentGame.getCurrPlayer(dice);
+		if (currChess.exist) {
+			int chs = currChess.symbol - minimaxSymbol;
+			for (int direct = 0; direct < 3; direct++) {
+				Movement mvmt(chs, direct);
+				if (currentGame.isLegalMove(mvmt)) {
+					Game nextStep = currentGame;
+					int end = nextStep.update(mvmt);
+					// check if the game ends
+					if (end == goal_flag) return feature(nextStep);
+					else if (end != 0) continue;
+					nextStep.switchPlayer();
+
+					// return child value.
+					int childValue = minimax(nextStep, height-1);
+					if (minimaxTurnFlag == 0) {
 						bestValue = max(bestValue, childValue);
-					} else {
-						// cout << space << "nope, the chs can`t be move." << endl;
 					}
+					else {
+						bestValue = min(bestValue, childValue);
+					}
+					
+				} else {
+					// cout << space << "nope, the chs can`t be move." << endl;
 				}
-				diceArray[dice] = bestValue;
+			}
+			diceArray[dice] = bestValue;
 
-				// if there is lookahead, compare those value of the non-existing
-				// if current is bigger than the front value.
-				if (lookahead) {
-					int offset;
-					//cout << "lookahead " << lookahead << endl;
-					//cout << "dice " << dice << ": " << bestValue << "/ " << diceArray[dice-1] << endl;
+			// if there is lookahead, compare those value of the non-existing
+			// if current is bigger than the front value.
+			if (lookahead) {
+				int offset;
+				//cout << "lookahead " << lookahead << endl;
+				//cout << "dice " << dice << ": " << bestValue << "/ " << diceArray[dice-1] << endl;
+				if(minimaxTurnFlag == 0) {
 					if (head || bestValue > diceArray[dice - 1]) {
 						for (int j = 1; j <= lookahead; j++){
 							offset = dice - j;
@@ -143,63 +160,8 @@ int Minimax::minimax(Game& currentGame, int height)
 						}
 						head = false;
 					}
-					lookahead = 0;
-				}
-			}
-			else {
-				 //cout << space << "[**Mine** not exist] " << dice << endl;
-				// this chs can`t move, use other`s value
-				lookahead++;
-				if (dice - lookahead < 0) {
-					head = true;
-					continue;
 				}
 				else {
-					diceArray[dice] = diceArray[dice - lookahead];
-				}
-			}
-		}
-
-    }
-	else {
-		// the opponent's turn, find the min
-		bestValue = 1e9;
-
-		int lose = aiTurn_? 1: 2;
-		// for #chess and direction
-		for (int dice = 0; dice < 6; dice++) {
-			Chess currChess = currentGame.getCurrPlayer(dice);
-			if (currChess.exist) {
-				//cout << space << "[**Mine** exist] " << dice << endl;
-				int oppntSymbol = aiTurn_? '1': 'A';
-				int chs = currChess.symbol - oppntSymbol;
-
-				for (int direct = 0; direct < 3; direct++) {
-					Movement mvmt(chs, direct);
-					if (currentGame.isLegalMove(mvmt)) {
-						Game nextStep = currentGame;
-						int end = nextStep.update(mvmt);
-						// check if the game ends
-						if (end == lose) return feature(nextStep);
-						else if (end != 0) continue;
-						nextStep.switchPlayer();
-
-						// return child value.
-						int childValue = minimax(nextStep, height-1);
-						bestValue = min(bestValue, childValue);
-					}
-					else {
-						// cout << space << "nope, the chs can`t be move." << endl;
-					}
-				}
-				diceArray[dice] = bestValue;
-
-				// if there is lookahead, compare those value of the non-existing
-				// if current is bigger than the front value.
-				if (lookahead) {
-					int offset;
-					//cout << "lookahead " << lookahead << endl;
-					//cout << "dice " << dice << ": " << bestValue << "/ " << diceArray[dice-1] << endl;
 					if (head || bestValue < diceArray[dice - 1]) {
 						for (int j = 1; j <= lookahead; j++){
 							offset = dice - j;
@@ -208,26 +170,27 @@ int Minimax::minimax(Game& currentGame, int height)
 						}
 						head = false;
 					}
-					lookahead = 0;
 				}
+				lookahead = 0;
+			}
+		}
+		else {
+			 //cout << space << "[**Mine** not exist] " << dice << endl;
+			// this chs can`t move, use other`s value
+			lookahead++;
+			if (dice - lookahead < 0) {
+				head = true;
+				continue;
 			}
 			else {
-				// this chs can`t move, use other`s value
-				//cout << space << "[**Mine** not exist] " << dice << endl;
-				lookahead++;
-				if (dice - lookahead < 0) {
-					head = true;
-					continue;
-				}
-				else {
-					diceArray[dice] = diceArray[dice - lookahead];
-				}
+				diceArray[dice] = diceArray[dice - lookahead];
 			}
 		}
 	}
+
 	bestValue = 0;
 	for(int i = 0; i < 6; i++) {
-		//if (height == HEIGHT) cout << i+1 << ":" << diceArray[i] << endl;
+		// if (height == HEIGHT) cout << i+1 << ":" << diceArray[i] << endl;
 		bestValue += diceArray[i];
 	}
 
