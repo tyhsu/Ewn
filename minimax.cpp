@@ -10,37 +10,25 @@ const float chance_weight = 1/6;
 
 Minimax::Minimax() {
 	// pos: a <int,int> , <x,y> coord;
-	// insert to map => hvA;
-	//cout << "create AI." << endl;
 	for (int i = 0; i < 5; i++) {
 		for (int j = 0;j < 5; j++) {
 
 			// get the smaller of (x,y)
+			// insert to map => hvA;
 			int k = (i > j ? j : i);
 			k = (k+1) * (k+1) * 3;
 			Pos chess_pos;
 			chess_pos.first = i;
 			chess_pos.second = j;
-			//printf("%3d", k);
 			hvA_.insert(make_pair(chess_pos, k));
-		}
-		//cout << endl;
-	}
-	// cout << endl;
-	// insert to map => hvB;
-	for (int i = 0; i < 5; i++) {
-		for (int j = 0;j < 5; j++) {
 
-			// get the bigger of (x,y)
-			int k = (i > j ? i : j);
+			// insert to map => hvB;
+			k = (i > j ? i : j);
 			k = (5-k) * (5-k) * 3;
-			Pos chess_pos;
 			chess_pos.first = i;
 			chess_pos.second = j;
-			//printf("%3d", k);
 			hvB_.insert(make_pair(chess_pos, k));
 		}
-		//cout << endl;
 	}
 }
 
