@@ -403,22 +403,12 @@ Chess Game::getCurrPlayer(const int& k)
 	return this->currentPlayer_[k];
 }
 
-Chess Game::getOppPlayer(const int& k)
+Chess Game::getPlayer(const bool turn, const int& k)
 {
-	if (turn_)	//now is playerB
-		return this->playerA_[k];
-	else		//now is playerA
+	if (turn)	//now is playerB
 		return this->playerB_[k];
-}
-
-Chess Game::getPlayerA(const int& k)
-{
-	return this->playerA_[k];
-}
-
-Chess Game::getPlayerB(const int& k)
-{
-	return this->playerB_[k];
+	else		//now is playerA
+		return this->playerA_[k];
 }
 
 int Game::getCurrentExist() {

@@ -188,199 +188,106 @@ int Minimax::feature(Game& currentGame)
 	int dice_count = 0;
 	//cout << "hv0--------------------------------" << endl;
 	Hmap *hvMy, *hvOpp;
-	if (!aiTurn_) {
+	if (!aiTurn_) {	// AI is A
 		hvMy = &hvA_;
 		hvOpp = &hvB_;
-
-		for (int dice = 0; dice < 6; dice++) {
-			// calculate the score of our side
-			Chess chs = currentGame.getPlayerA(dice);
-			if (chs.exist) {
-				// [exist] chess calc function.
-				Pos temp;
-				temp.first = chs.x;
-				temp.second = chs.y;
-				//cout << "dice#" << dice+1 << " : (" << temp.first << ", " << temp.second << ") score:" << (*hvMy)[temp] << endl;
-				valMy += (*hvMy)[temp];
-				dice_count++;
-			}
-			else {
-				// [non-exist] chess calc function.
-				// spVal: find closest, small chess num`s value.
-				// bpVal: find closest, big chess num`s value.
-				int spVal = 0, bpVal = 0;
-				// get small part of chess list.
-				for (int sp = dice; sp > 0; sp--) {
-					Chess ctmp = currentGame.getPlayerA(sp);
-					if (ctmp.exist) {
-						Pos temp;
-						temp.first = ctmp.x;
-						temp.second = ctmp.y;
-						spVal = (*hvMy)[temp];
-						break;
-					}
-				}
-
-				// get big part of chess list.
-				for (int bp = dice; bp < 6; bp++) {
-					Chess ctmp = currentGame.getPlayerA(bp);
-					if (ctmp.exist) {
-						Pos temp;
-						temp.first = ctmp.x;
-						temp.second = ctmp.y;
-						bpVal = (*hvMy)[temp];
-						break;
-					}
-				}
-
-				// select one.
-				spVal = (spVal > bpVal ? spVal : bpVal);
-				//cout << "dice#" << dice+1 << ", score:" << spVal << endl;
-				valMy += spVal;
-			}
-
-			// calculate the score of opponent's side
-			chs = currentGame.getPlayerB(dice);
-			if (chs.exist) {
-				// [exist] chess calc function.
-				Pos temp;
-				temp.first = chs.x;
-				temp.second = chs.y;
-				//cout << "Opp dice#" << dice+1 << " : (" << temp.first << ", " << temp.second << ") score:" << (*hvOpp)[temp] << endl;
-				valOpp += (*hvOpp)[temp];
-				dice_count++;
-			}
-			else {
-				// [non-exist] chess calc function.
-				// spVal: find closest, small chess num`s value.
-				// bpVal: find closest, big chess num`s value.
-				int spVal = 0, bpVal = 0;
-				// get small part of chess list.
-				for (int sp = dice; sp > 0; sp--) {
-					Chess ctmp = currentGame.getPlayerB(sp);
-					if (ctmp.exist) {
-						Pos temp;
-						temp.first = ctmp.x;
-						temp.second = ctmp.y;
-						spVal = (*hvOpp)[temp];
-						break;
-					}
-				}
-
-				// get big part of chess list.
-				for (int bp = dice; bp < 6; bp++) {
-					Chess ctmp = currentGame.getPlayerB(bp);
-					if (ctmp.exist) {
-						Pos temp;
-						temp.first = ctmp.x;
-						temp.second = ctmp.y;
-						bpVal = (*hvOpp)[temp];
-						break;
-					}
-				}
-
-				// select one.
-				spVal = (spVal > bpVal ? spVal : bpVal);
-				//cout << "Opp dice#" << dice+1 << ", score:" << spVal << endl;
-				valOpp += spVal;
-			}
-		}
 	}
-	else {
+	else {			// AI is B
 		hvMy = &hvB_;
 		hvOpp = &hvA_;
-		for (int dice = 0; dice < 6; dice++) {
-			// calculate the score of our side
-			Chess chs = currentGame.getPlayerB(dice);
-			if (chs.exist) {
-				// [exist] chess calc function.
-				Pos temp;
-				temp.first = chs.x;
-				temp.second = chs.y;
-				//cout << "dice#" << dice+1 << " : (" << temp.first << ", " << temp.second << ") score:" << (*hvMy)[temp] << endl;
-				valMy += (*hvMy)[temp];
-				dice_count++;
-			}
-			else {
-				// [non-exist] chess calc function.
-				// spVal: find closest, small chess num`s value.
-				// bpVal: find closest, big chess num`s value.
-				int spVal = 0, bpVal = 0;
-				// get small part of chess list.
-				for (int sp = dice; sp > 0; sp--) {
-					Chess ctmp = currentGame.getPlayerB(sp);
-					if (ctmp.exist) {
-						Pos temp;
-						temp.first = ctmp.x;
-						temp.second = ctmp.y;
-						spVal = (*hvMy)[temp];
-						break;
-					}
-				}
+	}
 
-				// get big part of chess list.
-				for (int bp = dice; bp < 6; bp++) {
-					Chess ctmp = currentGame.getPlayerB(bp);
-					if (ctmp.exist) {
-						Pos temp;
-						temp.first = ctmp.x;
-						temp.second = ctmp.y;
-						bpVal = (*hvMy)[temp];
-						break;
-					}
+	for (int dice = 0; dice < 6; dice++) {
+		// calculate the score of our side
+		Chess chs = currentGame.getPlayer(aiTurn_, dice);
+		if (chs.exist) {
+			// [exist] chess calc function.
+			Pos temp;
+			temp.first = chs.x;
+			temp.second = chs.y;
+			//cout << "dice#" << dice+1 << " : (" << temp.first << ", " << temp.second << ") score:" << (*hvMy)[temp] << endl;
+			valMy += (*hvMy)[temp];
+			dice_count++;
+		}
+		else {
+			// [non-exist] chess calc function.
+			// spVal: find closest, small chess num`s value.
+			// bpVal: find closest, big chess num`s value.
+			int spVal = 0, bpVal = 0;
+			// get small part of chess list.
+			for (int sp = dice; sp > 0; sp--) {
+				Chess ctmp = currentGame.getPlayer(aiTurn_, sp);
+				if (ctmp.exist) {
+					Pos temp;
+					temp.first = ctmp.x;
+					temp.second = ctmp.y;
+					spVal = (*hvMy)[temp];
+					break;
 				}
-
-				// select one.
-				spVal = (spVal > bpVal ? spVal : bpVal);
-				//cout << "dice#" << dice+1 << ", score:" << spVal << endl;
-				valMy += spVal;
 			}
 
-			// calculate the score of opponent's side
-			chs = currentGame.getPlayerA(dice);
-			if (chs.exist) {
-				// [exist] chess calc function.
-				Pos temp;
-				temp.first = chs.x;
-				temp.second = chs.y;
-				//cout << "Opp dice#" << dice+1 << " : (" << temp.first << ", " << temp.second << ") score:" << (*hvOpp)[temp] << endl;
-				valOpp += (*hvOpp)[temp];
-				dice_count++;
-			}
-			else {
-				// [non-exist] chess calc function.
-				// spVal: find closest, small chess num`s value.
-				// bpVal: find closest, big chess num`s value.
-				int spVal = 0, bpVal = 0;
-				// get small part of chess list.
-				for (int sp = dice; sp > 0; sp--) {
-					Chess ctmp = currentGame.getPlayerA(sp);
-					if (ctmp.exist) {
-						Pos temp;
-						temp.first = ctmp.x;
-						temp.second = ctmp.y;
-						spVal = (*hvOpp)[temp];
-						break;
-					}
+			// get big part of chess list.
+			for (int bp = dice; bp < 6; bp++) {
+				Chess ctmp = currentGame.(aiTurn_, bp);
+				if (ctmp.exist) {
+					Pos temp;
+					temp.first = ctmp.x;
+					temp.second = ctmp.y;
+					bpVal = (*hvMy)[temp];
+					break;
 				}
-
-				// get big part of chess list.
-				for (int bp = dice; bp < 6; bp++) {
-					Chess ctmp = currentGame.getPlayerA(bp);
-					if (ctmp.exist) {
-						Pos temp;
-						temp.first = ctmp.x;
-						temp.second = ctmp.y;
-						bpVal = (*hvOpp)[temp];
-						break;
-					}
-				}
-
-				// select one.
-				spVal = (spVal > bpVal ? spVal : bpVal);
-				//cout << "Opp dice#" << dice+1 << ", score:" << spVal << endl;
-				valOpp += spVal;
 			}
+
+			// select one.
+			spVal = (spVal > bpVal ? spVal : bpVal);
+			//cout << "dice#" << dice+1 << ", score:" << spVal << endl;
+			valMy += spVal;
+		}
+
+		// calculate the score of opponent's side
+		chs = currentGame.getPlayer(!aiTurn_, dice);
+		if (chs.exist) {
+			// [exist] chess calc function.
+			Pos temp;
+			temp.first = chs.x;
+			temp.second = chs.y;
+			//cout << "Opp dice#" << dice+1 << " : (" << temp.first << ", " << temp.second << ") score:" << (*hvOpp)[temp] << endl;
+			valOpp += (*hvOpp)[temp];
+			dice_count++;
+		}
+		else {
+			// [non-exist] chess calc function.
+			// spVal: find closest, small chess num`s value.
+			// bpVal: find closest, big chess num`s value.
+			int spVal = 0, bpVal = 0;
+			// get small part of chess list.
+			for (int sp = dice; sp > 0; sp--) {
+				Chess ctmp = currentGame.getPlayer(!aiTurn_, sp);
+				if (ctmp.exist) {
+					Pos temp;
+					temp.first = ctmp.x;
+					temp.second = ctmp.y;
+					spVal = (*hvOpp)[temp];
+					break;
+				}
+			}
+
+			// get big part of chess list.
+			for (int bp = dice; bp < 6; bp++) {
+				Chess ctmp = currentGame.getPlayer(!aiTurn_, bp);
+				if (ctmp.exist) {
+					Pos temp;
+					temp.first = ctmp.x;
+					temp.second = ctmp.y;
+					bpVal = (*hvOpp)[temp];
+					break;
+				}
+			}
+
+			// select one.
+			spVal = (spVal > bpVal ? spVal : bpVal);
+			//cout << "Opp dice#" << dice+1 << ", score:" << spVal << endl;
+			valOpp += spVal;
 		}
 	}
 
