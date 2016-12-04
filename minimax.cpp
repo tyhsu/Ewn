@@ -228,7 +228,7 @@ int Minimax::feature(Game& currentGame)
 
 			// get big part of chess list.
 			for (int bp = dice; bp < 6; bp++) {
-				Chess ctmp = currentGame.(aiTurn_, bp);
+				Chess ctmp = currentGame.getPlayer(aiTurn_, bp);
 				if (ctmp.exist) {
 					Pos temp;
 					temp.first = ctmp.x;
