@@ -33,8 +33,6 @@ class Minimax
 		// int feature(char board[5][5]);
 		int simulate(int height);
 		int chooseDirection();
-		//making table
-		void createAvailableT();
 };
 
 #endif
