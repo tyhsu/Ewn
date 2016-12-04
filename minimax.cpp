@@ -11,36 +11,30 @@ const float chance_weight = 1/6;
 Minimax::Minimax() {
 	// pos: a <int,int> , <x,y> coord;
 	// insert to map => hvA;
-	//cout << "create AI." << endl;
 	for (int i = 0; i < 5; i++) {
-		for (int j = 0;j < 5; j++) {
-
+		for (int j = 0; j < 5; j++) {
 			// get the smaller of (x,y)
 			int k = (i > j ? j : i);
+			// the heuristic value
 			k = (k+1) * (k+1) * 3;
 			Pos chess_pos;
 			chess_pos.first = i;
 			chess_pos.second = j;
-			//printf("%3d", k);
 			hvA_.insert(make_pair(chess_pos, k));
 		}
-		//cout << endl;
 	}
-	//cout << endl;
 	// insert to map => hvB;
 	for (int i = 0; i < 5; i++) {
-		for (int j = 0;j < 5; j++) {
-
+		for (int j = 0; j < 5; j++) {
 			// get the bigger of (x,y)
 			int k = (i > j ? i : j);
+			// the heuristic value
 			k = (5-k) * (5-k) * 3;
 			Pos chess_pos;
 			chess_pos.first = i;
 			chess_pos.second = j;
-			//printf("%3d", k);
 			hvB_.insert(make_pair(chess_pos, k));
 		}
-		//cout << endl;
 	}
 }
 
@@ -53,7 +47,7 @@ Movement Minimax::autoPlay(Game currentGame, int dice)
 	aiSymbol_ = aiTurn_? 'A': '1';
 
 	Movement answer;	//the best move will return
-	int bestValue = -1e9;
+	int bestValue = -1e9, childValue;
 	int win = aiTurn_? 2: 1;
 	int nextMoveCnt = currentGame.availableMove(dice);
 
@@ -66,13 +60,17 @@ Movement Minimax::autoPlay(Game currentGame, int dice)
 				Game nextStep = currentGame;
 				int end = nextStep.update(mvmt);
 				// check if the game ends
-				if (end == win) return mvmt;
-				else if (end != 0) continue;	// lose the game
-				nextStep.switchPlayer();
-
-				int childValue = minimax(nextStep, HEIGHT);
+				if (end == win)
+					childValue = feature(nextStep);
+				else if (end != 0)	// lose the game
+					continue;
+				else {
+					nextStep.switchPlayer();
+					childValue = minimax(nextStep, HEIGHT);
+				}
 				//cout << endl << "direction " << direct << ": " << childValue << endl;
-				if(childValue >= bestValue) {	// update
+				// update the best value and the best movement
+				if (childValue >= bestValue) {
 					bestValue = childValue;
 					answer = mvmt;
 				}
@@ -92,15 +90,13 @@ int Minimax::minimax(Game& currentGame, int height)
 		currentGame.switchPlayer();
 		return feature(currentGame);
 	}
-	//cout << "========== a minimax ===========" << endl;
+	// cout << "========== a minimax =========== height:" << height << endl;
 	int bestValue;
 	int diceArray[6] = {0};
 	int lookahead = 0;
 	bool head = false;
 	string space = "";
 	for (int i=HEIGHT; i>height; i--) space += " ";
-	// for (int i=0; i<6; i++)
-	// 	diceArray[i] = -500000;
 
 	if (currentGame.getTurn() == aiTurn_) {
 		// ai's turn, find the max
