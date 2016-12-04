@@ -4,7 +4,7 @@
 #include <ctime>
 #include "play.h"
 using namespace std;
-
+Amap Game::am = Game::createAvailableT();
 int main() {
 	int cmd;
 	cout << "====================================" << endl;

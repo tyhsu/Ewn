@@ -419,3 +419,33 @@ bool Game::getTurn()
 {
 	return this->turn_;
 }
+
+Amap Game::createAvailableT()
+{
+	Amap _am;
+	for(int exist=0; exist<(1<<6); exist++) { // each exist status
+		for(int dice=0; dice<6; dice++) {
+			int availableFormer = -1, availableLatter = -1;
+			int tmp = exist;
+			int bin[6];
+			int f = exist, l = exist;
+			for(int i=dice; i>=0; i--) {
+				if((exist%(1<<(i+1)))/(1<<i) == true) {
+					availableFormer = i;
+					break;
+				}
+			}
+			for(int i=dice; i<6; i++) {
+				if((exist>>i)%2 == true) {
+					availableLatter = i;
+					break;
+				}
+			}
+			availableFormer = (availableFormer == -1) ? availableLatter : availableFormer;
+			availableLatter = (availableLatter == -1) ? availableFormer : availableLatter;
+			pair<int, int> fir(dice, exist), sec(availableFormer, availableLatter);
+			_am.insert(make_pair(fir, sec));
+		}
+	}
+	return _am;
+}

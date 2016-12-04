@@ -9,8 +9,11 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <utility>
+#include <map>
 using namespace std;
-
+// typedef map<Hmap, int> OurOppScoreMap;
+// <dice, exist_status> maps to <available_chess, available_chess>
+typedef map< pair<int, int>, pair<int, int> > Amap;
 // < the index of the currentPlayer, direction >
 typedef pair<int, int> Movement;
 
@@ -75,7 +78,8 @@ public:
 	Chess getPlayer(const bool turn, const int& k);
 	int getCurrentExist();
 	bool getTurn();
-
+	static Amap am;
+	static Amap createAvailableT();
 };
 
 #endif
