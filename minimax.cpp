@@ -388,39 +388,6 @@ int Minimax::feature(Game& currentGame)
 	return valMy - (int)(valOpp*1.2);
 }
 
-void Minimax::createHeuristicT()
-{
-	for (int i = 0; i < 5; i++) {
-		for (int j = 0;j < 5; j++) {
-
-			// get the smaller of (x,y)
-			int k = (i > j ? j : i);
-			k = k * k;
-			Pos chess_pos;
-			chess_pos.first = i;
-			chess_pos.second = j;
-			//printf("%2d", k);
-			hvA_.insert(make_pair(chess_pos, k));
-		}
-		//cout << endl;
-	}
-	// insert to map => hv;
-	for (int i = 0; i < 5; i++) {
-		for (int j = 0;j < 5; j++) {
-
-			// get the bigger of (x,y)
-			int k = (i > j ? i : j);
-			k = (4-k) * (4-k);
-			Pos chess_pos;
-			chess_pos.first = i;
-			chess_pos.second = j;
-			//printf("%2d", k);
-			hvB_.insert(make_pair(chess_pos, k));
-		}
-		//cout << endl;
-	}
-}
-
 void Minimax::createAvailableT()
 {
 	for(int exist=0; exist<(1<<6); exist++) { // each exist status

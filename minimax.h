@@ -36,7 +36,6 @@ class Minimax
 		int simulate(int height);
 		int chooseDirection();
 		//making table
-		void createHeuristicT();
 		void createAvailableT();
 };
 
