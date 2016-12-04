@@ -187,10 +187,10 @@ int Minimax::feature(Game& currentGame)
 	int valMy = 0, valOpp = 0;
 	int dice_count = 0;
 	//cout << "hv0--------------------------------" << endl;
-	Hmap hvMy, hvOpp;
+	Hmap *hvMy, *hvOpp;
 	if (!aiTurn_) {
-		hvMy = hvA_;
-		hvOpp = hvB_;
+		hvMy = &hvA_;
+		hvOpp = &hvB_;
 
 		for (int dice = 0; dice < 6; dice++) {
 			// calculate the score of our side
@@ -200,8 +200,8 @@ int Minimax::feature(Game& currentGame)
 				Pos temp;
 				temp.first = chs.x;
 				temp.second = chs.y;
-				//cout << "dice#" << dice+1 << " : (" << temp.first << ", " << temp.second << ") score:" << hvMy[temp] << endl;
-				valMy += hvMy[temp];
+				//cout << "dice#" << dice+1 << " : (" << temp.first << ", " << temp.second << ") score:" << (*hvMy)[temp] << endl;
+				valMy += (*hvMy)[temp];
 				dice_count++;
 			}
 			else {
@@ -216,7 +216,7 @@ int Minimax::feature(Game& currentGame)
 						Pos temp;
 						temp.first = ctmp.x;
 						temp.second = ctmp.y;
-						spVal = hvMy[temp];
+						spVal = (*hvMy)[temp];
 						break;
 					}
 				}
@@ -228,7 +228,7 @@ int Minimax::feature(Game& currentGame)
 						Pos temp;
 						temp.first = ctmp.x;
 						temp.second = ctmp.y;
-						bpVal = hvMy[temp];
+						bpVal = (*hvMy)[temp];
 						break;
 					}
 				}
@@ -246,8 +246,8 @@ int Minimax::feature(Game& currentGame)
 				Pos temp;
 				temp.first = chs.x;
 				temp.second = chs.y;
-				//cout << "Opp dice#" << dice+1 << " : (" << temp.first << ", " << temp.second << ") score:" << hvOpp[temp] << endl;
-				valOpp += hvOpp[temp];
+				//cout << "Opp dice#" << dice+1 << " : (" << temp.first << ", " << temp.second << ") score:" << (*hvOpp)[temp] << endl;
+				valOpp += (*hvOpp)[temp];
 				dice_count++;
 			}
 			else {
@@ -262,7 +262,7 @@ int Minimax::feature(Game& currentGame)
 						Pos temp;
 						temp.first = ctmp.x;
 						temp.second = ctmp.y;
-						spVal = hvOpp[temp];
+						spVal = (*hvOpp)[temp];
 						break;
 					}
 				}
@@ -274,7 +274,7 @@ int Minimax::feature(Game& currentGame)
 						Pos temp;
 						temp.first = ctmp.x;
 						temp.second = ctmp.y;
-						bpVal = hvOpp[temp];
+						bpVal = (*hvOpp)[temp];
 						break;
 					}
 				}
@@ -287,8 +287,8 @@ int Minimax::feature(Game& currentGame)
 		}
 	}
 	else {
-		hvMy = hvB_;
-		hvOpp = hvA_;
+		hvMy = &hvB_;
+		hvOpp = &hvA_;
 		for (int dice = 0; dice < 6; dice++) {
 			// calculate the score of our side
 			Chess chs = currentGame.getPlayerB(dice);
@@ -297,8 +297,8 @@ int Minimax::feature(Game& currentGame)
 				Pos temp;
 				temp.first = chs.x;
 				temp.second = chs.y;
-				//cout << "dice#" << dice+1 << " : (" << temp.first << ", " << temp.second << ") score:" << hvMy[temp] << endl;
-				valMy += hvMy[temp];
+				//cout << "dice#" << dice+1 << " : (" << temp.first << ", " << temp.second << ") score:" << (*hvMy)[temp] << endl;
+				valMy += (*hvMy)[temp];
 				dice_count++;
 			}
 			else {
@@ -313,7 +313,7 @@ int Minimax::feature(Game& currentGame)
 						Pos temp;
 						temp.first = ctmp.x;
 						temp.second = ctmp.y;
-						spVal = hvMy[temp];
+						spVal = (*hvMy)[temp];
 						break;
 					}
 				}
@@ -325,7 +325,7 @@ int Minimax::feature(Game& currentGame)
 						Pos temp;
 						temp.first = ctmp.x;
 						temp.second = ctmp.y;
-						bpVal = hvMy[temp];
+						bpVal = (*hvMy)[temp];
 						break;
 					}
 				}
@@ -343,8 +343,8 @@ int Minimax::feature(Game& currentGame)
 				Pos temp;
 				temp.first = chs.x;
 				temp.second = chs.y;
-				//cout << "Opp dice#" << dice+1 << " : (" << temp.first << ", " << temp.second << ") score:" << hvOpp[temp] << endl;
-				valOpp += hvOpp[temp];
+				//cout << "Opp dice#" << dice+1 << " : (" << temp.first << ", " << temp.second << ") score:" << (*hvOpp)[temp] << endl;
+				valOpp += (*hvOpp)[temp];
 				dice_count++;
 			}
 			else {
@@ -359,7 +359,7 @@ int Minimax::feature(Game& currentGame)
 						Pos temp;
 						temp.first = ctmp.x;
 						temp.second = ctmp.y;
-						spVal = hvOpp[temp];
+						spVal = (*hvOpp)[temp];
 						break;
 					}
 				}
@@ -371,7 +371,7 @@ int Minimax::feature(Game& currentGame)
 						Pos temp;
 						temp.first = ctmp.x;
 						temp.second = ctmp.y;
-						bpVal = hvOpp[temp];
+						bpVal = (*hvOpp)[temp];
 						break;
 					}
 				}
