@@ -27,7 +27,7 @@ class Minimax
 		// OurOppScoreMap sm_;
 		Minimax();
 		~Minimax() {}
-		Movement autoPlay(Game currentGame, int dice);
+		Movement auto_play(Game currentGame, int dice);
 		int minimax(Game& originGame, int h);
 		int feature(Game& currentGame);
 		// int feature(char board[5][5]);

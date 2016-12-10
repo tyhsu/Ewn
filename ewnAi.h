@@ -9,7 +9,7 @@ private:
 	Minimax minimax_;	//ai = 0
 public:
 	EwnAI();
-	Movement autoPlay(Game currentGame, int dice);
+	Movement auto_play(Game currentGame, int dice);
 };
 
 #endif

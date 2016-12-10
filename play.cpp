@@ -69,7 +69,7 @@ void Play::playerAI()
 			win = this->game_.update(playerPlay(dice));
 		}
 		else
-			win = this->game_.update(ewnAI.autoPlay(this->game_, dice));
+			win = this->game_.update(ewnAI.auto_play(this->game_, dice));
 
 		this->game_.printBoard();
 		//update: 0(game continues), 1(A wins), 2(B wins)
@@ -96,9 +96,9 @@ void Play::twoAIs()
 		cout << "dice: " << dice+1 << endl;
 		int win;
 		if (!game_.getTurn())	// the first AI (A)
-			win = this->game_.update(ewnAI1.autoPlay(this->game_, dice));
+			win = this->game_.update(ewnAI1.auto_play(this->game_, dice));
 		else					// the second AI (B)
-			win = this->game_.update(ewnAI2.autoPlay(this->game_, dice));
+			win = this->game_.update(ewnAI2.auto_play(this->game_, dice));
 		this->game_.printBoard();
 		//update: 0(game continues), 1(A wins), 2(B wins)
 		if (win!=0) {
@@ -151,7 +151,7 @@ void Play::contestAI()
 	cout << endl;
 	//game_.checkStatus();
 	game_.printBoard();
-	
+
 	EwnAI ewnAI;
 	if (leftUpper) {	//A: Opponent's, B: Ours
 		while (1) {
@@ -176,7 +176,7 @@ void Play::contestAI()
 				cin >> re;
 				if (re != 0)
 					continue;
-				
+
 				win = this->game_.update(make_pair(chs-'1', direct));
 			}
 
@@ -187,9 +187,9 @@ void Play::contestAI()
 				if (!(dice>=1 && dice<=6))
 					continue;
 
-				win = this->game_.update(ewnAI.autoPlay(this->game_, dice-1));
+				win = this->game_.update(ewnAI.auto_play(this->game_, dice-1));
 			}
-			
+
 			this->game_.printBoard();
 			//update: 0(game continues), 1(A wins), 2(B wins)
 			if (win!=0) {
@@ -226,10 +226,10 @@ void Play::contestAI()
 				cin >> re;
 				if (re != 0)
 					continue;
-				
+
 				win = this->game_.update(make_pair(chs-'A', direct));
 			}
-				
+
 			else {	//AI's turn (A)
 				int dice;
 				cout << endl << "Set the dice(1~6): ";
@@ -237,9 +237,9 @@ void Play::contestAI()
 				if (!(dice>=1 && dice<=6))
 					continue;
 
-				win = this->game_.update(ewnAI.autoPlay(this->game_, dice-1));
+				win = this->game_.update(ewnAI.auto_play(this->game_, dice-1));
 			}
-			
+
 			this->game_.printBoard();
 			//update: 0(game continues), 1(A wins), 2(B wins)
 			if (win!=0) {

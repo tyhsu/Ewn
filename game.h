@@ -31,7 +31,7 @@ class Game
 {
 private:
 	char board_[5][5];
-	Chess movableChs_[2];
+	Chess movable_chs_[2];
 	//How many chessmen are on the board
 	int chsNumA_, chsNumB_;
 	Chess playerA_[6], playerB_[6];

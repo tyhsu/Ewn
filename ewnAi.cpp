@@ -13,8 +13,8 @@ EwnAI::EwnAI()
 		this->ai_ = 0;
 }
 
-Movement EwnAI::autoPlay(Game currentGame, int dice)
+Movement EwnAI::auto_play(Game currentGame, int dice)
 {
 	//if (this->ai_ == 0)
-		return this->minimax_.autoPlay(currentGame, dice);
+		return this->minimax_.auto_play(currentGame, dice);
 }
