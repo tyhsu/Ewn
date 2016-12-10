@@ -276,56 +276,33 @@ int Game::update(const Movement& mvmt)
 	int posneg = (this->turn_ == false)? 1 : -1;
 
 	// Update the chosen movement on the board
+
+	// clear previous location
+	Chess previous = chessToGo;
+	previous.symbol = 0;
+	this->setChessOnBoard(previous);
+
+	int playerIndex = 0;
+	if (!this->turn_)	//playerA_
+		playerIndex = chessToGo.symbol - '1';
+	else				//playerB_
+		playerIndex = chessToGo.symbol - 'A';
+
 	if (direct == 0) {
 		/* ----------move right---------- */
-		// clear previous location
-		Chess previous = chessToGo;
-		previous.symbol = 0;
-		this->setChessOnBoard(previous);
-
-		int playerIndex = 0;
-		if (!this->turn_)	//playerA_
-			playerIndex = chessToGo.symbol - '1';
-		else				//playerB_
-			playerIndex = chessToGo.symbol - 'A';
 		this->currentPlayer_[playerIndex].moveX(posneg);
-		replacedChess = this->getChessOnBoard(this->currentPlayer_[playerIndex]);
-		this->setChessOnBoard(this->currentPlayer_[playerIndex]);
 	}
 	else if (direct == 1) {
 		/* ----------move down---------- */
-		// clear previous location
-		Chess previous = chessToGo;
-		previous.symbol = 0;
-		this->setChessOnBoard(previous);
-
-		int playerIndex = 0;
-		if (!this->turn_)	//playerA_
-			playerIndex = chessToGo.symbol - '1';
-		else				//playerB_
-			playerIndex = chessToGo.symbol - 'A';
 		this->currentPlayer_[playerIndex].moveY(posneg);
-		replacedChess = this->getChessOnBoard(this->currentPlayer_[playerIndex]);
-		this->setChessOnBoard(this->currentPlayer_[playerIndex]);
-
 	}
 	else if (direct == 2) {
 		/* ----------move right down---------- */
-		// clear previous location
-		Chess previous = chessToGo;
-		previous.symbol = 0;
-		this->setChessOnBoard(previous);
-
-		int playerIndex = 0;
-		if (!this->turn_)	//playerA_
-			playerIndex = chessToGo.symbol - '1';
-		else				//playerB_
-			playerIndex = chessToGo.symbol - 'A';
 		this->currentPlayer_[playerIndex].moveX(posneg);
 		this->currentPlayer_[playerIndex].moveY(posneg);
-		replacedChess = this->getChessOnBoard(this->currentPlayer_[playerIndex]);
-		this->setChessOnBoard(this->currentPlayer_[playerIndex]);
 	}
+	replacedChess = this->getChessOnBoard(this->currentPlayer_[playerIndex]);
+	this->setChessOnBoard(this->currentPlayer_[playerIndex]);
 
 	// Update the eaten chessman
 	if (replacedChess != 0) {
