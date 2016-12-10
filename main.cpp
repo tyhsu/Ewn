@@ -4,7 +4,9 @@
 #include <ctime>
 #include "play.h"
 using namespace std;
-Amap Game::am = Game::createAvailableT();
+
+Movable_chs_map Game::movable_chs_map = Game::create_movable_chs_map();
+
 int main() {
 	int cmd;
 	cout << "====================================" << endl;

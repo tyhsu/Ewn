@@ -23,7 +23,7 @@ class Minimax
 		int chosenDirct_;
 		Hmap hvA_;
 		Hmap hvB_;
-		Amap am_;
+		Movable_chs_map am_;
 		// OurOppScoreMap sm_;
 		Minimax();
 		~Minimax() {}

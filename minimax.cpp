@@ -39,29 +39,29 @@ Movement Minimax::auto_play(Game currentGame, int dice)
     cerr << "calculating..." ;
     cerr.flush();
 	clock_t timeInit = clock();
-	aiTurn_ = currentGame.getTurn();
+	aiTurn_ = currentGame.get_turn();
 	aiSymbol_ = aiTurn_? 'A': '1';
 
 	Movement answer;	//the best move will return
 	int bestValue = -1e9, childValue;
 	int win = aiTurn_? 2: 1;
-	int nextMoveCnt = currentGame.availableMove(dice);
+	int nextMoveCnt = currentGame.count_movable_chs(dice);
 
 	for (int i=0; i<nextMoveCnt; i++) {
-		int chs = currentGame.getMovableChs(i).symbol - aiSymbol_;
+		int chs = currentGame.get_movable_chs(i).symbol - aiSymbol_;
 		//cout << "select: " << chs+1 << endl;
 		for (int direct = 0; direct < 3; direct++) {
 			Movement mvmt(chs, direct);
-			if (currentGame.isLegalMove(mvmt)) {
+			if (currentGame.is_in_board(mvmt)) {
 				Game nextStep = currentGame;
-				int game_status = nextStep.update(mvmt);
+				int game_status = nextStep.update_game_status(mvmt);
 				// check if the game ends
 				if (game_status == win)
 					childValue = feature(nextStep);
 				else if (game_status != 0)	// lose the game
 					continue;
 				else {
-					nextStep.switchPlayer();
+					nextStep.switch_player();
 					childValue = minimax(nextStep, HEIGHT);
 				}
 				//cout << endl << "direction " << direct << ": " << childValue << endl;
@@ -83,7 +83,7 @@ int Minimax::minimax(Game& currentGame, int height)
 	// check if end;
 	if (height == 0) {
 		// Game nextStep = currentGame;
-		currentGame.switchPlayer();
+		currentGame.switch_player();
 		return feature(currentGame);
 	}
 	// cout << "========== a minimax =========== height:" << height << endl;
@@ -95,7 +95,7 @@ int Minimax::minimax(Game& currentGame, int height)
 
 	int myTurn, myWin;
 	char mySymbol;
-	if (currentGame.getTurn() == aiTurn_) {
+	if (currentGame.get_turn() == aiTurn_) {
 		// my turn			=> the largest, the better
 		myTurn = 1;
 		bestValue = -1e9;
@@ -117,18 +117,18 @@ int Minimax::minimax(Game& currentGame, int height)
 	// ai's turn, find the max
 	// for #chess and direction
 	for (int dice = 0; dice < 6; dice++) {
-		Chess currChess = currentGame.getCurrPlayer(dice);
+		Chess currChess = currentGame.get_current_chs_list(dice);
 		if (currChess.exist) {
 			int chs = currChess.symbol - mySymbol;
 			for (int direct = 0; direct < 3; direct++) {
 				Movement mvmt(chs, direct);
-				if (currentGame.isLegalMove(mvmt)) {
+				if (currentGame.is_in_board(mvmt)) {
 					Game nextStep = currentGame;
-					int game_status = nextStep.update(mvmt);
+					int game_status = nextStep.update_game_status(mvmt);
 					// check if the game ends
 					if (game_status == myWin) return feature(nextStep);
 					else if (game_status != 0) continue;
-					nextStep.switchPlayer();
+					nextStep.switch_player();
 
 					// return child value.
 					int childValue = minimax(nextStep, height-1);
@@ -194,7 +194,7 @@ int Minimax::feature(Game& currentGame)
 	for (int side=0; side<2; side++) {
 		for (int dice = 0; dice < 6; dice++) {
 			// calculate the score of our side
-			Chess chs = currentGame.getPlayer(turn, dice);
+			Chess chs = currentGame.get_chs_list(turn, dice);
 			if (chs.exist) {
 				// [exist] chess calc function.
 				Pos temp;
@@ -211,7 +211,7 @@ int Minimax::feature(Game& currentGame)
 				int spVal = 0, bpVal = 0;
 				// get small part of chess list.
 				for (int sp = dice; sp > 0; sp--) {
-					Chess ctmp = currentGame.getPlayer(turn, sp);
+					Chess ctmp = currentGame.get_chs_list(turn, sp);
 					if (ctmp.exist) {
 						Pos temp;
 						temp.first = ctmp.x;
@@ -223,7 +223,7 @@ int Minimax::feature(Game& currentGame)
 
 				// get big part of chess list.
 				for (int bp = dice; bp < 6; bp++) {
-					Chess ctmp = currentGame.getPlayer(turn, bp);
+					Chess ctmp = currentGame.get_chs_list(turn, bp);
 					if (ctmp.exist) {
 						Pos temp;
 						temp.first = ctmp.x;
