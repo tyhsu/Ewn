@@ -20,7 +20,7 @@ Minimax::Minimax() {
 			Pos chess_pos;
 			chess_pos.first = i;
 			chess_pos.second = j;
-			hvA_.insert(make_pair(chess_pos, k));
+			feature_map_A.insert(make_pair(chess_pos, k));
 
 			// insert to map => hvB;
 			// get the bigger of (x,y)
@@ -29,31 +29,31 @@ Minimax::Minimax() {
 			k = (5-k) * (5-k) * 3;
 			chess_pos.first = i;
 			chess_pos.second = j;
-			hvB_.insert(make_pair(chess_pos, k));
+			feature_map_B.insert(make_pair(chess_pos, k));
 		}
 	}
 }
 
-Movement Minimax::auto_play(Game currentGame, int dice)
+Movement Minimax::auto_play(Game cur_game, int dice)
 {
     cerr << "calculating..." ;
     cerr.flush();
 	clock_t timeInit = clock();
-	aiTurn_ = currentGame.get_turn();
-	aiSymbol_ = aiTurn_? 'A': '1';
+	ai_turn = cur_game.get_turn();
+	ai_symbol = ai_turn? 'A': '1';
 
 	Movement answer;	//the best move will return
 	int bestValue = -1e9, childValue;
-	int win = aiTurn_? 2: 1;
-	int nextMoveCnt = currentGame.count_movable_chs(dice);
+	int win = ai_turn? 2: 1;
+	int nextMoveCnt = cur_game.count_movable_chs(dice);
 
 	for (int i=0; i<nextMoveCnt; i++) {
-		int chs = currentGame.get_movable_chs(i).symbol - aiSymbol_;
+		int chs = cur_game.get_movable_chs(i).symbol - ai_symbol;
 		//cout << "select: " << chs+1 << endl;
 		for (int direct = 0; direct < 3; direct++) {
 			Movement mvmt(chs, direct);
-			if (currentGame.is_in_board(mvmt)) {
-				Game nextStep = currentGame;
+			if (cur_game.is_in_board(mvmt)) {
+				Game nextStep = cur_game;
 				int game_status = nextStep.update_game_status(mvmt);
 				// check if the game ends
 				if (game_status == win)
@@ -78,13 +78,13 @@ Movement Minimax::auto_play(Game currentGame, int dice)
 	return answer;
 }
 
-int Minimax::minimax(Game& currentGame, int height)
+int Minimax::minimax(Game& cur_game, int height)
 {
 	// check if end;
 	if (height == 0) {
-		// Game nextStep = currentGame;
-		currentGame.switch_player();
-		return feature(currentGame);
+		// Game nextStep = cur_game;
+		cur_game.switch_player();
+		return feature(cur_game);
 	}
 	// cout << "========== a minimax =========== height:" << height << endl;
 	int bestValue;
@@ -95,12 +95,12 @@ int Minimax::minimax(Game& currentGame, int height)
 
 	int myTurn, myWin;
 	char mySymbol;
-	if (currentGame.get_turn() == aiTurn_) {
+	if (cur_game.get_turn() == ai_turn) {
 		// my turn			=> the largest, the better
 		myTurn = 1;
 		bestValue = -1e9;
-		myWin = aiTurn_ ? 2 : 1;
-		mySymbol = aiSymbol_;
+		myWin = ai_turn ? 2 : 1;
+		mySymbol = ai_symbol;
 		for (int i=0; i<6; i++)
 			chesses_values[i] = -1e9;
 	}
@@ -108,8 +108,8 @@ int Minimax::minimax(Game& currentGame, int height)
 		// opponent's turn	=> the smallest, the better
 		myTurn = 0;
 		bestValue = 1e9;
-		myWin = aiTurn_ ? 1 : 2;
-		mySymbol = aiTurn_? '1' : 'A';
+		myWin = ai_turn ? 1 : 2;
+		mySymbol = ai_turn? '1' : 'A';
 		for (int i=0; i<6; i++)
 			chesses_values[i] = 1e9;
 	}
@@ -117,13 +117,13 @@ int Minimax::minimax(Game& currentGame, int height)
 	// ai's turn, find the max
 	// for #chess and direction
 	for (int dice = 0; dice < 6; dice++) {
-		Chess currChess = currentGame.get_current_chs_list(dice);
+		Chess currChess = cur_game.get_cur_chs_list(dice);
 		if (currChess.exist) {
 			int chs = currChess.symbol - mySymbol;
 			for (int direct = 0; direct < 3; direct++) {
 				Movement mvmt(chs, direct);
-				if (currentGame.is_in_board(mvmt)) {
-					Game nextStep = currentGame;
+				if (cur_game.is_in_board(mvmt)) {
+					Game nextStep = cur_game;
 					int game_status = nextStep.update_game_status(mvmt);
 					// check if the game ends
 					if (game_status == myWin) return feature(nextStep);
@@ -182,19 +182,19 @@ int Minimax::minimax(Game& currentGame, int height)
 	return bestValue;
 }
 
-int Minimax::feature(Game& currentGame)
+int Minimax::feature(Game& cur_game)
 {
 	int valMy = 0, valOpp = 0;
 	int dice_count = 0;
 	//cout << "hv0--------------------------------" << endl;
-	bool turn = aiTurn_;
-	Hmap *hv = aiTurn_? &hvB_: &hvA_;
+	bool turn = ai_turn;
+	Heuristic_map *hv = ai_turn? &feature_map_B: &feature_map_A;
 	int *val = &valMy;
 
 	for (int side=0; side<2; side++) {
 		for (int dice = 0; dice < 6; dice++) {
 			// calculate the score of our side
-			Chess chs = currentGame.get_chs_list(turn, dice);
+			Chess chs = cur_game.get_chs_list(turn, dice);
 			if (chs.exist) {
 				// [exist] chess calc function.
 				Pos temp;
@@ -211,7 +211,7 @@ int Minimax::feature(Game& currentGame)
 				int spVal = 0, bpVal = 0;
 				// get small part of chess list.
 				for (int sp = dice; sp > 0; sp--) {
-					Chess ctmp = currentGame.get_chs_list(turn, sp);
+					Chess ctmp = cur_game.get_chs_list(turn, sp);
 					if (ctmp.exist) {
 						Pos temp;
 						temp.first = ctmp.x;
@@ -223,7 +223,7 @@ int Minimax::feature(Game& currentGame)
 
 				// get big part of chess list.
 				for (int bp = dice; bp < 6; bp++) {
-					Chess ctmp = currentGame.get_chs_list(turn, bp);
+					Chess ctmp = cur_game.get_chs_list(turn, bp);
 					if (ctmp.exist) {
 						Pos temp;
 						temp.first = ctmp.x;
@@ -241,8 +241,8 @@ int Minimax::feature(Game& currentGame)
 		}
 
 		// calculate the score of opponent's side
-		turn = !aiTurn_;
-		hv = aiTurn_? &hvA_: &hvB_;
+		turn = !ai_turn;
+		hv = ai_turn? &feature_map_A: &feature_map_B;
 		val = &valOpp;
 	}
 

@@ -18,22 +18,22 @@ using namespace std;
 #define ANSI_COLOR_RESET   "\x1b[0m"
 
 /* -------------------- struct Chess -------------------- */
-void Chess::assign(const char& s, const bool& e, const int& x, const int& y)
+void Chess::assign(const char& symbol_, const bool& exist_, const int& x, const int& y)
 {
-	this->symbol = s;
-	this->exist = e;
+	this->symbol = symbol_;
+	this->exist = exist_;
 	this->x = x;
 	this->y = y;
 }
 
-void Chess::move_x_one_unit(int direction)
+void Chess::move_x_one_unit(int direct)
 {
-	this->x += direction;
+	this->x += direct;
 }
 
-void Chess::move_y_one_unit(int direction)
+void Chess::move_y_one_unit(int direct)
 {
-	this->y += direction;
+	this->y += direct;
 }
 
 /* -------------------- class Game -------------------- */
@@ -50,8 +50,8 @@ Game::Game()
 	this->exist_bitwise_A = 0b111111;
 	this->exist_bitwise_B = 0b111111;
 
-	this->current_chs_list_ptr = chs_list_A;
-	this->current_exist_bitwise_ptr = exist_bitwise_A;
+	this->cur_chs_list_ptr = chs_list_A;
+	this->cur_exist_bitwise_ptr = exist_bitwise_A;
 	this->turn = false;
 
 	//Initialize the positions of the chessmen
@@ -60,30 +60,30 @@ Game::Game()
 	int chs_pos_A[6][2] = { {0,0}, {0,1}, {0,2}, {1,0}, {1,1}, {2,0} };
 	int chs_pos_B[6][2] = { {4,4}, {4,3}, {4,2}, {3,4}, {3,3}, {2,4} };
 	int (*current_chs_pos_ptr)[2] = &(chs_pos_A[0]);
-	int six = 0x3f;	//11,1111(2)
+	int chs_unuse_bitwise = 0b111111;
 	char symbol_ = '1';
 	srand( time(NULL) + getpid() );
 	for (int i=0; i<2; i++) {
 		//Every position selects a number
 		while (chs_pos_index<6) {
 			int chs_index = rand()%6;	//0~5
-			if ((six & (1<<chs_index)) >> chs_index) {	//The number hasn't been used
+			if ((chs_unuse_bitwise & (1<<chs_index)) >> chs_index) {	//The number hasn't been used
 				int x_ = current_chs_pos_ptr[chs_pos_index][0];
 				int y_ = current_chs_pos_ptr[chs_pos_index][1];
 				this->board[x_][y_] = symbol_ + chs_index;
-				this->current_chs_list_ptr[chs_index].x = x_;
-				this->current_chs_list_ptr[chs_index].y = y_;
+				this->cur_chs_list_ptr[chs_index].x = x_;
+				this->cur_chs_list_ptr[chs_index].y = y_;
 				chs_pos_index++;
-				six = six ^ (1<<chs_index);	//The used number is discarded
+				chs_unuse_bitwise = chs_unuse_bitwise ^ (1<<chs_index);	//The used number is discarded
 			}
 		}
 		chs_pos_index = 0;
-		six = 0x3f;	//11,1111(2)
-		current_chs_list_ptr = chs_list_B;
+		chs_unuse_bitwise = 0b111111;
+		cur_chs_list_ptr = chs_list_B;
 		current_chs_pos_ptr = chs_pos_B;
 		symbol_ = 'A';
 	}
-	current_chs_list_ptr = chs_list_A;	//recover the initialization
+	cur_chs_list_ptr = chs_list_A;	//recover the initialization
 }
 
 Game::Game(const Game& game)
@@ -103,8 +103,8 @@ Game::Game(const Game& game)
 	this->exist_bitwise_A = game.exist_bitwise_A;
 	this->exist_bitwise_B = game.exist_bitwise_B;
 	this->turn = game.turn;
-	this->current_chs_list_ptr = (this->turn == false) ? this->chs_list_A :  this->chs_list_B;
-	this->current_exist_bitwise_ptr = (this->turn == false) ? this->exist_bitwise_A :  this->exist_bitwise_B;
+	this->cur_chs_list_ptr = (this->turn == false) ? this->chs_list_A :  this->chs_list_B;
+	this->cur_exist_bitwise_ptr = (this->turn == false) ? this->exist_bitwise_A :  this->exist_bitwise_B;
 	this->exist_chs_num_A = game.exist_chs_num_A;
 	this->exist_chs_num_B = game.exist_chs_num_B;
 }
@@ -130,10 +130,10 @@ void Game::operator=(const Game& game)
 	this->exist_chs_num_B = game.exist_chs_num_B;
 }
 
-void Game::set_board(char board[5][5], int turn)
+void Game::set_board(char board_[5][5], int turn_)
 {
-	int chsNumA = 0, chsNumB = 0;
-	int existA = 0, existB = 0;
+	int chs_num_A_ = 0, chs_num_B_ = 0;
+	int exist_bitwise_A_ = 0, exist_bitwise_B_ = 0;
 	for (int i=0; i<6; i++) {
 		this->chs_list_A[i].assign(0, false, 0, 0);
 		this->chs_list_B[i].assign(0, false, 4, 4);
@@ -141,37 +141,37 @@ void Game::set_board(char board[5][5], int turn)
 
 	for (int i=0; i<5; i++) {
 		for (int j=0; j<5; j++) {
-			char c = board[j][i];
+			char c = board_[j][i];
 
 			//Set the board
 			this->board[i][j] = c;
 
 			//Update other information
 			if (c>='1' && c<='6') {
-				chsNumA++;
+				chs_num_A_++;
 				this->chs_list_A[c-'1'].assign(c, true, i, j);
-				existA |= 1 << (c-'1');
+				exist_bitwise_A_ |= 1 << (c-'1');
 			}
 			else if (c>='A' && c<='f') {
-				chsNumB++;
+				chs_num_B_++;
 				this->chs_list_B[c-'A'].assign(c, true, i, j);
-				existB |= 1 << (c-'A');
+				exist_bitwise_B_ |= 1 << (c-'A');
 			}
 		}
 	}
-	this->exist_chs_num_A = chsNumA;
-	this->exist_chs_num_B = chsNumB;
-	this->exist_bitwise_A = existA;
-	this->exist_bitwise_B = existB;
+	this->exist_chs_num_A = chs_num_A_;
+	this->exist_chs_num_B = chs_num_B_;
+	this->exist_bitwise_A = exist_bitwise_A_;
+	this->exist_bitwise_B = exist_bitwise_B_;
 
-	if (turn) {
-		this->current_chs_list_ptr = this->chs_list_B;
-		this->current_exist_bitwise_ptr = this->exist_bitwise_B;
+	if (turn_) {
+		this->cur_chs_list_ptr = this->chs_list_B;
+		this->cur_exist_bitwise_ptr = this->exist_bitwise_B;
 		this->turn = true;
 	}
 	else {
-		this->current_chs_list_ptr = this->chs_list_A;
-		this->current_exist_bitwise_ptr = this->exist_bitwise_A;
+		this->cur_chs_list_ptr = this->chs_list_A;
+		this->cur_exist_bitwise_ptr = this->exist_bitwise_A;
 		this->turn = false;
 	}
 }
@@ -205,31 +205,28 @@ int Game::roll_dice()
 
 int Game::count_movable_chs(const int& dice)
 {
-	//printf("dice: %d \n", dice+1);
 	for(int i = 0; i < 2; i++)
 		this->movable_chs_list[i].assign(0, false, 0, 0);
 
-	if (this->current_chs_list_ptr[dice].exist == true) {
+	if (this->cur_chs_list_ptr[dice].exist == true) {
 		// this piece is alive!
-		for(int i = 0; i < 2; i++) {
-			this->movable_chs_list[i] = this->current_chs_list_ptr[dice];
-		}
+		for(int i = 0; i < 2; i++)
+			this->movable_chs_list[i] = this->cur_chs_list_ptr[dice];
 		return 1;
 	}
 	else {
-		//cout << "Chessman " << this->current_chs_list_ptr[dice].symbol << " doesn't exist" << endl;
-		int move = 2;
+		int movable_chs_cnt = 2;
 
 		// search for maybe other two.
 		for (int i = dice-1; i >= 0; i--) {
-			if (this->current_chs_list_ptr[i].exist){
-				this->movable_chs_list[0] = this->current_chs_list_ptr[i];
+			if (this->cur_chs_list_ptr[i].exist){
+				this->movable_chs_list[0] = this->cur_chs_list_ptr[i];
 				break;
 			}
 		}
 		for (int i = dice+1; i < 6; i++) {
-			if (this->current_chs_list_ptr[i].exist){
-				this->movable_chs_list[1] = this->current_chs_list_ptr[i];
+			if (this->cur_chs_list_ptr[i].exist){
+				this->movable_chs_list[1] = this->cur_chs_list_ptr[i];
 				break;
 			}
 		}
@@ -238,20 +235,20 @@ int Game::count_movable_chs(const int& dice)
 		for (int i = 0; i < 2; i++) {
 			if (this->movable_chs_list[i].symbol == 0) {
 				this->movable_chs_list[i] = this->movable_chs_list[1-i];
-				move--;
+				movable_chs_cnt--;
 			}
 		}
-		return move;
+		return movable_chs_cnt;
 	}
 }
 
 bool Game::is_in_board(const Movement& mvmt)
 {
-	Chess chess = this->current_chs_list_ptr[mvmt.first];
-	int posneg = (this->turn == false) ? 1 : -1;
-	int x = chess.x, y = chess.y;
-	x += (mvmt.second == 1) ? 0 : posneg;
-	y += (mvmt.second == 0) ? 0 : posneg;
+	Chess chs = this->cur_chs_list_ptr[mvmt.first];
+	int side = (this->turn == false) ? 1 : -1;
+	int x = chs.x, y = chs.y;
+	x += (mvmt.second == 1) ? 0 : side;
+	y += (mvmt.second == 0) ? 0 : side;
 	return ( x >= 0 && x < 5 && y >= 0 && y < 5);
 }
 
@@ -267,54 +264,48 @@ char Game::get_symbol_on_board(const int& x, const int& y)
 
 int Game::update_game_status(const Movement& mvmt)
 {
-	Chess chessToGo = this->current_chs_list_ptr[mvmt.first];
-	char replacedChess;
+	Chess next_chs = this->cur_chs_list_ptr[mvmt.first];
 	int direct = mvmt.second;
-	int posneg = (this->turn == false)? 1 : -1;
+	int side = (this->turn == false)? 1 : -1;
+	char eaten_chs_symbol;
+
+	// Clear previous location
+	Chess blank_chs = next_chs;
+	blank_chs.symbol = 0;
+	this->set_chs_on_board(blank_chs);
 
 	// Update the chosen movement on the board
-
-	// clear previous location
-	Chess previous = chessToGo;
-	previous.symbol = 0;
-	this->set_chs_on_board(previous);
-
-	int playerIndex = 0;
+	int chs_list_index = 0;
 	if (!this->turn)	//chs_list_A
-		playerIndex = chessToGo.symbol - '1';
+		chs_list_index = next_chs.symbol - '1';
 	else				//chs_list_B
-		playerIndex = chessToGo.symbol - 'A';
+		chs_list_index = next_chs.symbol - 'A';
 
-	if (direct == 0) {
-		/* ----------move right---------- */
-		this->current_chs_list_ptr[playerIndex].move_x_one_unit(posneg);
-	}
-	else if (direct == 1) {
-		/* ----------move down---------- */
-		this->current_chs_list_ptr[playerIndex].move_y_one_unit(posneg);
-	}
-	else if (direct == 2) {
-		/* ----------move right down---------- */
-		this->current_chs_list_ptr[playerIndex].move_x_one_unit(posneg);
-		this->current_chs_list_ptr[playerIndex].move_y_one_unit(posneg);
-	}
-	Chess chs = this->current_chs_list_ptr[playerIndex];
-	replacedChess = this->get_symbol_on_board(chs.x, chs.y);
-	this->set_chs_on_board(this->current_chs_list_ptr[playerIndex]);
+	if (direct == 0)		// move right
+		this->cur_chs_list_ptr[chs_list_index].move_x_one_unit(side);
+	else if (direct == 1)	// move down
+		this->cur_chs_list_ptr[chs_list_index].move_y_one_unit(side);
+	else if (direct == 2)	// move right down
+		this->cur_chs_list_ptr[chs_list_index].move_x_one_unit(side),
+		this->cur_chs_list_ptr[chs_list_index].move_y_one_unit(side);
+
+	Chess chs = this->cur_chs_list_ptr[chs_list_index];
+	eaten_chs_symbol = this->get_symbol_on_board(chs.x, chs.y);
+	this->set_chs_on_board(chs);
 
 	// Update the eaten chessman
-	if (replacedChess != 0) {
+	if (eaten_chs_symbol != 0) {
 		// should delete a single piece.
-		if (replacedChess < 'A') {
+		if (eaten_chs_symbol < 'A') {
 			// this Play is A
-			this->chs_list_A[replacedChess-'1'].exist = false;
-			this->exist_bitwise_A -= 1<<int(replacedChess-'1');
+			this->chs_list_A[eaten_chs_symbol-'1'].exist = false;
+			this->exist_bitwise_A -= 1 << int(eaten_chs_symbol-'1');
 			this->exist_chs_num_A--;
 		}
 		else {
 			// this Play is B
-			this->chs_list_B[replacedChess-'A'].exist = false;
-			this->exist_bitwise_B-= 1<<int(replacedChess-'A');
+			this->chs_list_B[eaten_chs_symbol-'A'].exist = false;
+			this->exist_bitwise_B -= 1 << int(eaten_chs_symbol-'A');
 			this->exist_chs_num_B--;
 		}
 	}
@@ -340,32 +331,32 @@ int Game::update_game_status(const Movement& mvmt)
 void Game::switch_player()
 {
 	if (this->turn) {	//now is B
-		this->current_chs_list_ptr = this->chs_list_A;
-		this->current_exist_bitwise_ptr = this->exist_bitwise_A;
+		this->cur_chs_list_ptr = this->chs_list_A;
+		this->cur_exist_bitwise_ptr = this->exist_bitwise_A;
 		this->turn = false;
 	}
 	else {				//now is A
-		this->current_chs_list_ptr = this->chs_list_B;
-		this->current_exist_bitwise_ptr = this->exist_bitwise_B;
+		this->cur_chs_list_ptr = this->chs_list_B;
+		this->cur_exist_bitwise_ptr = this->exist_bitwise_B;
 		this->turn = true;
 	}
 }
 
 void Game::print_status()
 {
-	cout <<"/*    Player A    */" <<endl;
+	cout << "/*    Player A    */" << endl;
 	for(int i=0; i<6; i++) {
 		printf("%c", '1'+i);
-		cout << " is at (" << this->chs_list_A[i].x << ", " << this->chs_list_A[i].y << ")   [exist : " << this->chs_list_A[i].exist << "] ;" <<endl;
+		cout << " is at (" << this->chs_list_A[i].x << ", " << this->chs_list_A[i].y << ")   [exist : " << this->chs_list_A[i].exist << "] ;" << endl;
 	}
-	cout <<"/*    --------    */" << endl;
+	cout << "/*    --------    */" << endl;
 
-	cout <<"/*    Player B    */" <<endl;
+	cout << "/*    Player B    */" << endl;
 	for(int i=0; i<6; i++) {
 		printf("%c", 'A'+i);
-		cout << " is at (" << this->chs_list_B[i].x << ", " << this->chs_list_B[i].y << ")   [exist : " << this->chs_list_B[i].exist << "] ;" <<endl;
+		cout << " is at (" << this->chs_list_B[i].x << ", " << this->chs_list_B[i].y << ")   [exist : " << this->chs_list_B[i].exist << "] ;" << endl;
 	}
-	cout <<"/*    --------    */" << endl;
+	cout << "/*    --------    */" << endl;
 }
 
 Chess Game::get_movable_chs(const int& k)
@@ -373,21 +364,21 @@ Chess Game::get_movable_chs(const int& k)
 	return this->movable_chs_list[k];
 }
 
-Chess Game::get_current_chs_list(const int& k)
+Chess Game::get_cur_chs_list(const int& k)
 {
-	return this->current_chs_list_ptr[k];
+	return this->cur_chs_list_ptr[k];
 }
 
-Chess Game::get_chs_list(const bool turn, const int& k)
+Chess Game::get_chs_list(const bool turn_, const int& k)
 {
-	if (turn)	//now is playerB
+	if (turn_)	//now is playerB
 		return this->chs_list_B[k];
 	else		//now is playerA
 		return this->chs_list_A[k];
 }
 
 int Game::get_exist_bitwise() {
-	return current_exist_bitwise_ptr;
+	return cur_exist_bitwise_ptr;
 }
 
 bool Game::get_turn()
@@ -397,30 +388,27 @@ bool Game::get_turn()
 
 Movable_chs_map Game::create_movable_chs_map()
 {
-	Movable_chs_map _am;
-	for(int exist=0; exist<(1<<6); exist++) { // each exist status
+	Movable_chs_map movable_chs_map_;
+	for(int exist_=0; exist_<(1<<6); exist_++) { // each exist status
 		for(int dice=0; dice<6; dice++) {
-			int availableFormer = -1, availableLatter = -1;
-			int tmp = exist;
-			int bin[6];
-			int f = exist, l = exist;
-			for(int i=dice; i>=0; i--) {
-				if((exist%(1<<(i+1)))/(1<<i) == true) {
-					availableFormer = i;
+			int former_chs_index = -1, latter_chs_index = -1;
+			for(int i=dice-1; i>=0; i--) {
+				if((exist_%(1<<(i+1)))/(1<<i) == true) {
+					former_chs_index = i;
 					break;
 				}
 			}
-			for(int i=dice; i<6; i++) {
-				if((exist>>i)%2 == true) {
-					availableLatter = i;
+			for(int i=dice+1; i<6; i++) {
+				if((exist_>>i)%2 == true) {
+					latter_chs_index = i;
 					break;
 				}
 			}
-			availableFormer = (availableFormer == -1) ? availableLatter : availableFormer;
-			availableLatter = (availableLatter == -1) ? availableFormer : availableLatter;
-			pair<int, int> fir(dice, exist), sec(availableFormer, availableLatter);
-			_am.insert(make_pair(fir, sec));
+			former_chs_index = (former_chs_index == -1) ? latter_chs_index : former_chs_index;
+			latter_chs_index = (latter_chs_index == -1) ? former_chs_index : latter_chs_index;
+			pair<int, int> fir(dice, exist_), sec(former_chs_index, latter_chs_index);
+			movable_chs_map_.insert(make_pair(fir, sec));
 		}
 	}
-	return _am;
+	return movable_chs_map_;
 }

@@ -7,32 +7,25 @@
 #include "game.h"
 using namespace std;
 
+// coordinate of the board (x, y)
 typedef pair<int, int> Pos;
-// Heuristic map
-typedef map<Pos, int> Hmap;
-// Available move map
-
+// Heuristic map: Pos -> heuristic value
+typedef map<Pos, int> Heuristic_map;
 
 class Minimax
 {
 	public:
-		//the result after the simulation
-		bool aiTurn_;
-		char aiSymbol_;
-		Chess chosenChs_;
-		int chosenDirct_;
-		Hmap hvA_;
-		Hmap hvB_;
-		Movable_chs_map am_;
-		// OurOppScoreMap sm_;
+		bool ai_turn;
+		char ai_symbol;
+		Heuristic_map feature_map_A;
+		Heuristic_map feature_map_B;
+
 		Minimax();
 		~Minimax() {}
-		Movement auto_play(Game currentGame, int dice);
-		int minimax(Game& originGame, int h);
-		int feature(Game& currentGame);
-		// int feature(char board[5][5]);
+		Movement auto_play(Game cur_game, int dice);
+		int minimax(Game& cur_game, int height);
+		int feature(Game& cur_game);
 		int simulate(int height);
-		int chooseDirection();
 };
 
 #endif
