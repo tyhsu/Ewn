@@ -56,35 +56,35 @@ Game::Game()
 
 	//Initialize the positions of the chessmen
 	//A: 1~6
-	int currPos = 0;
-	int positionA[6][2] = { {0,0}, {0,1}, {0,2}, {1,0}, {1,1}, {2,0} };
+	int chs_pos_index = 0;
+	int chs_pos_A[6][2] = { {0,0}, {0,1}, {0,2}, {1,0}, {1,1}, {2,0} };
 	int six = 0x3f;	//11,1111(2)
 	srand( time(NULL) + getpid() );
 	//Every position selects a number
-	while (currPos<6) {
-		int number = rand()%6;	//0~5
-		if ((six & (1<<number)) >> number) {	//The number hasn't been used
-			int posX = positionA[currPos][0], posY = positionA[currPos][1];
-			this->board[posX][posY] = '1' + number;
-			this->chs_list_A[number].x = posX;
-			this->chs_list_A[number].y = posY;
-			currPos++;
-			six = six ^ (1<<number);	//The used number is discarded
+	while (chs_pos_index<6) {
+		int chs_index = rand()%6;	//0~5
+		if ((six & (1<<chs_index)) >> chs_index) {	//The number hasn't been used
+			int x_ = chs_pos_A[chs_pos_index][0], y_ = chs_pos_A[chs_pos_index][1];
+			this->board[x_][y_] = '1' + chs_index;
+			this->chs_list_A[chs_index].x = x_;
+			this->chs_list_A[chs_index].y = y_;
+			chs_pos_index++;
+			six = six ^ (1<<chs_index);	//The used number is discarded
 		}
 	}
 	//B: A~F
-	currPos = 0;
-	int positionB[6][2] = { {4,4}, {4,3}, {4,2}, {3,4}, {3,3}, {2,4} };
+	chs_pos_index = 0;
+	int chs_pos_B[6][2] = { {4,4}, {4,3}, {4,2}, {3,4}, {3,3}, {2,4} };
 	six = 0x3f;	//11,1111(2)
-	while (currPos<6) {
-		int number = rand()%6;	//0~6
-		if ((six & (1<<number)) >> number) {	//The number hasn't been used
-			int posX = positionB[currPos][0], posY = positionB[currPos][1];
-			this->board[posX][posY] = 'A' + number;
-			this->chs_list_B[number].x = posX;
-			this->chs_list_B[number].y = posY;
-			currPos++;
-			six = six ^ (1<<number);	//The used number is discarded
+	while (chs_pos_index<6) {
+		int chs_index = rand()%6;	//0~6
+		if ((six & (1<<chs_index)) >> chs_index) {	//The number hasn't been used
+			int x_ = chs_pos_B[chs_pos_index][0], y_ = chs_pos_B[chs_pos_index][1];
+			this->board[x_][y_] = 'A' + chs_index;
+			this->chs_list_B[chs_index].x = x_;
+			this->chs_list_B[chs_index].y = y_;
+			chs_pos_index++;
+			six = six ^ (1<<chs_index);	//The used number is discarded
 		}
 	}
 }
