@@ -59,7 +59,7 @@ Game::Game()
 	int chs_pos_index = 0;
 	int chs_pos_A[6][2] = { {0,0}, {0,1}, {0,2}, {1,0}, {1,1}, {2,0} };
 	int chs_pos_B[6][2] = { {4,4}, {4,3}, {4,2}, {3,4}, {3,3}, {2,4} };
-	int** current_chs_pos_ptr = chs_pos_A;
+	int (*current_chs_pos_ptr)[2] = &(chs_pos_A[0]);
 	int six = 0x3f;	//11,1111(2)
 	char symbol_ = '1';
 	srand( time(NULL) + getpid() );
