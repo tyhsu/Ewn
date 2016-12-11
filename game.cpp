@@ -55,38 +55,35 @@ Game::Game()
 	this->turn = false;
 
 	//Initialize the positions of the chessmen
-	//A: 1~6
+	//A: 1~6	B: A~F
 	int chs_pos_index = 0;
 	int chs_pos_A[6][2] = { {0,0}, {0,1}, {0,2}, {1,0}, {1,1}, {2,0} };
-	int six = 0x3f;	//11,1111(2)
-	srand( time(NULL) + getpid() );
-	//Every position selects a number
-	while (chs_pos_index<6) {
-		int chs_index = rand()%6;	//0~5
-		if ((six & (1<<chs_index)) >> chs_index) {	//The number hasn't been used
-			int x_ = chs_pos_A[chs_pos_index][0], y_ = chs_pos_A[chs_pos_index][1];
-			this->board[x_][y_] = '1' + chs_index;
-			this->chs_list_A[chs_index].x = x_;
-			this->chs_list_A[chs_index].y = y_;
-			chs_pos_index++;
-			six = six ^ (1<<chs_index);	//The used number is discarded
-		}
-	}
-	//B: A~F
-	chs_pos_index = 0;
 	int chs_pos_B[6][2] = { {4,4}, {4,3}, {4,2}, {3,4}, {3,3}, {2,4} };
-	six = 0x3f;	//11,1111(2)
-	while (chs_pos_index<6) {
-		int chs_index = rand()%6;	//0~6
-		if ((six & (1<<chs_index)) >> chs_index) {	//The number hasn't been used
-			int x_ = chs_pos_B[chs_pos_index][0], y_ = chs_pos_B[chs_pos_index][1];
-			this->board[x_][y_] = 'A' + chs_index;
-			this->chs_list_B[chs_index].x = x_;
-			this->chs_list_B[chs_index].y = y_;
-			chs_pos_index++;
-			six = six ^ (1<<chs_index);	//The used number is discarded
+	int** current_chs_pos_ptr = chs_pos_A;
+	int six = 0x3f;	//11,1111(2)
+	char symbol_ = '1';
+	srand( time(NULL) + getpid() );
+	for (int i=0; i<2; i++) {
+		//Every position selects a number
+		while (chs_pos_index<6) {
+			int chs_index = rand()%6;	//0~5
+			if ((six & (1<<chs_index)) >> chs_index) {	//The number hasn't been used
+				int x_ = current_chs_pos_ptr[chs_pos_index][0];
+				int y_ = current_chs_pos_ptr[chs_pos_index][1];
+				this->board[x_][y_] = symbol_ + chs_index;
+				this->current_chs_list_ptr[chs_index].x = x_;
+				this->current_chs_list_ptr[chs_index].y = y_;
+				chs_pos_index++;
+				six = six ^ (1<<chs_index);	//The used number is discarded
+			}
 		}
+		chs_pos_index = 0;
+		six = 0x3f;	//11,1111(2)
+		current_chs_list_ptr = chs_list_B;
+		current_chs_pos_ptr = chs_pos_B;
+		symbol_ = 'A';
 	}
+	current_chs_list_ptr = chs_list_A;	//recover the initialization
 }
 
 Game::Game(const Game& game)
