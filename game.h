@@ -41,7 +41,7 @@ private:
 	int exist_bitwise_A, exist_bitwise_B;
 	int cur_exist_bitwise_ptr;
 	//false(0): A, true(1): B
-	bool turn;
+	bool is_switch;
 
 public:
 	static Movable_chs_map movable_chs_map;
@@ -56,7 +56,7 @@ public:
 	static Movable_chs_map create_movable_chs_map();
 
 	//Directly set the board
-	void set_board(char board_[5][5], int turn_);
+	void set_board(char board_[5][5], int is_switch_);
 	//Print the board
 	void print_board();
 	//Roll the dice
@@ -64,23 +64,23 @@ public:
 	//Input the result of dice and return how many chessmen the player can move
 	int count_movable_chs(const int& dice);
 	//Check if the chessman is out of the board
-	bool is_in_board(const Movement& mvmt);
+	bool check_in_board(const Movement& mvmt);
 	//Synchronize the chessman and the board
 	void set_chs_on_board(const Chess& chs);
 	//Get the symbol of the chess originally on the board
 	char get_symbol_on_board(const int& x, const int& y);
 	//update_game_status the board(have a movement), chsNum, playerA/playerB. Return 0(game continues), 1(A wins), 2(B wins)
 	int update_game_status(const Movement& mvmt);
-	//Change turn and the pointer of the player
+	//Change is_switch and the pointer of the player
 	void switch_player();
 	//Print the position and existence of the both players
 	void print_status();
 
 	Chess get_movable_chs(const int& k);
 	Chess get_cur_chs_list(const int& k);
-	Chess get_chs_list(const bool turn_, const int& k);
+	Chess get_chs_list(const bool is_switch_, const int& k);
 	int get_exist_bitwise();
-	bool get_turn();
+	bool get_is_switch();
 };
 
 #endif

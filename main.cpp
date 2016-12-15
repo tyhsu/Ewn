@@ -22,13 +22,13 @@ int main() {
 	cout << endl;
 	Play ewn;
 	if (cmd == 0)
-		ewn.twoPlayers();
+		ewn.two_players_mode();
 	else if (cmd == 1)
-		ewn.playerAI();
+		ewn.player_AI_mode();
 	else if (cmd == 2)
-		ewn.twoAIs();
+		ewn.two_AIs_mode();
 	else if (cmd == 3)
-		ewn.contestAI();
+		ewn.contest_AI_mode();
 	else
 		cout << "It's not a command" << endl;
 	return 0;

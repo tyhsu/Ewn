@@ -9,24 +9,21 @@ using namespace std;
 class Play
 {
 private:
-	Game game_;
-	//Game recoverBuffer_;
+	Game game;
 
 public:
 	//One player plays the game (the integration)
-	Movement playerPlay(const int& dice);
-	//To recover one step
-	//void recover();
+	Movement player_move(const int& dice);
 
 	/*-----------the Modes-----------*/
 	//Two players fight!
-	void twoPlayers();
+	void two_players_mode();
 	//One player fight with AI
-	void playerAI();
+	void player_AI_mode();
 	//Two AIs fight
-	void twoAIs();
+	void two_AIs_mode();
 	//One player fight with AI in the contest
-	void contestAI();
+	void contest_AI_mode();
 };
 
 #endif

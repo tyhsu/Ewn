@@ -10,11 +10,11 @@ EwnAI::EwnAI()
 	cout << "Choose: ";
 	cin >> cmd;
 	if (cmd == 0)
-		this->ai_ = 0;
+		this->ai_mode = 0;
 }
 
-Movement EwnAI::auto_play(Game currentGame, int dice)
+Movement EwnAI::AI_move(Game cur_game, int dice)
 {
-	//if (this->ai_ == 0)
-		return this->minimax_.auto_play(currentGame, dice);
+	//if (this->ai_mode == 0)
+		return this->minimax.AI_move(cur_game, dice);
 }

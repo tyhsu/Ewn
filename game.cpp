@@ -52,7 +52,7 @@ Game::Game()
 
 	this->cur_chs_list_ptr = chs_list_A;
 	this->cur_exist_bitwise_ptr = exist_bitwise_A;
-	this->turn = false;
+	this->is_switch = false;
 
 	//Initialize the positions of the chessmen
 	//A: 1~6	B: A~F
@@ -102,9 +102,9 @@ Game::Game(const Game& game)
 	}
 	this->exist_bitwise_A = game.exist_bitwise_A;
 	this->exist_bitwise_B = game.exist_bitwise_B;
-	this->turn = game.turn;
-	this->cur_chs_list_ptr = (this->turn == false) ? this->chs_list_A :  this->chs_list_B;
-	this->cur_exist_bitwise_ptr = (this->turn == false) ? this->exist_bitwise_A :  this->exist_bitwise_B;
+	this->is_switch = game.is_switch;
+	this->cur_chs_list_ptr = (this->is_switch == false) ? this->chs_list_A :  this->chs_list_B;
+	this->cur_exist_bitwise_ptr = (this->is_switch == false) ? this->exist_bitwise_A :  this->exist_bitwise_B;
 	this->exist_chs_num_A = game.exist_chs_num_A;
 	this->exist_chs_num_B = game.exist_chs_num_B;
 }
@@ -125,12 +125,12 @@ void Game::operator=(const Game& game)
 	}
 	this->exist_bitwise_A = game.exist_bitwise_A;
 	this->exist_bitwise_B = game.exist_bitwise_B;
-	this->turn = game.turn;
+	this->is_switch = game.is_switch;
 	this->exist_chs_num_A = game.exist_chs_num_A;
 	this->exist_chs_num_B = game.exist_chs_num_B;
 }
 
-void Game::set_board(char board_[5][5], int turn_)
+void Game::set_board(char board_[5][5], int is_switch_)
 {
 	int chs_num_A_ = 0, chs_num_B_ = 0;
 	int exist_bitwise_A_ = 0, exist_bitwise_B_ = 0;
@@ -164,15 +164,15 @@ void Game::set_board(char board_[5][5], int turn_)
 	this->exist_bitwise_A = exist_bitwise_A_;
 	this->exist_bitwise_B = exist_bitwise_B_;
 
-	if (turn_) {
+	if (is_switch_) {
 		this->cur_chs_list_ptr = this->chs_list_B;
 		this->cur_exist_bitwise_ptr = this->exist_bitwise_B;
-		this->turn = true;
+		this->is_switch = true;
 	}
 	else {
 		this->cur_chs_list_ptr = this->chs_list_A;
 		this->cur_exist_bitwise_ptr = this->exist_bitwise_A;
-		this->turn = false;
+		this->is_switch = false;
 	}
 }
 
@@ -242,10 +242,10 @@ int Game::count_movable_chs(const int& dice)
 	}
 }
 
-bool Game::is_in_board(const Movement& mvmt)
+bool Game::check_in_board(const Movement& mvmt)
 {
 	Chess chs = this->cur_chs_list_ptr[mvmt.first];
-	int side = (this->turn == false) ? 1 : -1;
+	int side = (this->is_switch == false) ? 1 : -1;
 	int x = chs.x, y = chs.y;
 	x += (mvmt.second == 1) ? 0 : side;
 	y += (mvmt.second == 0) ? 0 : side;
@@ -266,7 +266,7 @@ int Game::update_game_status(const Movement& mvmt)
 {
 	Chess next_chs = this->cur_chs_list_ptr[mvmt.first];
 	int direct = mvmt.second;
-	int side = (this->turn == false)? 1 : -1;
+	int side = (this->is_switch == false)? 1 : -1;
 	char eaten_chs_symbol;
 
 	// Clear previous location
@@ -276,7 +276,7 @@ int Game::update_game_status(const Movement& mvmt)
 
 	// Update the chosen movement on the board
 	int chs_list_index = 0;
-	if (!this->turn)	//chs_list_A
+	if (!this->is_switch)	//chs_list_A
 		chs_list_index = next_chs.symbol - '1';
 	else				//chs_list_B
 		chs_list_index = next_chs.symbol - 'A';
@@ -319,9 +319,9 @@ int Game::update_game_status(const Movement& mvmt)
 	}
 
 	// Check if the other player is killed the game.
-	if (!this->turn && this->exist_chs_num_B==0)		//this player is A
+	if (!this->is_switch && this->exist_chs_num_B==0)		//this player is A
 		return 1;
-	else if (this->turn && this->exist_chs_num_A==0)	//this player is B
+	else if (this->is_switch && this->exist_chs_num_A==0)	//this player is B
 		return 2;
 
 	//The game has not come to a close
@@ -330,15 +330,15 @@ int Game::update_game_status(const Movement& mvmt)
 
 void Game::switch_player()
 {
-	if (this->turn) {	//now is B
+	if (this->is_switch) {	//now is B
 		this->cur_chs_list_ptr = this->chs_list_A;
 		this->cur_exist_bitwise_ptr = this->exist_bitwise_A;
-		this->turn = false;
+		this->is_switch = false;
 	}
 	else {				//now is A
 		this->cur_chs_list_ptr = this->chs_list_B;
 		this->cur_exist_bitwise_ptr = this->exist_bitwise_B;
-		this->turn = true;
+		this->is_switch = true;
 	}
 }
 
@@ -369,21 +369,22 @@ Chess Game::get_cur_chs_list(const int& k)
 	return this->cur_chs_list_ptr[k];
 }
 
-Chess Game::get_chs_list(const bool turn_, const int& k)
+Chess Game::get_chs_list(const bool is_switch_, const int& k)
 {
-	if (turn_)	//now is playerB
+	if (is_switch_)	//now is playerB
 		return this->chs_list_B[k];
 	else		//now is playerA
 		return this->chs_list_A[k];
 }
 
-int Game::get_exist_bitwise() {
+int Game::get_exist_bitwise()
+{
 	return cur_exist_bitwise_ptr;
 }
 
-bool Game::get_turn()
+bool Game::get_is_switch()
 {
-	return this->turn;
+	return this->is_switch;
 }
 
 Movable_chs_map Game::create_movable_chs_map()

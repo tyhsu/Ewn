@@ -22,7 +22,7 @@ class Minimax
 
 		Minimax();
 		~Minimax() {}
-		Movement auto_play(Game cur_game, int dice);
+		Movement AI_move(Game cur_game, int dice);
 		int minimax(Game& cur_game, int height);
 		int feature(Game& cur_game);
 		int simulate(int height);

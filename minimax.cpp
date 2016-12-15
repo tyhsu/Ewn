@@ -1,45 +1,43 @@
 #include <iostream>
 #include <cstdio>
 #include <algorithm>
-#include "game.h"
-#include "minimax.h"
 #include <time.h>
 #include <string>
+#include "game.h"
+#include "minimax.h"
+
 const int HEIGHT = 4;
-const float chance_weight = 1/6;
 
 Minimax::Minimax() {
 	// pos: a <int,int> , <x,y> coord;
 	for (int i = 0; i < 5; i++) {
 		for (int j = 0;j < 5; j++) {
-			// insert to map => hvA;
+			// insert to map => feature_map_A;
 			// get the smaller of (x,y)
 			int k = (i > j ? j : i);
-			// calculate the feature value
 			k = (k+1) * (k+1) * 3;
-			Pos chess_pos;
-			chess_pos.first = i;
-			chess_pos.second = j;
-			feature_map_A.insert(make_pair(chess_pos, k));
+			Pos chs_pos;
+			chs_pos.first = i;
+			chs_pos.second = j;
+			feature_map_A.insert(make_pair(chs_pos, k));
 
-			// insert to map => hvB;
+			// insert to map => feature_map_B;
 			// get the bigger of (x,y)
 			k = (i > j ? i : j);
-			// calculate the feature value
 			k = (5-k) * (5-k) * 3;
-			chess_pos.first = i;
-			chess_pos.second = j;
-			feature_map_B.insert(make_pair(chess_pos, k));
+			chs_pos.first = i;
+			chs_pos.second = j;
+			feature_map_B.insert(make_pair(chs_pos, k));
 		}
 	}
 }
 
-Movement Minimax::auto_play(Game cur_game, int dice)
+Movement Minimax::AI_move(Game cur_game, int dice)
 {
     cerr << "calculating..." ;
     cerr.flush();
-	clock_t timeInit = clock();
-	ai_turn = cur_game.get_turn();
+	clock_t init_time = clock();
+	ai_turn = cur_game.get_is_switch();
 	ai_symbol = ai_turn? 'A': '1';
 
 	Movement answer;	//the best move will return
@@ -52,7 +50,7 @@ Movement Minimax::auto_play(Game cur_game, int dice)
 		//cout << "select: " << chs+1 << endl;
 		for (int direct = 0; direct < 3; direct++) {
 			Movement mvmt(chs, direct);
-			if (cur_game.is_in_board(mvmt)) {
+			if (cur_game.check_in_board(mvmt)) {
 				Game nextStep = cur_game;
 				int game_status = nextStep.update_game_status(mvmt);
 				// check if the game ends
@@ -73,7 +71,7 @@ Movement Minimax::auto_play(Game cur_game, int dice)
 			}
 		}
 	}
-	double timeCost = (double)(clock() - timeInit) / CLOCKS_PER_SEC;
+	double timeCost = (double)(clock() - init_time) / CLOCKS_PER_SEC;
 	printf("\ntime cost: %.2fs\n", timeCost);
 	return answer;
 }
@@ -95,7 +93,7 @@ int Minimax::minimax(Game& cur_game, int height)
 
 	int myTurn, myWin;
 	char mySymbol;
-	if (cur_game.get_turn() == ai_turn) {
+	if (cur_game.get_is_switch() == ai_turn) {
 		// my turn			=> the largest, the better
 		myTurn = 1;
 		bestValue = -1e9;
@@ -122,7 +120,7 @@ int Minimax::minimax(Game& cur_game, int height)
 			int chs = currChess.symbol - mySymbol;
 			for (int direct = 0; direct < 3; direct++) {
 				Movement mvmt(chs, direct);
-				if (cur_game.is_in_board(mvmt)) {
+				if (cur_game.check_in_board(mvmt)) {
 					Game nextStep = cur_game;
 					int game_status = nextStep.update_game_status(mvmt);
 					// check if the game ends

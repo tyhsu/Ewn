@@ -5,11 +5,11 @@
 class EwnAI
 {
 private:
-	int ai_;
-	Minimax minimax_;	//ai = 0
+	int ai_mode;
+	Minimax minimax;	//ai = 0
 public:
 	EwnAI();
-	Movement auto_play(Game currentGame, int dice);
+	Movement AI_move(Game cur_game, int dice);
 };
 
 #endif
