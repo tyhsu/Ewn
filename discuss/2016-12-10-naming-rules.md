@@ -21,7 +21,7 @@
    - 統一用 `this` 來表示
 
 ### 命名脈絡
-   - 去蕪存菁，簡短為主 <br> ex: `chs`, `direct`, `cur` , `pos`
+   - 去蕪存菁，簡短為主 <br> ex: `chs`, `direct`, `cur` , `pos`, `val`, `ptr`
    - 當前=> + `cur`
    - 陣列=>後面加入 `list`
    - 位元運算=>後面加入 `bitwise`
