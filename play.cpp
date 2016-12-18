@@ -150,104 +150,80 @@ void Play::contest_AI_mode()
 	this->game.print_board();
 
 	EwnAI ewnAI;
-	if (is_left_upper_side) {	//A: Opponent's, B: Ours
-		while (1) {
-			int game_status;
-			if (!this->game.get_is_switch()) {	//The opponent's turn (A)
-				char chs;
-				int direct;
-				cout << endl << "Choose the chessman(1~6): ";
-				cin >> chs;
-				if (!(chs>='1' && chs<='6'))
-					continue;
+	while (1) {
+		int game_status;
+		//The opponent's turn (A)
+		if (is_left_upper_side && !this->game.get_is_switch()) {
+			char chs;
+			int direct;
+			cout << endl << "Choose the chessman(1~6): ";
+			cin >> chs;
+			if (!(chs>='1' && chs<='6'))
+				continue;
 
-				cout << "Direction: 0)Right 1)Down 2)Right-down" << endl;
-				cout << "Choose: ";
-				cin >> direct;
-				if (!(direct>=0 && direct<=2))
-					continue;
+			cout << "Direction: 0)Right 1)Down 2)Right-down" << endl;
+			cout << "Choose: ";
+			cin >> direct;
+			if (!(direct>=0 && direct<=2))
+				continue;
 
-				bool is_recover;
-				cout << "Do you want to recover? 0)No 1)Yes" << endl;
-				cout << "Choose: ";
-				cin >> is_recover;
-				if (!is_recover)
-					continue;
+			int is_recover;
+			cout << "Do you want to recover? 0)No 1)Yes" << endl;
+			cout << "Choose: ";
+			cin >> is_recover;
+			if (is_recover != 0)
+				continue;
 
-				game_status = this->game.update_game_status(make_pair(chs-'1', direct));
-			}
-
-			else {	//AI's turn (B)
-				int dice;
-				cout << endl << "Set the dice(1~6): ";
-				cin >> dice;
-				if (!(dice>=1 && dice<=6))
-					continue;
-
-				game_status = this->game.update_game_status(ewnAI.AI_move(this->game, dice-1));
-			}
-
-			this->game.print_board();
-			//update: 0(game continues), 1(A wins), 2(B wins)
-			if (game_status!=0) {
-				cout << "====================================" << endl;
-				if (game_status==1) cout << "The opponent is the winner!!!" << endl;
-				else cout << "Our AI is the winner!!!" << endl;
-				cout << "====================================" << endl;
-				return;
-			}
-			this->game.switch_player();
-		}
-	}
-	else {				//A: Ours, B: Opponent's
-		while (1) {
-			int game_status;
-			if (this->game.get_is_switch()) {	//The opponent's turn (B)
-				char chs;
-				int direct;
-				cout << endl << "Choose the chessman(A~F): ";
-				cin >> chs;
-				if (!(chs>='A' && chs<='F'))
-					continue;
-
-				cout << "Direction: 0)Left 1)Up 2)Left-up" << endl;
-				cout << "Choose: ";
-				cin >> direct;
-				if (!(direct>=0 && direct<=2))
-					continue;
-
-				int is_recover;
-				cout << "Do you want to recover? 0)No 1)Yes" << endl;
-				cout << "Choose: ";
-				cin >> is_recover;
-				if (is_recover != 0)
-					continue;
-
-				game_status = this->game.update_game_status(make_pair(chs-'A', direct));
-			}
-
-			else {	//AI's turn (A)
-				int dice;
-				cout << endl << "Set the dice(1~6): ";
-				cin >> dice;
-				if (!(dice>=1 && dice<=6))
-					continue;
-
-				game_status = this->game.update_game_status(ewnAI.AI_move(this->game, dice-1));
-			}
-
-			this->game.print_board();
-			//update: 0(game continues), 1(A wins), 2(B wins)
-			if (game_status!=0) {
-				//this->game.print_status();
-				cout << "====================================" << endl;
-				if (game_status==2) cout << "The opponent is the winner!!!" << endl;
-				else cout << "Our AI is the winner!!!" << endl;
-				cout << "====================================" << endl;
-				return;
-			}
-			this->game.switch_player();
+			game_status = this->game.update_game_status(make_pair(chs-'1', direct));
 		}
 
+		//The opponent's turn (B)
+		else if (!is_left_upper_side && this->game.get_is_switch()) {
+			char chs;
+			int direct;
+			cout << endl << "Choose the chessman(A~F): ";
+			cin >> chs;
+			if (!(chs>='A' && chs<='F'))
+				continue;
+
+			cout << "Direction: 0)Left 1)Up 2)Left-up" << endl;
+			cout << "Choose: ";
+			cin >> direct;
+			if (!(direct>=0 && direct<=2))
+				continue;
+
+			int is_recover;
+			cout << "Do you want to recover? 0)No 1)Yes" << endl;
+			cout << "Choose: ";
+			cin >> is_recover;
+			if (is_recover != 0)
+				continue;
+
+			game_status = this->game.update_game_status(make_pair(chs-'A', direct));
+		}
+
+		//Our AI's turn
+		else {
+			char dice;
+			cout << endl << "Set the dice(1~6): ";
+			cin >> dice;
+			if (!(dice>='1' && dice<='6'))
+				continue;
+
+			game_status = this->game.update_game_status(ewnAI.AI_move(this->game, dice-'1'));
+		}
+
+		this->game.print_board();
+		//update: 0(game continues), 1(A wins), 2(B wins)
+		if (game_status!=0) {
+			cout << "====================================" << endl;
+			if ((is_left_upper_side && game_status==1) || (!is_left_upper_side && game_status==2))
+				cout << "The opponent is the winner!!!" << endl;
+			else
+				cout << "Our AI is the winner!!!" << endl;
+			cout << "====================================" << endl;
+			return;
+		}
+		this->game.switch_player();
 	}
 }
