@@ -14,18 +14,19 @@ typedef map<Pos, int> Heuristic_map;
 
 class Minimax
 {
-	public:
-		bool ai_side;
-		char ai_symbol;
-		Heuristic_map feature_map_A;
-		Heuristic_map feature_map_B;
+  public:
+    bool ai_side;
+    char ai_symbol;
+    Heuristic_map feature_map_A;
+    Heuristic_map feature_map_B;
 
-		Minimax();
-		~Minimax() {}
-		Movement AI_move(Game cur_game, int dice);
-		int minimax(Game& cur_game, int height);
-		int feature(Game& cur_game);
-		int simulate(int height);
+    Minimax();
+    ~Minimax() {}
+    Movement AI_move(Game cur_game, int dice);
+    int minimax(Game& cur_game, int height);
+    int feature(Game& cur_game);
+    int prepare_simulate(Game& cur_game);
+    int simulation(Game& cur_game);
 };
 
 #endif
