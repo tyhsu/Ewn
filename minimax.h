@@ -15,7 +15,7 @@ typedef map<Pos, int> Heuristic_map;
 class Minimax
 {
 	public:
-		bool ai_turn;
+		bool ai_side;
 		char ai_symbol;
 		Heuristic_map feature_map_A;
 		Heuristic_map feature_map_B;

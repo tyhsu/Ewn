@@ -130,7 +130,7 @@ void Play::contest_AI_mode()
 			for (int i=0; i<5; i++) {
 				for (int j=0; j<5; j++) {
 					cin >> c;
-					if (c=='0')
+					if (c == '0')
 						board[i][j] = 0;
 					else
 						board[i][j] = c;

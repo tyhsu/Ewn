@@ -79,11 +79,11 @@ Game::Game()
 		}
 		chs_pos_index = 0;
 		chs_unuse_bitwise = 0b111111;
-		cur_chs_list_ptr = chs_list_B;
+		this->cur_chs_list_ptr = chs_list_B;
 		current_chs_pos_ptr = chs_pos_B;
 		symbol_ = 'A';
 	}
-	cur_chs_list_ptr = chs_list_A;	//recover the initialization
+	this->cur_chs_list_ptr = chs_list_A;	//recover the initialization
 }
 
 Game::Game(const Game& game)
@@ -379,7 +379,7 @@ Chess Game::get_chs_list(const bool is_switch_, const int& k)
 
 int Game::get_exist_bitwise()
 {
-	return cur_exist_bitwise_ptr;
+	return this->cur_exist_bitwise_ptr;
 }
 
 bool Game::get_is_switch()

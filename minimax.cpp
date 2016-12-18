@@ -19,7 +19,7 @@ Minimax::Minimax() {
 			Pos chs_pos;
 			chs_pos.first = i;
 			chs_pos.second = j;
-			feature_map_A.insert(make_pair(chs_pos, k));
+			this->feature_map_A.insert(make_pair(chs_pos, k));
 
 			// insert to map => feature_map_B;
 			// get the bigger of (x,y)
@@ -27,7 +27,7 @@ Minimax::Minimax() {
 			k = (5-k) * (5-k) * 3;
 			chs_pos.first = i;
 			chs_pos.second = j;
-			feature_map_B.insert(make_pair(chs_pos, k));
+			this->feature_map_B.insert(make_pair(chs_pos, k));
 		}
 	}
 }
@@ -37,35 +37,33 @@ Movement Minimax::AI_move(Game cur_game, int dice)
     cerr << "calculating..." ;
     cerr.flush();
 	clock_t init_time = clock();
-	ai_turn = cur_game.get_is_switch();
-	ai_symbol = ai_turn? 'A': '1';
+	this->ai_side = cur_game.get_is_switch();
+	this->ai_symbol = this->ai_side? 'A': '1';
 
 	Movement answer;	//the best move will return
-	int bestValue = -1e9, childValue;
-	int win = ai_turn? 2: 1;
-	int nextMoveCnt = cur_game.count_movable_chs(dice);
+	int best_val = -1e9, child_val;
+	int win = this->ai_side? 2: 1;
+	int next_move_cnt = cur_game.count_movable_chs(dice);
 
-	for (int i=0; i<nextMoveCnt; i++) {
-		int chs = cur_game.get_movable_chs(i).symbol - ai_symbol;
-		//cout << "select: " << chs+1 << endl;
+	for (int i=0; i<next_move_cnt; i++) {
+		int chs = cur_game.get_movable_chs(i).symbol - this->ai_symbol;
 		for (int direct = 0; direct < 3; direct++) {
 			Movement mvmt(chs, direct);
 			if (cur_game.check_in_board(mvmt)) {
-				Game nextStep = cur_game;
-				int game_status = nextStep.update_game_status(mvmt);
+				Game child_game = cur_game;
+				int game_status = child_game.update_game_status(mvmt);
 				// check if the game ends
 				if (game_status == win)
-					childValue = feature(nextStep);
+					child_val = feature(child_game);
 				else if (game_status != 0)	// lose the game
 					continue;
 				else {
-					nextStep.switch_player();
-					childValue = minimax(nextStep, HEIGHT);
+					child_game.switch_player();
+					child_val = minimax(child_game, HEIGHT);
 				}
-				//cout << endl << "direction " << direct << ": " << childValue << endl;
 				// update the best value and the best movement
-				if (childValue >= bestValue) {
-					bestValue = childValue;
+				if (child_val >= best_val) {
+					best_val = child_val;
 					answer = mvmt;
 				}
 			}
@@ -80,170 +78,157 @@ int Minimax::minimax(Game& cur_game, int height)
 {
 	// check if end;
 	if (height == 0) {
-		// Game nextStep = cur_game;
 		cur_game.switch_player();
 		return feature(cur_game);
 	}
-	// cout << "========== a minimax =========== height:" << height << endl;
-	int bestValue;
-	int chesses_values[6];
-	int lookahead = 0;
-	string space = "";
-	for (int i=HEIGHT; i>height; i--) space += " ";
+	int best_val;
+	int chs_val_list[6];
+	int lookahead_cnt = 0;
 
-	int myTurn, myWin;
-	char mySymbol;
-	if (cur_game.get_is_switch() == ai_turn) {
-		// my turn			=> the largest, the better
-		myTurn = 1;
-		bestValue = -1e9;
-		myWin = ai_turn ? 2 : 1;
-		mySymbol = ai_symbol;
+	bool is_ai_side;
+	int cur_win;
+	char cur_symbol;
+	if (cur_game.get_is_switch() == this->ai_side) {
+		// ai's cur_side		=> the largest, the better
+		is_ai_side = true;
+		best_val = -1e9;
+		cur_win = this->ai_side ? 2 : 1;
+		cur_symbol = this->ai_symbol;
 		for (int i=0; i<6; i++)
-			chesses_values[i] = -1e9;
+			chs_val_list[i] = -1e9;
 	}
 	else {
-		// opponent's turn	=> the smallest, the better
-		myTurn = 0;
-		bestValue = 1e9;
-		myWin = ai_turn ? 1 : 2;
-		mySymbol = ai_turn? '1' : 'A';
+		// opponent's cur_side	=> the smallest, the better
+		is_ai_side = false;
+		best_val = 1e9;
+		cur_win = this->ai_side ? 1 : 2;
+		cur_symbol = this->ai_side? '1' : 'A';
 		for (int i=0; i<6; i++)
-			chesses_values[i] = 1e9;
+			chs_val_list[i] = 1e9;
 	}
 
-	// ai's turn, find the max
-	// for #chess and direction
-	for (int dice = 0; dice < 6; dice++) {
-		Chess currChess = cur_game.get_cur_chs_list(dice);
-		if (currChess.exist) {
-			int chs = currChess.symbol - mySymbol;
+	// ai's cur_side, find the max
+	// opponent's cur_side, find the min
+	for (int chs_index = 0; chs_index < 6; chs_index++) {
+		Chess cur_chs = cur_game.get_cur_chs_list(chs_index);
+		if (cur_chs.exist) {
+			int chs = cur_chs.symbol - cur_symbol;
 			for (int direct = 0; direct < 3; direct++) {
 				Movement mvmt(chs, direct);
 				if (cur_game.check_in_board(mvmt)) {
-					Game nextStep = cur_game;
-					int game_status = nextStep.update_game_status(mvmt);
+					Game child_game = cur_game;
+					int game_status = child_game.update_game_status(mvmt);
 					// check if the game ends
-					if (game_status == myWin) return feature(nextStep);
+					if (game_status == cur_win) return feature(child_game);
 					else if (game_status != 0) continue;
-					nextStep.switch_player();
+					child_game.switch_player();
 
 					// return child value.
-					int childValue = minimax(nextStep, height-1);
-					if (myTurn) {
-						bestValue = max(bestValue, childValue);
+					int child_val = minimax(child_game, height-1);
+					if (is_ai_side) {
+						best_val = max(best_val, child_val);
 					}
 					else {
-						bestValue = min(bestValue, childValue);
+						best_val = min(best_val, child_val);
 					}
 				}
 				else {
-					// cout << space << "nope, the chs can`t be move." << endl;
 				}
 			}
-			chesses_values[dice] = bestValue;
+			chs_val_list[chs_index] = best_val;
 
-			// if there is lookahead, compare those value of the non-existing
-			// if current is bigger than the front value.
-			if (lookahead) {
+			// if there is lookahead_cnt, compare those values of the non-existing with the existing
+			// check if the current value is bigger than the previous one.
+			if (lookahead_cnt) {
 				int offset;
-				if ((myTurn && bestValue>chesses_values[dice-1]) || (!myTurn && bestValue<chesses_values[dice-1])) {
-					for (int j = 1; j <= lookahead; j++) {
-						offset = dice - j;
-						chesses_values[offset] = bestValue;
+				if ((is_ai_side && best_val>chs_val_list[chs_index-1]) || (!is_ai_side && best_val<chs_val_list[chs_index-1])) {
+					for (int j = 1; j <= lookahead_cnt; j++) {
+						offset = chs_index - j;
+						chs_val_list[offset] = best_val;
 					}
 				}
-				lookahead = 0;
+				lookahead_cnt = 0;
 			}
 		}
 		else {
-			//cout << space << "[**Mine** not exist] " << dice << endl;
-			// this chs can`t move, use other`s value
-			lookahead++;
-			if (dice - lookahead < 0) {
+			// this chess can't move, use other's value
+			lookahead_cnt++;
+			if (chs_index - lookahead_cnt < 0) {
 				// there's no chess exists before the selected one
 				continue;
 			}
 			else {
-				chesses_values[dice] = chesses_values[dice - lookahead];
+				chs_val_list[chs_index] = chs_val_list[chs_index - lookahead_cnt];
 			}
 		}
 	}
 
-	// return the sum of the best values in the diceArray (chance node)
-	bestValue = 0;
-	for(int i = 0; i < 6; i++) {
-		// if (height == HEIGHT) cout << i+1 << ":" << diceArray[i] << endl;
-		bestValue += chesses_values[i];
-	}
+	// return the sum of the best values in the chs_val_list (chance node)
+	best_val = 0;
+	for(int i = 0; i < 6; i++)
+		best_val += chs_val_list[i];
 
-	return bestValue;
+	return best_val;
 }
 
 int Minimax::feature(Game& cur_game)
 {
-	int valMy = 0, valOpp = 0;
-	int dice_count = 0;
-	//cout << "hv0--------------------------------" << endl;
-	bool turn = ai_turn;
-	Heuristic_map *hv = ai_turn? &feature_map_B: &feature_map_A;
-	int *val = &valMy;
+	int ai_val = 0, opp_val = 0;
+	bool cur_side = this->ai_side;
+	Heuristic_map *feature_map = this->ai_side? &this->feature_map_B: &this->feature_map_A;
+	int *val_ptr = &ai_val;
 
 	for (int side=0; side<2; side++) {
-		for (int dice = 0; dice < 6; dice++) {
-			// calculate the score of our side
-			Chess chs = cur_game.get_chs_list(turn, dice);
+		for (int chs_index = 0; chs_index < 6; chs_index++) {
+			// calculate the score of the side
+			Chess chs = cur_game.get_chs_list(cur_side, chs_index);
 			if (chs.exist) {
-				// [exist] chess calc function.
+				// [exist] chess calculating function.
 				Pos temp;
 				temp.first = chs.x;
 				temp.second = chs.y;
-				//cout << "dice#" << dice+1 << " : (" << temp.first << ", " << temp.second << ") score:" << (*hv)[temp] << endl;
-				*val += (*hv)[temp];
-				dice_count++;
+				*val_ptr += (*feature_map)[temp];
 			}
 			else {
-				// [non-exist] chess calc function.
-				// spVal: find closest, small chess num`s value.
-				// bpVal: find closest, big chess num`s value.
-				int spVal = 0, bpVal = 0;
+				// [non-exist] chess calculating function.
+				// prev_chs_val: find closest, previous chess num's value.
+				// next_chs_val: find closest, following chess num's value.
+				int prev_chs_val = 0, next_chs_val = 0;
 				// get small part of chess list.
-				for (int sp = dice; sp > 0; sp--) {
-					Chess ctmp = cur_game.get_chs_list(turn, sp);
+				for (int prev_chs_index = chs_index; prev_chs_index > 0; prev_chs_index--) {
+					Chess ctmp = cur_game.get_chs_list(cur_side, prev_chs_index);
 					if (ctmp.exist) {
 						Pos temp;
 						temp.first = ctmp.x;
 						temp.second = ctmp.y;
-						spVal = (*hv)[temp];
+						prev_chs_val = (*feature_map)[temp];
 						break;
 					}
 				}
 
 				// get big part of chess list.
-				for (int bp = dice; bp < 6; bp++) {
-					Chess ctmp = cur_game.get_chs_list(turn, bp);
+				for (int next_chs_index = chs_index; next_chs_index < 6; next_chs_index++) {
+					Chess ctmp = cur_game.get_chs_list(cur_side, next_chs_index);
 					if (ctmp.exist) {
 						Pos temp;
 						temp.first = ctmp.x;
 						temp.second = ctmp.y;
-						bpVal = (*hv)[temp];
+						next_chs_val = (*feature_map)[temp];
 						break;
 					}
 				}
 
 				// select one.
-				spVal = (spVal > bpVal ? spVal : bpVal);
-				//cout << "dice#" << dice+1 << ", score:" << spVal << endl;
-				*val += spVal;
+				prev_chs_val = (prev_chs_val > next_chs_val ? prev_chs_val : next_chs_val);
+				*val_ptr += prev_chs_val;
 			}
 		}
 
 		// calculate the score of opponent's side
-		turn = !ai_turn;
-		hv = ai_turn? &feature_map_A: &feature_map_B;
-		val = &valOpp;
+		cur_side = !this->ai_side;
+		feature_map = this->ai_side? &this->feature_map_A: &this->feature_map_B;
+		val_ptr = &opp_val;
 	}
 
-	//cout << "hv " << valMy << " - " << valOpp << "---------------------------" << endl << endl;
-	return valMy - (int)(valOpp*1.2);
+	return ai_val - (int)(opp_val*1.2);
 }
