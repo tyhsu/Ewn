@@ -246,41 +246,36 @@ int Minimax::evaluate_simulation(Game& cur_game) {
 
 int Minimax::simulation(Game& simu_game) {
 	char cur_symbol;
-	int game_status = 0, cur_win, ai_win;
-	if (simu_game.get_is_switch() == this->ai_side) {
-		// ai's cur_side		=> the largest, the better
+	int game_status = 0, ai_win = this->ai_side ? 2 : 1;
+	if (simu_game.get_is_switch() == this->ai_side) 
 		cur_symbol = this->ai_symbol;
-	}
-	else {
-		// opponent's cur_side	=> the smallest, the better
+	else
 		cur_symbol = this->ai_side? '1' : 'A';
-	}
-	ai_win = this->ai_side ? 2 : 1;
-	while(game_status == 0) {
 
-		Movement mvmt[18];
-		int mvmt_cnt = 0;
+	while(game_status == 0) {
+		Movement available_mvmt_list[18];
+		int available_mvmt_cnt = 0;
+		
+		// find all avaible move (6 dice index, 3 direction)		
 		for(int chs_index = 0; chs_index < 6; chs_index++) {
-			// find all avaible move (6 dice index, 3 direction)
 			Chess cur_chs = simu_game.get_cur_chs_list(chs_index);
 			if (cur_chs.exist) {
-				int chs_index = cur_chs.symbol - cur_symbol;
 				for (int direct = 0; direct < 3; direct++) {
 					Movement tmp_mvmt(chs_index, direct);
 					if (simu_game.check_in_board(tmp_mvmt)) {
-						mvmt[mvmt_cnt] = tmp_mvmt;
-						mvmt_cnt ++;
+						available_mvmt_list[available_mvmt_cnt] = tmp_mvmt;
+						available_mvmt_cnt ++;
 					}
 				}
 			}
 		}
+		
 		// randomly pick a move.
-		Movement next_mvmt = mvmt[rand() % mvmt_cnt];
+		Movement next_mvmt = available_mvmt_list[rand() % available_mvmt_cnt];
 		game_status = simu_game.update_game_status(next_mvmt);
 
 		// check game status => if the game keep going, switch the player.
 		if(game_status == 0) simu_game.switch_player();
-
 	}
 	// return the result of game.
 	return (game_status == ai_win? 1 : 0);
