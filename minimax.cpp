@@ -54,7 +54,7 @@ Movement Minimax::AI_move(Game cur_game, int dice)
 				int game_status = child_game.update_game_status(mvmt);
 				// check if the game ends
 				if (game_status == win)
-					child_val = feature(child_game);
+					child_val = evaluate_feature(child_game);
 				else if (game_status != 0)	// lose the game
 					continue;
 				else {
@@ -79,7 +79,7 @@ int Minimax::minimax(Game& cur_game, int height)
 	// check if end;
 	if (height == 0) {
 		cur_game.switch_player();
-		return feature(cur_game);
+		return evaluate_feature(cur_game);
 	}
 	int best_val;
 	int chs_val_list[6];
@@ -119,7 +119,7 @@ int Minimax::minimax(Game& cur_game, int height)
 					Game child_game = cur_game;
 					int game_status = child_game.update_game_status(mvmt);
 					// check if the game ends
-					if (game_status == cur_win) return feature(child_game);
+					if (game_status == cur_win) return evaluate_feature(child_game);
 					else if (game_status != 0) continue;
 					child_game.switch_player();
 
@@ -171,7 +171,7 @@ int Minimax::minimax(Game& cur_game, int height)
 	return best_val;
 }
 
-int Minimax::feature(Game& cur_game)
+int Minimax::evaluate_feature(Game& cur_game)
 {
 	int ai_val = 0, opp_val = 0;
 	bool cur_side = this->ai_side;
@@ -235,7 +235,7 @@ int Minimax::feature(Game& cur_game)
 /**
  * try simulation
  */
-int Minimax::prepare_simulate(Game& cur_game) {
+int Minimax::evaluate_simulation(Game& cur_game) {
 	int ratio = 0;
 	Game simu_game = cur_game;
 	for(int game_cnt = 0; game_cnt < 100; game_cnt++) {
