@@ -281,6 +281,7 @@ int Minimax::simulation(Game& simu_game) {
 
         // check game status => if the game keep going, switch the player.
         if(game_status == 0) simu_game.switch_player();
+        
     }
     // return the result of game.
     return (game_status == 1? 1 : 0);
