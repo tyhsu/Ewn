@@ -112,11 +112,11 @@ void Play::two_AIs_mode()
 
 void Play::contest_AI_mode()
 {
-	int is_left_upper_side;
+	int is_right_upper_side;
 	cout << "Whose AI is at the left upper section?" << endl;
 	cout << "=>Who is A (1~6)? 0)Ours 1)Opponent's" << endl;
 	cout << "Choose: ";
-	cin >> is_left_upper_side;
+	cin >> is_right_upper_side;
 
 	int is_init_board, is_switch;
 	cout << "Do you need to set the board? 0)No 1)Yes" << endl;
@@ -153,7 +153,7 @@ void Play::contest_AI_mode()
 	while (1) {
 		int game_status;
 		//The opponent's turn (A)
-		if (is_left_upper_side && !this->game.get_is_switch()) {
+		if (is_right_upper_side && !this->game.get_is_switch()) {
 			char chs;
 			int direct;
 			cout << endl << "Choose the chessman(1~6): ";
@@ -178,7 +178,7 @@ void Play::contest_AI_mode()
 		}
 
 		//The opponent's turn (B)
-		else if (!is_left_upper_side && this->game.get_is_switch()) {
+		else if (!is_right_upper_side && this->game.get_is_switch()) {
 			char chs;
 			int direct;
 			cout << endl << "Choose the chessman(A~F): ";
@@ -217,7 +217,7 @@ void Play::contest_AI_mode()
 		//update: 0(game continues), 1(A wins), 2(B wins)
 		if (game_status!=0) {
 			cout << "====================================" << endl;
-			if ((is_left_upper_side && game_status==1) || (!is_left_upper_side && game_status==2))
+			if ((is_right_upper_side && game_status==1) || (!is_right_upper_side && game_status==2))
 				cout << "The opponent is the winner!!!" << endl;
 			else
 				cout << "Our AI is the winner!!!" << endl;
