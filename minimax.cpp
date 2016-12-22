@@ -278,6 +278,9 @@ int Minimax::simulation(Game& simu_game) {
         // randomly pick a move.
         Movement next_mvmt = mvmt[rand() % mvmt_cnt];
         game_status = simu_game.update_game_status(next_mvmt);
+
+        // check game status => if the game keep going, switch the player.
+        if(game_status == 0) simu_game.switch_player();
     }
     // return the result of game.
     return (game_status == 1? 1 : 0);
