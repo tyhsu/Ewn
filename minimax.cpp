@@ -259,7 +259,7 @@ int Minimax::simulation(Game& simu_game) {
     }
     while(game_status == 0) {
 
-        Movement mvmt[18];
+        Movement mvmt_list[18];
         int mvmt_cnt = 0;
         for(int chs_index = 0; chs_index < 6; chs_index++) {
             // find all avaible move (6 dice index, 3 direction)
@@ -269,19 +269,19 @@ int Minimax::simulation(Game& simu_game) {
                 for (int direct = 0; direct < 3; direct++) {
                     Movement tmp_mvmt(chs, direct);
                     if (simu_game.check_in_board(tmp_mvmt)) {
-                        mvmt[mvmt_cnt] = tmp_mvmt;
+                        mvmt_list[mvmt_cnt] = tmp_mvmt;
                         mvmt_cnt ++;
                     }
                 }
             }
         }
         // randomly pick a move.
-        Movement next_mvmt = mvmt[rand() % mvmt_cnt];
+        Movement next_mvmt = mvmt_list[rand() % mvmt_cnt];
         game_status = simu_game.update_game_status(next_mvmt);
 
         // check game status => if the game keep going, switch the player.
         if(game_status == 0) simu_game.switch_player();
-        
+
     }
     // return the result of game.
     return (game_status == 1? 1 : 0);
