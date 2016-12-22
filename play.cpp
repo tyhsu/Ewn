@@ -5,7 +5,7 @@ using namespace std;
 Movement Play::player_move(const int& dice)
 {
 	int movable_chs_cnt = this->game.count_movable_chs(dice);
-	int chs, direct;
+	int chs_index, direct;
 	Movement mvmt;
 
 	do {
@@ -14,7 +14,7 @@ Movement Play::player_move(const int& dice)
 			cout << i << ")" << this->game.get_movable_chs(i).symbol << " ";
 		cout << endl;
 		cout << "Choose: ";
-		cin >> chs;
+		cin >> chs_index;
 
 		if (!this->game.get_is_switch())
 			cout << "Direction: 0)Right 1)Down 2)Right-down" << endl;
@@ -24,8 +24,8 @@ Movement Play::player_move(const int& dice)
 		cin >> direct;
 
 		// get index
-		chs = (this->game.get_is_switch() == false) ? this->game.get_movable_chs(chs).symbol - '1' : this->game.get_movable_chs(chs).symbol - 'A';
-		mvmt.first = chs;
+		chs_index = (this->game.get_is_switch() == false) ? this->game.get_movable_chs(chs_index).symbol - '1' : this->game.get_movable_chs(chs_index).symbol - 'A';
+		mvmt.first = chs_index;
 		mvmt.second = direct;
 		//If the movement is illegal, run the loop
 	} while (!this->game.check_in_board(mvmt));
@@ -154,11 +154,11 @@ void Play::contest_AI_mode()
 		int game_status;
 		//The opponent's turn (A)
 		if (is_right_upper_side && !this->game.get_is_switch()) {
-			char chs;
+			char chs_symbol;
 			int direct;
 			cout << endl << "Choose the chessman(1~6): ";
-			cin >> chs;
-			if (!(chs>='1' && chs<='6'))
+			cin >> chs_symbol;
+			if (!(chs_symbol>='1' && chs_symbol<='6'))
 				continue;
 
 			cout << "Direction: 0)Right 1)Down 2)Right-down" << endl;
@@ -174,16 +174,16 @@ void Play::contest_AI_mode()
 			if (is_recover != 0)
 				continue;
 
-			game_status = this->game.update_game_status(make_pair(chs-'1', direct));
+			game_status = this->game.update_game_status(make_pair(chs_symbol-'1', direct));
 		}
 
 		//The opponent's turn (B)
 		else if (!is_right_upper_side && this->game.get_is_switch()) {
-			char chs;
+			char chs_symbol;
 			int direct;
 			cout << endl << "Choose the chessman(A~F): ";
-			cin >> chs;
-			if (!(chs>='A' && chs<='F'))
+			cin >> chs_symbol;
+			if (!(chs_symbol>='A' && chs_symbol<='F'))
 				continue;
 
 			cout << "Direction: 0)Left 1)Up 2)Left-up" << endl;
@@ -199,7 +199,7 @@ void Play::contest_AI_mode()
 			if (is_recover != 0)
 				continue;
 
-			game_status = this->game.update_game_status(make_pair(chs-'A', direct));
+			game_status = this->game.update_game_status(make_pair(chs_symbol-'A', direct));
 		}
 
 		//Our AI's turn

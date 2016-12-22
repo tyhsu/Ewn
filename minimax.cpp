@@ -46,9 +46,9 @@ Movement Minimax::AI_move(Game cur_game, int dice)
 	int next_move_cnt = cur_game.count_movable_chs(dice);
 
 	for (int i=0; i<next_move_cnt; i++) {
-		int chs = cur_game.get_movable_chs(i).symbol - this->ai_symbol;
+		int chs_index = cur_game.get_movable_chs(i).symbol - this->ai_symbol;
 		for (int direct = 0; direct < 3; direct++) {
-			Movement mvmt(chs, direct);
+			Movement mvmt(chs_index, direct);
 			if (cur_game.check_in_board(mvmt)) {
 				Game child_game = cur_game;
 				int game_status = child_game.update_game_status(mvmt);
@@ -109,12 +109,12 @@ int Minimax::minimax(Game& cur_game, int height)
 
 	// ai's cur_side, find the max
 	// opponent's cur_side, find the min
-	for (int chs_index = 0; chs_index < 6; chs_index++) {
-		Chess cur_chs = cur_game.get_cur_chs_list(chs_index);
+	for (int dice = 0; dice < 6; dice++) {
+		Chess cur_chs = cur_game.get_cur_chs_list(dice);
 		if (cur_chs.exist) {
-			int chs = cur_chs.symbol - cur_symbol;
+			int chs_index = cur_chs.symbol - cur_symbol;
 			for (int direct = 0; direct < 3; direct++) {
-				Movement mvmt(chs, direct);
+				Movement mvmt(chs_index, direct);
 				if (cur_game.check_in_board(mvmt)) {
 					Game child_game = cur_game;
 					int game_status = child_game.update_game_status(mvmt);
@@ -135,15 +135,15 @@ int Minimax::minimax(Game& cur_game, int height)
 				else {
 				}
 			}
-			chs_val_list[chs_index] = best_val;
+			chs_val_list[dice] = best_val;
 
 			// if there is lookahead_cnt, compare those values of the non-existing with the existing
 			// check if the current value is bigger than the previous one.
 			if (lookahead_cnt) {
 				int offset;
-				if ((is_ai_side && best_val>chs_val_list[chs_index-1]) || (!is_ai_side && best_val<chs_val_list[chs_index-1])) {
+				if ((is_ai_side && best_val>chs_val_list[dice-1]) || (!is_ai_side && best_val<chs_val_list[dice-1])) {
 					for (int j = 1; j <= lookahead_cnt; j++) {
-						offset = chs_index - j;
+						offset = dice - j;
 						chs_val_list[offset] = best_val;
 					}
 				}
@@ -153,12 +153,12 @@ int Minimax::minimax(Game& cur_game, int height)
 		else {
 			// this chess can't move, use other's value
 			lookahead_cnt++;
-			if (chs_index - lookahead_cnt < 0) {
+			if (dice - lookahead_cnt < 0) {
 				// there's no chess exists before the selected one
 				continue;
 			}
 			else {
-				chs_val_list[chs_index] = chs_val_list[chs_index - lookahead_cnt];
+				chs_val_list[dice] = chs_val_list[dice - lookahead_cnt];
 			}
 		}
 	}
@@ -239,7 +239,7 @@ int Minimax::prepare_simulate(Game& cur_game) {
 	int ratio = 0;
 	Game simu_game = cur_game;
 	for(int game_cnt = 0; game_cnt < 100; game_cnt++) {
-	    ratio += simulation(simu_game);
+		ratio += simulation(simu_game);
 	}
 	return ratio;
 }
@@ -265,12 +265,12 @@ int Minimax::simulation(Game& simu_game) {
 			// find all avaible move (6 dice index, 3 direction)
 			Chess cur_chs = simu_game.get_cur_chs_list(chs_index);
 			if (cur_chs.exist) {
-				int chs = cur_chs.symbol - cur_symbol;
+				int chs_index = cur_chs.symbol - cur_symbol;
 				for (int direct = 0; direct < 3; direct++) {
-					Movement tmp_mvmt(chs, direct);
+					Movement tmp_mvmt(chs_index, direct);
 					if (simu_game.check_in_board(tmp_mvmt)) {
-					    mvmt[mvmt_cnt] = tmp_mvmt;
-					    mvmt_cnt ++;
+						mvmt[mvmt_cnt] = tmp_mvmt;
+						mvmt_cnt ++;
 					}
 				}
 			}
