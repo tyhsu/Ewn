@@ -246,17 +246,16 @@ int Minimax::prepare_simulate(Game& cur_game) {
 
 int Minimax::simulation(Game& simu_game) {
 	char cur_symbol;
-	int game_status = 0, cur_win;
+	int game_status = 0, cur_win, ai_win;
 	if (simu_game.get_is_switch() == this->ai_side) {
 		// ai's cur_side		=> the largest, the better
-		cur_win = this->ai_side ? 2 : 1;
 		cur_symbol = this->ai_symbol;
 	}
 	else {
 		// opponent's cur_side	=> the smallest, the better
-		cur_win = this->ai_side ? 1 : 2;
 		cur_symbol = this->ai_side? '1' : 'A';
 	}
+	ai_win = this->ai_side ? 2 : 1;
 	while(game_status == 0) {
 
 		Movement mvmt[18];
@@ -284,5 +283,5 @@ int Minimax::simulation(Game& simu_game) {
 
 	}
 	// return the result of game.
-	return (game_status == 1? 1 : 0);
+	return (game_status == ai_win? 1 : 0);
 }
