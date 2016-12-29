@@ -6,7 +6,8 @@
 #include "game.h"
 #include "minimax.h"
 
-const int HEIGHT = 4;
+const int HEIGHT = 3;
+const int SIMU_TIMES = 100;
 
 Minimax::Minimax() {
 	// pos: a <int,int> , <x,y> coord;
@@ -32,7 +33,7 @@ Minimax::Minimax() {
 	}
 }
 
-Movement Minimax::AI_move(Game cur_game, int dice)
+Movement Minimax::AI_move(Game& cur_game, int dice)
 {
     cerr << "calculating..." ;
     cerr.flush();
@@ -78,8 +79,7 @@ int Minimax::minimax(Game& cur_game, int height)
 {
 	// check if end;
 	if (height == 0) {
-		cur_game.switch_player();
-		return evaluate_feature(cur_game);
+		return evaluate_simulation(cur_game);
 	}
 	int best_val;
 	int chs_val_list[6];
@@ -235,24 +235,23 @@ int Minimax::evaluate_feature(Game& cur_game)
 /**
  * try simulation
  */
-int Minimax::evaluate_simulation(Game& cur_game) {
-	int ratio = 0;
-	Game simu_game = cur_game;
-	for(int game_cnt = 0; game_cnt < 100; game_cnt++) {
-		ratio += simulation(simu_game);
+int Minimax::evaluate_simulation(const Game& cur_game) {
+	float ratio = 0;
+	for(int game_cnt = 0; game_cnt < SIMU_TIMES; game_cnt++) {
+		ratio += simulation(cur_game);
 	}
-	return ratio;
+	return (int)(ratio / SIMU_TIMES * 20);
 }
 
-int Minimax::simulation(Game& simu_game) {
+int Minimax::simulation(Game simu_game) {
 	char cur_symbol;
 	int game_status = 0, ai_win = this->ai_side ? 2 : 1;
-	if (simu_game.get_is_switch() == this->ai_side) 
+	if (simu_game.get_is_switch() == this->ai_side)
 		cur_symbol = this->ai_symbol;
 	else
 		cur_symbol = this->ai_side? '1' : 'A';
 
-	while(game_status == 0) {
+	while (game_status == 0) {
 		Movement available_mvmt_list[18];
 		int available_mvmt_cnt = 0;
 		
@@ -269,14 +268,15 @@ int Minimax::simulation(Game& simu_game) {
 				}
 			}
 		}
-		
 		// randomly pick a move.
 		Movement next_mvmt = available_mvmt_list[rand() % available_mvmt_cnt];
 		game_status = simu_game.update_game_status(next_mvmt);
 
 		// check game status => if the game keep going, switch the player.
 		if(game_status == 0) simu_game.switch_player();
+		else break;
 	}
+
 	// return the result of game.
 	return (game_status == ai_win? 1 : 0);
 }
