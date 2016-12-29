@@ -254,8 +254,8 @@ int Minimax::simulation(Game simu_game) {
 	while (game_status == 0) {
 		Movement available_mvmt_list[18];
 		int available_mvmt_cnt = 0;
-		
-		// find all avaible move (6 dice index, 3 direction)		
+
+		// find all avaible move (6 dice index, 3 direction)
 		for(int chs_index = 0; chs_index < 6; chs_index++) {
 			Chess cur_chs = simu_game.get_cur_chs_list(chs_index);
 			if (cur_chs.exist) {
@@ -276,7 +276,6 @@ int Minimax::simulation(Game simu_game) {
 		if(game_status == 0) simu_game.switch_player();
 		else break;
 	}
-
 	// return the result of game.
 	return (game_status == ai_win? 1 : 0);
 }
