@@ -19,7 +19,7 @@ class Minimax
     char ai_symbol;
     Heuristic_map feature_map_A;
     Heuristic_map feature_map_B;
-
+    int alg_mode;
     Minimax();
     ~Minimax() {}
     Movement AI_move(Game cur_game, int dice);
