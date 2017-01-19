@@ -4,6 +4,7 @@
 #include <cstdio>
 #include <utility>
 #include <map>
+#include <sys/time.h>
 #include "game.h"
 using namespace std;
 
@@ -16,13 +17,14 @@ class Minimax
 {
   public:
     bool ai_side;
+	int ai_mode;
     char ai_symbol;
     Heuristic_map feature_map_A;
     Heuristic_map feature_map_B;
     Minimax();
     ~Minimax() {}
-    Movement AI_move(Game& cur_game, int dice);
-    int minimax(Game& cur_game, int height);
+    Movement AI_move(Game cur_game, int dice, int _mode = 0);
+    int minimax(Game cur_game, int height);
     int evaluate_feature(Game& cur_game);
     int evaluate_simulation(const Game& cur_game);
     int simulation(Game simu_game);

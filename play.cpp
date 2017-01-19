@@ -227,3 +227,80 @@ void Play::contest_AI_mode()
 		this->game.switch_player();
 	}
 }
+
+//Compare two ai with several games
+void Play::compare_AI_mode() 
+{
+	int mode_A, mode_B, game_cnt, win_cnt_A = 0, win_cnt_B = 0;
+	cout << "modeA, modeB, game_cnt:";
+	cin >> mode_A >> mode_B >> game_cnt;
+	cout << "==========The first AI (A)==========" << endl;
+	//EwnAI ewnAI1(mode_A);
+	cout << "==========The second AI (B)==========" << endl;
+	
+	//EwnAI ewnAI2(mode_B);
+	for(int i = 0; i < game_cnt ; i++){
+		Game init_game = this->game;
+		EwnAI ewnAI1(mode_A);
+		EwnAI ewnAI2(mode_B);
+		while (1) {
+			int debug = 0;
+			int dice = this->game.roll_dice();
+
+			int game_status;
+			if (!this->game.get_is_switch())	// the first AI (A)
+				game_status = init_game.update_game_status(ewnAI1.AI_move(init_game, dice));
+			else					// the second AI (B)
+				game_status = init_game.update_game_status(ewnAI2.AI_move(init_game, dice));
+			//update: 0(game continues), 1(A wins), 2(B wins)
+			if (game_status!=0) {
+				if (game_status==1) {
+					cout<<"A win.  "<<win_cnt_A+win_cnt_B<<" games."<<endl;
+					win_cnt_A ++ ;
+				}
+					
+				else {
+					cout<<"B win.  "<<win_cnt_A+win_cnt_B<<" games."<<endl;
+					win_cnt_B ++;
+				}
+				break;
+			}
+			this->game.switch_player();
+		}
+	}
+	for(int i = 0; i < game_cnt ; i++){
+		Game init_game = this->game;
+		EwnAI ewnAI1(mode_B);
+		EwnAI ewnAI2(mode_A);
+		while (1) {
+			int debug = 0;
+			int dice = this->game.roll_dice();
+
+			int game_status;
+			if (!this->game.get_is_switch())	// the first AI (A)
+				game_status = init_game.update_game_status(ewnAI1.AI_move(init_game, dice));
+			else					// the second AI (B)
+				game_status = init_game.update_game_status(ewnAI2.AI_move(init_game, dice));
+			//update: 0(game continues), 1(A wins), 2(B wins)
+			if (game_status!=0) {
+				if (game_status==1) {
+					cout<<"B win.  "<<win_cnt_A+win_cnt_B<<" games."<<endl;
+					win_cnt_B ++ ;
+				}
+					
+				else {
+					cout<<"A win.  "<<win_cnt_A+win_cnt_B<<" games."<<endl;
+					win_cnt_A ++;
+				}
+				break;
+			}
+			this->game.switch_player();
+		}
+	}
+	string mode_name[2];
+	mode_name[0] = "evaluate";
+	mode_name[1] = "simulate";
+	cout << "mode			|	wins		"<<endl;
+	cout << mode_name[mode_A]<<"		|	"<<win_cnt_A<<endl;
+	cout << mode_name[mode_B]<<"		|	"<<win_cnt_B<<endl;
+}

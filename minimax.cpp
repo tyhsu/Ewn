@@ -33,10 +33,12 @@ Minimax::Minimax() {
 	}
 }
 
-Movement Minimax::AI_move(Game& cur_game, int dice)
+Movement Minimax::AI_move(Game _cur_game, int dice, int _mode)
 {
-    cerr << "calculating..." ;
-    cerr.flush();
+	Game cur_game = _cur_game;
+	this->ai_mode = _mode;
+    //cerr << "calculating..." ;
+   // cerr.flush();
 	clock_t init_time = clock();
 	this->ai_side = cur_game.get_is_switch();
 	this->ai_symbol = this->ai_side? 'A': '1';
@@ -71,15 +73,21 @@ Movement Minimax::AI_move(Game& cur_game, int dice)
 		}
 	}
 	double timeCost = (double)(clock() - init_time) / CLOCKS_PER_SEC;
-	printf("\ntime cost: %.2fs\n", timeCost);
+	//printf("\ntime cost: %.2fs\n", timeCost);
 	return answer;
 }
 
-int Minimax::minimax(Game& cur_game, int height)
+int Minimax::minimax(Game cur_game, int height)
 {
 	// check if end;
-	if (height == 0) {
-		return evaluate_simulation(cur_game);
+	if (height == this->ai_mode) {
+		/*
+		*	TODO:	time limit 
+		*/
+		if(this->ai_mode == 0)
+			return evaluate_feature(cur_game);
+		else if(this->ai_mode == 1)
+			return evaluate_simulation(cur_game);
 	}
 	int best_val;
 	int chs_val_list[6];

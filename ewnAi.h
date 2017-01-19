@@ -9,6 +9,7 @@ private:
 	Minimax minimax;	//ai = 0
 public:
 	EwnAI();
+	EwnAI(int _mode);
 	Movement AI_move(Game cur_game, int dice);
 };
 

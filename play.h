@@ -4,6 +4,7 @@
 #include <iostream>
 #include "game.h"
 #include "ewnAi.h"
+#include <string>
 using namespace std;
 
 class Play
@@ -24,6 +25,8 @@ public:
 	void two_AIs_mode();
 	//One player fight with AI in the contest
 	void contest_AI_mode();
+	//Compare two ai with several games
+	void compare_AI_mode();
 };
 
 #endif
