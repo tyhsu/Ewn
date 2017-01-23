@@ -297,10 +297,11 @@ void Play::compare_AI_mode()
 			this->game.switch_player();
 		}
 	}
-	string mode_name[2];
-	mode_name[0] = "evaluate";
-	mode_name[1] = "simulate";
-	cout << "mode			|	wins		"<<endl;
+	string mode_name[3];
+	mode_name[0] = "evaluate	";
+	mode_name[1] = "simulate_rand_type1";
+	mode_name[2] = "simulate_rand_type2";
+	cout << "mode				|	wins		"<<endl;
 	cout << mode_name[mode_A]<<"		|	"<<win_cnt_A<<endl;
 	cout << mode_name[mode_B]<<"		|	"<<win_cnt_B<<endl;
 }
