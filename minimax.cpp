@@ -6,9 +6,9 @@
 #include "game.h"
 #include "minimax.h"
 
-const int HEIGHT = 3;
-const int SIMU_TIMES = 100;
-
+int HEIGHT = 3;
+const int SIMU_TIMES = 50;
+int dee = 0;
 Minimax::Minimax() {
 	// pos: a <int,int> , <x,y> coord;
 	for (int i = 0; i < 5; i++) {
@@ -35,6 +35,7 @@ Minimax::Minimax() {
 
 Movement Minimax::AI_move(Game _cur_game, int dice, int _mode)
 {
+	HEIGHT = (this->ai_mode == 0? 3: 1);
 	Game cur_game = _cur_game;
 	this->ai_mode = _mode;
     //cerr << "calculating..." ;
@@ -80,16 +81,30 @@ Movement Minimax::AI_move(Game _cur_game, int dice, int _mode)
 int Minimax::minimax(Game cur_game, int height)
 {
 	// check if end;
-	if (height == this->ai_mode) {
+	if (height == 0) {
+	/*
+	if (height_max unset)
+		if ( time_left >= 1/(2^height) * time_total)
+			height_max = current_height
+			evaluate;
+	else if(height_max is set)
+		if (current_height == height_max)
+			evaluate;
+	*/
+
 		/*
 		*	TODO:	time limit 
 		*/
 		if(this->ai_mode == 0)
 			return evaluate_feature(cur_game);
-		else if(this->ai_mode == 1)
+		else if(this->ai_mode == 1){
 			return evaluate_simulation(cur_game);
-		else if(this->ai_mode == 2)
+		}
+		else if(this->ai_mode == 2) {
 			return evaluate_simulation_second_type_rand(cur_game);
+		}
+		else if(this->ai_mode == 3)
+			return evaluate_simulation_third_type_rand(cur_game);
 	}
 	int best_val;
 	int chs_val_list[6];
@@ -295,7 +310,7 @@ int Minimax::simulation(Game simu_game) {
 int Minimax::evaluate_simulation_second_type_rand(const Game& cur_game) {
 	float ratio = 0;
 	for(int game_cnt = 0; game_cnt < SIMU_TIMES; game_cnt++) {
-		ratio += simulation(cur_game);
+		ratio += simulation_second_type(cur_game);
 	}
 	return (int)(ratio / SIMU_TIMES * 20);
 }
@@ -316,7 +331,7 @@ int Minimax::simulation_second_type(Game simu_game) {
 		int dice = (rand()%6);
 		int next_move_cnt = simu_game.count_movable_chs(dice);
 		for (int i=0; i<next_move_cnt; i++) {
-			int chs_index = simu_game.get_movable_chs(i).symbol - this->ai_symbol;
+			int chs_index = simu_game.get_movable_chs(i).symbol - (simu_game.get_is_switch() == 0? '1' : 'A');
 			for (int direct = 0; direct < 3; direct++) {
 				Movement mvmt(chs_index, direct);
 				if (simu_game.check_in_board(mvmt)) {
@@ -327,11 +342,60 @@ int Minimax::simulation_second_type(Game simu_game) {
 		}
 		// do update.
 		game_status = simu_game.update_game_status(next_mvmt);
+		// check game status => if the game keep going, switch the player.
+		if(game_status == 0) simu_game.switch_player();
+		else break;
+	}
+	// return the result of game.
+	return (game_status == ai_win? 1 : 0);
+}
+
+/**
+ * try simulation type 3
+ */
+int Minimax::evaluate_simulation_third_type_rand(const Game& cur_game) {
+	float ratio = 0;
+	for(int game_cnt = 0; game_cnt < SIMU_TIMES; game_cnt++) {
+		ratio += simulation_third_type(cur_game);
+	}
+	return (int)(ratio / SIMU_TIMES * 20);
+}
+
+int Minimax::simulation_third_type(Game simu_game) {
+	char cur_symbol;
+	int game_status = 0, ai_win = this->ai_side ? 2 : 1;
+	if (simu_game.get_is_switch() == this->ai_side)
+		cur_symbol = this->ai_symbol;
+	else
+		cur_symbol = this->ai_side? '1' : 'A';
+
+	while (game_status == 0) {
+		// next move init;
+		Movement available_mvmt_list[6];
+		int available_mvmt_cnt = 0;
+
+		// randomly roll dice => get a number from list;
+		int dice = (rand()%6);
+		int next_move_cnt = simu_game.count_movable_chs(dice);
+		int chs_index = simu_game.get_movable_chs(rand() % next_move_cnt).symbol - (simu_game.get_is_switch() == 0? '1' : 'A');
+		for (int direct = 0; direct < 3; direct++) {
+			Movement mvmt(chs_index, direct);
+			if (simu_game.check_in_board(mvmt)) {
+				available_mvmt_list[available_mvmt_cnt] = mvmt;
+				// simu_game.print_status();
+				available_mvmt_cnt++;
+			}
+		}
+
+		Movement next_mvmt = available_mvmt_list[rand() % available_mvmt_cnt];
+		// do update.
+		game_status = simu_game.update_game_status(next_mvmt);
 
 		// check game status => if the game keep going, switch the player.
 		if(game_status == 0) simu_game.switch_player();
 		else break;
 	}
 	// return the result of game.
+	// cout << "*** rrrrrrrrrr ***" << endl;
 	return (game_status == ai_win? 1 : 0);
 }

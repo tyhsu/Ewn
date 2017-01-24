@@ -28,8 +28,10 @@ class Minimax
     int evaluate_feature(Game& cur_game);
     int evaluate_simulation(const Game& cur_game);
     int evaluate_simulation_second_type_rand(const Game& cur_game);
+    int evaluate_simulation_third_type_rand(const Game& cur_game);
     int simulation(Game simu_game);
     int simulation_second_type(Game simu_game);
+    int simulation_third_type(Game simu_game);
 };
 
 #endif

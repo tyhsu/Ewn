@@ -245,10 +245,10 @@ void Play::compare_AI_mode()
 		EwnAI ewnAI2(mode_B);
 		while (1) {
 			int debug = 0;
-			int dice = this->game.roll_dice();
+			int dice = init_game.roll_dice();
 
 			int game_status;
-			if (!this->game.get_is_switch())	// the first AI (A)
+			if (!init_game.get_is_switch())	// the first AI (A)
 				game_status = init_game.update_game_status(ewnAI1.AI_move(init_game, dice));
 			else					// the second AI (B)
 				game_status = init_game.update_game_status(ewnAI2.AI_move(init_game, dice));
@@ -265,7 +265,7 @@ void Play::compare_AI_mode()
 				}
 				break;
 			}
-			this->game.switch_player();
+			init_game.switch_player();
 		}
 	}
 	for(int i = 0; i < game_cnt ; i++){
@@ -274,10 +274,10 @@ void Play::compare_AI_mode()
 		EwnAI ewnAI2(mode_A);
 		while (1) {
 			int debug = 0;
-			int dice = this->game.roll_dice();
+			int dice = init_game.roll_dice();
 
 			int game_status;
-			if (!this->game.get_is_switch())	// the first AI (A)
+			if (!init_game.get_is_switch())	// the first AI (A)
 				game_status = init_game.update_game_status(ewnAI1.AI_move(init_game, dice));
 			else					// the second AI (B)
 				game_status = init_game.update_game_status(ewnAI2.AI_move(init_game, dice));
@@ -294,13 +294,14 @@ void Play::compare_AI_mode()
 				}
 				break;
 			}
-			this->game.switch_player();
+			init_game.switch_player();
 		}
 	}
-	string mode_name[3];
+	string mode_name[4];
 	mode_name[0] = "evaluate	";
 	mode_name[1] = "simulate_rand_type1";
 	mode_name[2] = "simulate_rand_type2";
+	mode_name[3] = "simulate_rand_type3";
 	cout << "mode				|	wins		"<<endl;
 	cout << mode_name[mode_A]<<"		|	"<<win_cnt_A<<endl;
 	cout << mode_name[mode_B]<<"		|	"<<win_cnt_B<<endl;
