@@ -25,7 +25,7 @@ public:
 	void two_AIs_mode();
 	//One player fight with AI in the contest
 	void contest_AI_mode();
-	//Compare two ai with several games
+	//Compare two AIs with several games
 	void compare_AI_mode();
 };
 

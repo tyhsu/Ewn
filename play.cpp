@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 #include "play.h"
 using namespace std;
 
@@ -228,17 +229,34 @@ void Play::contest_AI_mode()
 	}
 }
 
-//Compare two ai with several games
+//Compare two AIs with several games
 void Play::compare_AI_mode() 
 {
-	int mode_A, mode_B, game_cnt, win_cnt_A = 0, win_cnt_B = 0;
-	cout << "modeA, modeB, game_cnt:";
-	cin >> mode_A >> mode_B >> game_cnt;
-	cout << "==========The first AI (A)==========" << endl;
-	//EwnAI ewnAI1(mode_A);
-	cout << "==========The second AI (B)==========" << endl;
-	
-	//EwnAI ewnAI2(mode_B);
+	char mode_name[5][25] = { "evaluate_feature", \
+							"simulate_rand_type1", \
+							"simulate_rand_type2", \
+							"simulate_rand_type3", \
+							"simulate_rand_type4" };
+
+	int mode_A, mode_B;
+	int game_cnt;
+	int win_cnt_A1 = 0, win_cnt_A2 = 0, win_cnt_B1 = 0, win_cnt_B2 = 0;
+	double max_time_cost_A = 0, max_time_cost_B = 0;
+	cout << "Please choose two AIs:" << endl;
+	cout << "0)Minimax evaluating with feature" << endl;
+	cout << "1)Minimax evaluating with simulation 1" << endl;
+	cout << "2)Minimax evaluating with simulation 2" << endl;
+	cout << "3)Minimax evaluating with simulation 3" << endl;
+	cout << "4)Minimax evaluating with simulation 4" << endl;
+	cout << "modeA choose: ";
+	cin >> mode_A;
+	cout << "modeB choose: ";
+	cin >> mode_B;
+	cout << "Please enter the count of the games: ";
+	cin >> game_cnt;
+
+	// modeA plays first, then modeB
+	cout << "========== modeA then modeB ==========" << endl;
 	for(int i = 0; i < game_cnt ; i++){
 		Game init_game = this->game;
 		EwnAI ewnAI1(mode_A);
@@ -248,27 +266,47 @@ void Play::compare_AI_mode()
 			int dice = init_game.roll_dice();
 
 			int game_status;
-			if (!init_game.get_is_switch())	// the first AI (A)
-				game_status = init_game.update_game_status(ewnAI1.AI_move(init_game, dice));
-			else					// the second AI (B)
-				game_status = init_game.update_game_status(ewnAI2.AI_move(init_game, dice));
+			if (!init_game.get_is_switch()) {	// the first AI (A)
+				cerr << "-";
+				cerr.flush();
+				clock_t init_time = clock();
+				Movement mvmt = ewnAI1.AI_move(init_game, dice);
+				game_status = init_game.update_game_status(mvmt);
+				double time_cost = (double)(clock() - init_time) / CLOCKS_PER_SEC;
+				max_time_cost_A = max(max_time_cost_A, time_cost);
+			}
+			else {								// the second AI (B)
+				cerr << "-";
+				cerr.flush();
+				clock_t init_time = clock();
+				Movement mvmt = ewnAI2.AI_move(init_game, dice);
+				game_status = init_game.update_game_status(mvmt);
+				double time_cost = (double)(clock() - init_time) / CLOCKS_PER_SEC;
+				max_time_cost_B = max(max_time_cost_B, time_cost);
+			}
 			//update: 0(game continues), 1(A wins), 2(B wins)
 			if (game_status!=0) {
 				if (game_status==1) {
-					cout<<"A win.  "<<win_cnt_A+win_cnt_B<<" games."<<endl;
-					win_cnt_A ++ ;
+					win_cnt_A1 ++ ;
+					cout << "A wins.  " << win_cnt_A1 + win_cnt_B1 << " games." << endl;
 				}
 					
 				else {
-					cout<<"B win.  "<<win_cnt_A+win_cnt_B<<" games."<<endl;
-					win_cnt_B ++;
+					win_cnt_B1 ++;
+					cout << "B wins.  " << win_cnt_A1 + win_cnt_B1 << " games." << endl;
 				}
 				break;
 			}
 			init_game.switch_player();
 		}
 	}
-	for(int i = 0; i < game_cnt ; i++){
+	printf("%-25s%-10s%s\n", "mode", "wins", "max_time_cost");
+	printf("%-25s%-10d%lf\n", mode_name[mode_A], win_cnt_A1, max_time_cost_A);
+	printf("%-25s%-10d%lf\n", mode_name[mode_B], win_cnt_B1, max_time_cost_B);
+
+	// modeB plays first, then modeA
+	cout << "========== modeB then modeA ==========" << endl;
+	for (int i = 0; i < game_cnt ; i++){
 		Game init_game = this->game;
 		EwnAI ewnAI1(mode_B);
 		EwnAI ewnAI2(mode_A);
@@ -277,32 +315,48 @@ void Play::compare_AI_mode()
 			int dice = init_game.roll_dice();
 
 			int game_status;
-			if (!init_game.get_is_switch())	// the first AI (A)
-				game_status = init_game.update_game_status(ewnAI1.AI_move(init_game, dice));
-			else					// the second AI (B)
-				game_status = init_game.update_game_status(ewnAI2.AI_move(init_game, dice));
-			//update: 0(game continues), 1(A wins), 2(B wins)
+			if (!init_game.get_is_switch()) {	// the first AI (B)
+				cerr << "-";
+				cerr.flush();
+				clock_t init_time = clock();
+				Movement mvmt = ewnAI1.AI_move(init_game, dice);
+				game_status = init_game.update_game_status(mvmt);
+				double time_cost = (double)(clock() - init_time) / CLOCKS_PER_SEC;
+				max_time_cost_B = max(max_time_cost_B, time_cost);
+			}
+			else {							// the second AI (A)
+				cerr << "-";
+				cerr.flush();
+				clock_t init_time = clock();
+				Movement mvmt = ewnAI2.AI_move(init_game, dice);
+				game_status = init_game.update_game_status(mvmt);
+				double time_cost = (double)(clock() - init_time) / CLOCKS_PER_SEC;
+				max_time_cost_A = max(max_time_cost_A, time_cost);
+			}
+			//update: 0(game continues), 1(B wins), 2(A wins)
 			if (game_status!=0) {
 				if (game_status==1) {
-					cout<<"B win.  "<<win_cnt_A+win_cnt_B<<" games."<<endl;
-					win_cnt_B ++ ;
+					win_cnt_B2 ++ ;
+					cout << "B wins.  " << win_cnt_A2 + win_cnt_B2 << " games." << endl;
 				}
 					
 				else {
-					cout<<"A win.  "<<win_cnt_A+win_cnt_B<<" games."<<endl;
-					win_cnt_A ++;
+					win_cnt_A2 ++;
+					cout << "A win.  " << win_cnt_A2 + win_cnt_B2 << " games." <<endl;
 				}
 				break;
 			}
 			init_game.switch_player();
 		}
 	}
-	string mode_name[4];
-	mode_name[0] = "evaluate	";
-	mode_name[1] = "simulate_rand_type1";
-	mode_name[2] = "simulate_rand_type2";
-	mode_name[3] = "simulate_rand_type3";
-	cout << "mode				|	wins		"<<endl;
-	cout << mode_name[mode_A]<<"		|	"<<win_cnt_A<<endl;
-	cout << mode_name[mode_B]<<"		|	"<<win_cnt_B<<endl;
+	cout << endl << "==================================================" << endl;
+	cout << "========== modeA then modeB ==========" << endl;
+	printf("%-25s%-10s%s\n", "mode", "wins", "max_time_cost");
+	printf("%-25s%-10d%lf\n", mode_name[mode_A], win_cnt_A1, max_time_cost_A);
+	printf("%-25s%-10d%lf\n", mode_name[mode_B], win_cnt_B1, max_time_cost_B);
+
+	cout << "========== modeB then modeA ==========" << endl;
+	printf("%-25s%-10s%s\n", "mode", "wins", "max_time_cost");
+	printf("%-25s%-10d%lf\n", mode_name[mode_A], win_cnt_A2, max_time_cost_A);
+	printf("%-25s%-10d%lf\n", mode_name[mode_B], win_cnt_B2, max_time_cost_B);
 }
