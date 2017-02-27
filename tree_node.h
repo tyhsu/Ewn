@@ -27,6 +27,9 @@ public:
         this->num_visit ++;
         this->score += _score;
     }
+    TreeNodeT* get_parent() { 
+    	return parent; 
+    }
     tree_node * add_child_with_action(int move_index) {
         Game child_game = this->game;
         tree_node * child = new tree_node( child_game.update_game_status( this->legal_move_list[move_index] ),

@@ -6,12 +6,15 @@ class UCT {
 public:
     tree_node * root;
     int iteration;  // nodes
+    int max_iterations;
+    int simulation_depth;
     float uct_k;    // uct param
     UCT () {
-        iteration = 100;
+        max_iterations = 100;
+        simulation_depth = 10;
         uct_k = sqrt ( 2 );
     }
-    tree_node * get_best_child ( tree_node * node ) {
+    tree_node * get_best_child ( tree_node * node, float uct_k ) {
     	// end check
         if ( node->is_terminate() ) return NULL;
 
@@ -51,4 +54,55 @@ public:
         }
         return best_node;
     }
+
+    // mcts main 
+    Movement run(const Game& current_state, unsigned int seed = 1, vector<Game>* explored_states = nullptr) {
+
+        // initialize root TreeNode with current state
+        TreeNode root_node(0, current_state, null);
+        TreeNode* best_node = NULL;
+
+        iteration = 0;
+        while(true) {
+        	// 1. select. Start at root, dig down into tree using UCT on all fully expanded nodes
+            TreeNode* node = &root_node;
+            while(!node->is_terminal()) {
+                node = get_best_child(node, uct_k);
+            }
+        	// 2. expand by adding a single child (if not terminal or not fully expanded)
+            if(!node->is_terminal()) node = node->add_child_with_action();
+            Game state(node->update_game_status());
+
+        	// 3. simulate
+            if(!node->is_terminal()) {
+                Movement mvmt;
+                for(int t = 0; t < simulation_depth; t++) {
+                	// check if game state end
+                    if(state.update_game_status(mvmt) != 0) break;
+                }
+            }
+            // get rewards vector for all node
+            const std::vector<float> rewards = state.evaluate();
+
+            // add to history
+            if(explored_states) explored_states->push_back(state);
+
+        	// 4. back propagation
+            while(node) {
+                node->update(rewards);
+                node = node->get_parent();
+            }
+            // find most visited child
+            best_node = get_most_visited_child(&root_node);
+
+            // exit loop if current iterations exceeds max_iterations
+            if(max_iterations > 0 && iterations > max_iterations) break;
+            iterations++;
+        }
+        // return best node's action
+        if(best_node) return best_node->get_action();
+    }
 }
+
+
+// src: https://github.com/memo/ofxMSAmcts/blob/master/src/ofxMSAmcts.h
