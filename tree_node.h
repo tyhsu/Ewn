@@ -8,9 +8,12 @@ public:
     int num_visit;
     int game_status;
     Game game;
-    Tree_node *parent;
-    vector<*Tree_node> children_list;
-    vector<Movement> legal_move_list;
+    Tree_node* parent;
+    bool is_legal_list[18];
+    Movement legal_move_list[18];
+	Tree_node* children_list[18];
+	//Default Constructor
+	Tree_node();
 	//Constructor
     Tree_node(int _game_status = 0, Game _game = NULL , Tree_node * _parent = NULL);
 	//Copy Constructor
@@ -24,7 +27,5 @@ public:
 	//Update score and num_visit
     void update(float _score);
 	//Get parent
-    Tree_NodeT* get_parent();
-	//Add child
-    Tree_node * add_child_with_action(int move_index);
+    Tree_nodeT* get_parent();
 }
