@@ -6,7 +6,7 @@
 const float eps = 1e-6;
 using namespace std;
 UCT::UCT () {
-    uct_k = sqrt (2);
+    uct_k = sqrt (3);
 }
 
 int UCT::get_best_child_index (Tree_node* node, float uct_k) {
