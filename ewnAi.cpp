@@ -7,8 +7,8 @@ EwnAI::EwnAI()
 	int cmd;
 	cout << "Please choose an AI:" << endl;
 	cout << "0)Minimax evaluating with feature" << endl;
-	cout << "1)Minimax evaluating with simulation 1" << endl;
-	cout << "2)Minimax evaluating with simulation 2" << endl;
+	cout << "1)QMinimax evaluating with simulation 1" << endl;
+	cout << "2)QMinimax evaluating with simulation 2" << endl;
 	cout << "3)Minimax evaluating with simulation 3" << endl;
 	cout << "4)Minimax evaluating with simulation 4" << endl;
 	cout << "5)MCTS" << endl;

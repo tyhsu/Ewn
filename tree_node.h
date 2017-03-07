@@ -7,6 +7,8 @@ public:
     float score;
     int num_visit;
     int game_status;
+	int depth = -1;
+	bool is_expanded = false;
     Game game;
     Tree_node* parent;
     bool is_legal_list[18];
@@ -15,11 +17,11 @@ public:
 	//Default Constructor
 	Tree_node();
 	//Constructor
-    Tree_node(int _game_status = 0, Game _game = Game() , Tree_node * _parent = NULL);
+    Tree_node(int _game_status, Game _game  , Tree_node * _parent, int _depth);
 	//Copy Constructor
 	Tree_node(Tree_node* _Tree_node);
 	//Copy operator
-	void operator=(Tree_node* _Tree_node);
+	void operator=(Tree_node _Tree_node);
 	//Set Score
     void set_score(float _score);
 	//If the node is a end-gamed node

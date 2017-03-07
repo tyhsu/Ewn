@@ -3,28 +3,32 @@
 #include <vector>
 #include "game.h"
 #include "tree_node.h"
-Tree_node::Tree_node() {
+ Tree_node::Tree_node() {
 	this->score = 0;
     this->num_visit = 0;
     this->game_status = 0;
     this->game = Game();
+	this->is_expanded = false;
     this->parent = NULL;
 }
-Tree_node::Tree_node (int _game_status, Game _game , Tree_node * _parent) {
+Tree_node::Tree_node (int _game_status, Game _game , Tree_node * _parent, int _depth = 0) {
     this->score = 0;
     this->num_visit = 0;
     this->game_status = _game_status;
     this->game = _game;
     this->parent = _parent;
+	this->is_expanded = true;
     for (int i = 0; i < 18; i++) {
-		Movement movement(i % 6, i % 3);
+		Movement movement(i / 3, i % 3);
         if (this->game.check_in_board(movement)) {
 			is_legal_list[i] = true;
 			legal_move_list[i] = movement;
 			Game child_game = this->game;
-			children_list[i] = new Tree_node(child_game.update_game_status(movement), child_game, this);
+			children_list[i] = new Tree_node();
+			children_list[i]->depth = _depth+1;
 		}
 	}
+	
             
 }
 Tree_node::Tree_node(Tree_node* _Tree_node) {
@@ -40,16 +44,16 @@ Tree_node::Tree_node(Tree_node* _Tree_node) {
 	}
    
 }
-void Tree_node::operator=(Tree_node* _Tree_node) {
-	this->score = _Tree_node->score;
-    this->num_visit = _Tree_node->num_visit;
-    this->game_status = _Tree_node->game_status;
-    this->game = _Tree_node->game;
-    this->parent = _Tree_node->parent;
+void Tree_node::operator=(Tree_node _Tree_node) {
+	this->score = _Tree_node.score;
+    this->num_visit = _Tree_node.num_visit;
+    this->game_status = _Tree_node.game_status;
+    this->game = _Tree_node.game;
+    this->parent = _Tree_node.parent;
     for (int i = 0; i < 18; i++) {
- 		is_legal_list[i] = _Tree_node->is_legal_list[i];  	
-		legal_move_list[i] = _Tree_node->legal_move_list[i]; 		
-		children_list[i] = _Tree_node->children_list[i];	
+ 		is_legal_list[i] = _Tree_node.is_legal_list[i];  	
+		legal_move_list[i] = _Tree_node.legal_move_list[i]; 		
+		children_list[i] = _Tree_node.children_list[i];	
 	}
 }
 void Tree_node::set_score(float _score) {

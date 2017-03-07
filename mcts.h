@@ -18,6 +18,7 @@ public:
     int max_iterations;
     int simulation_depth;
     UCT uct;
+	MCTS ();
     Movement AI_move(Game& game, int dice);
     // mcts main
     float run(const Game& current_game);
