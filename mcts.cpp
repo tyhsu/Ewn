@@ -1,40 +1,6 @@
 #include <stdlib.h>
 #include "mcts.h"
 using namespace std;
-UCT::UCT () {
-    uct_k = sqrt (2);
-}
-
-int UCT::get_best_child_index (Tree_node* node, float uct_k) {
-    // record node
-    int best_child_index = 0;
-    float best_uct_score = 0;
-
-    // Store all data for random
-    int index_list[18], index_list_size = 0;
-	float uct_score_list[18] = {0};
-	// iterate all immediate children and find best UCT score
-    for(int i = 0; i < 18; i++) {
-		if (node->is_legal_list[i] == false) 
-			continue;
-		
-        Tree_node* child = node->children_list[i];
-        float uct_exploitation = (float)child->score / (child->num_visit);
-        float uct_exploration = sqrt(log((float)node->num_visit + 1) / (child->num_visit));
-        float uct_score = uct_score_list[i] = uct_exploitation + uct_k* uct_exploration;
-		
-        if (best_uct_score < uct_score) {
-            best_uct_score = uct_score;
-        }
-    }
-	for(int i = 0; i < 18; i++) {
-		if((float)abs(best_uct_score - uct_score_list[i]) < eps) { 
-			index_list[index_list_size++] = i;
-		}
-	}
-	
-    return index_list[random()%index_list_size];
-}
 
 Movement MCTS::AI_move(Game& cur_game, int dice) { 
     this->max_iterations = 100;

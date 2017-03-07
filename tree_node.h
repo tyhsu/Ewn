@@ -9,6 +9,7 @@ public:
     int game_status;
     Game game;
     Tree_node* parent;
+    int child_num;
     bool is_legal_list[18];
     Movement legal_move_list[18];
 	Tree_node* children_list[18];
