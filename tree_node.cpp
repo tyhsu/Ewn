@@ -1,11 +1,13 @@
+#ifndef TREE_NODE_H
+#define TREE_NODE_H
 #include <vector>
-#include <game.h>
+#include "game.h"
 #include "tree_node.h"
 Tree_node::Tree_node() {
 	this->score = 0;
     this->num_visit = 0;
     this->game_status = 0;
-    this->game = NULL;
+    this->game = Game();
     this->parent = NULL;
 }
 Tree_node::Tree_node (int _game_status, Game _game , Tree_node * _parent) {
@@ -15,11 +17,12 @@ Tree_node::Tree_node (int _game_status, Game _game , Tree_node * _parent) {
     this->game = _game;
     this->parent = _parent;
     for (int i = 0; i < 18; i++) {
-        if (this->game.check_in_board(Movement movement(i % 6, i % 3))) {
+		Movement movement(i % 6, i % 3);
+        if (this->game.check_in_board(movement)) {
 			is_legal_list[i] = true;
 			legal_move_list[i] = movement;
 			Game child_game = this->game;
-			children_list[i] = new Tree_node(child_game.update_game_status(movememt), child_game, this);
+			children_list[i] = new Tree_node(child_game.update_game_status(movement), child_game, this);
 		}
 	}
             
@@ -54,7 +57,7 @@ void Tree_node::set_score(float _score) {
 }
 
 bool Tree_node::is_terminate() {
-	return this->game != 0;
+	return this->game_status != 0;
 }
 
 void Tree_node::update(float _score) {
@@ -65,4 +68,4 @@ void Tree_node::update(float _score) {
 Tree_node* Tree_node::get_parent() { 
 	return this->parent; 
 }
-
+#endif

@@ -1,5 +1,5 @@
 #include <vector>
-#include <game.h>
+#include "game.h"
 
 using namespace std;
 class Tree_node {
@@ -15,7 +15,7 @@ public:
 	//Default Constructor
 	Tree_node();
 	//Constructor
-    Tree_node(int _game_status = 0, Game _game = NULL , Tree_node * _parent = NULL);
+    Tree_node(int _game_status = 0, Game _game = Game() , Tree_node * _parent = NULL);
 	//Copy Constructor
 	Tree_node(Tree_node* _Tree_node);
 	//Copy operator
@@ -27,5 +27,5 @@ public:
 	//Update score and num_visit
     void update(float _score);
 	//Get parent
-    Tree_nodeT* get_parent();
-}
+    Tree_node* get_parent();
+};

@@ -5,7 +5,7 @@
 #include "minimax2.h"
 #include "minimax3.h"
 #include "minimax4.h"
-
+#include "mcts.h"
 class EwnAI
 {
 private:
@@ -15,6 +15,7 @@ private:
 	Minimax2 minimax2;	//ai = 2
 	Minimax3 minimax3;	//ai = 3
 	Minimax4 minimax4;	//ai = 4
+	MCTS mcts;
 public:
 	EwnAI();
 	EwnAI(int mode);
