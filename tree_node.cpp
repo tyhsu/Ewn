@@ -1,5 +1,4 @@
-#ifndef TREE_NODE_H
-#define TREE_NODE_H
+
 #include <vector>
 #include "game.h"
 #include "tree_node.h"
@@ -17,6 +16,7 @@ Tree_node::Tree_node (int _game_status, Game _game , Tree_node * _parent, int _d
     this->game_status = _game_status;
     this->game = _game;
     this->parent = _parent;
+	this->depth = _depth;
 	this->is_expanded = true;
     for (int i = 0; i < 18; i++) {
 		Movement movement(i / 3, i % 3);
@@ -66,10 +66,12 @@ bool Tree_node::is_terminate() {
 
 void Tree_node::update(float _score) {
     this->num_visit ++;
+	
     this->score += _score;
+	cout << " update : " << this->score << ", " << this->num_visit << endl;
 }
 
 Tree_node* Tree_node::get_parent() { 
 	return this->parent; 
 }
-#endif
+

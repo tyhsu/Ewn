@@ -1,41 +1,6 @@
 #include <stdlib.h>
 #include "mcts.h"
 using namespace std;
-UCT::UCT () {
-    this->uct_k = sqrt (2);
-}
-
-int UCT::get_best_child_index (Tree_node* node, float uct_k) {
-    // record node
-    int best_child_index = 0;
-    float best_uct_score = 0;
-
-    // Store all data for random
-    int index_list[18], index_list_size = 0;
-	float uct_score_list[18] = {0};
-	// iterate all immediate children and find best UCT score
-    for(int i = 0; i < 18; i++) {
-		if (node->is_legal_list[i] == false) 
-			continue;
-		
-        Tree_node* child = node->children_list[i];
-        float uct_exploitation = (float)child->score / (child->num_visit + eps);
-        float uct_exploration = sqrt(log((float)node->num_visit + 1) / (child->num_visit + eps));
-        float uct_score = uct_score_list[i] = uct_exploitation + uct_k* uct_exploration;
-		
-        if (best_uct_score < uct_score) {
-            best_uct_score = uct_score;
-        }
-    }
-	for(int i = 0; i < 18; i++) {
-		if((float)abs(best_uct_score - uct_score_list[i]) < eps) { 
-			index_list[index_list_size++] = i;
-			//cout << i << " : " <<  uct_score_list[i] << endl;
-		}
-	}
-	//cout << "UCT done " << endl;
-    return index_list[random()%index_list_size];
-}
 MCTS::MCTS(){}
 Movement MCTS::AI_move(Game& cur_game, int dice) { 
     this->max_iterations = 100;
@@ -86,10 +51,12 @@ float MCTS::run(const Game& current_game) {
         // 1. select. Start at root, dig down into tree using MCTS on all fully expanded nodes
         Tree_node* best_node = root_node;
 		int best_child_index;
-		best_child_index = this->uct.get_best_child_index(best_node, this->uct.uct_k);
+		cout << "OAO" << endl;
 		
         while(!best_node->is_terminate()) {
+			
 			cout << "dea" << endl;
+			best_child_index = this->uct.select_children_list_index(best_node);
 			if (best_node->is_expanded) cout <<"EXPANDED";
 			else cout << "NOT EXPANDED";
 			cout<< " DEPTH :" << best_node->depth << endl;

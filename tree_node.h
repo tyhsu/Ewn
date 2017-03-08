@@ -1,3 +1,5 @@
+#ifndef TREE_NODE_H
+#define TREE_NODE_H
 #include <vector>
 #include "game.h"
 
@@ -31,3 +33,4 @@ public:
 	//Get parent
     Tree_node* get_parent();
 };
+#endif
