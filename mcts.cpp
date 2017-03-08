@@ -45,7 +45,7 @@ float MCTS::run(const Game& current_game) {
 	int iteration = 0;  // nodes
     // initialize root Tree_node with current state
     Tree_node* root_node = new Tree_node(0, current_game, NULL, 0);
-	
+	cout << " ROOT :" << root_node << endl;
     while(iteration++ < max_iterations) {
 		cout << "stage 0 "<< endl;
         // 1. select. Start at root, dig down into tree using MCTS on all fully expanded nodes
@@ -54,17 +54,18 @@ float MCTS::run(const Game& current_game) {
 		cout << "OAO" << endl;
 		
         while(!best_node->is_terminate()) {
-			
+			cout << "best_node mem : " << best_node << endl;
 			cout << "dea" << endl;
 			best_child_index = this->uct.select_children_list_index(best_node);
 			if (best_node->is_expanded) cout <<"EXPANDED";
 			else cout << "NOT EXPANDED";
 			cout<< " DEPTH :" << best_node->depth << endl;
             cout << " Best Child Index:" << best_child_index << endl;
-			if(best_node->num_visit == 0) {
+			cout << "num_visit :" << best_node->num_visit << endl;
+			if(best_node->num_visit == 0 || best_node->children_list[best_child_index]->is_expanded == false ) {
 				break;
 			}
-			cout << "num_visit :" << best_node->num_visit << endl;
+			
 			best_node = best_node->children_list[best_child_index];
 			/*
 			*	HERE IS THE FUCKING ERROR
@@ -76,12 +77,15 @@ float MCTS::run(const Game& current_game) {
 		cout << "stage 1 "<< endl;
         // 2. expand by adding a single child (if not terminal or not fully expanded)
         if(!best_node->is_terminate()) {
-				best_node->children_list[best_child_index] = 
-				new Tree_node(best_node->game.update_game_status(best_node->legal_move_list[best_child_index]), 
-				best_node->game, 
-				best_node, best_node->depth);
-				best_node = best_node->children_list[best_child_index] ;
-					cout << "EXPAND " << best_child_index << endl;
+			cout << best_child_index << " is legal ?" <<  best_node->is_legal_list[best_child_index] << endl;
+			cout << best_node->children_list[best_child_index] << " is child of " << best_node << endl;
+			best_node->children_list[best_child_index] = 
+			new Tree_node(best_node->game.update_game_status(best_node->legal_move_list[best_child_index]), 
+			best_node->game, 
+			best_node, best_node->depth);
+			
+			best_node = best_node->children_list[best_child_index] ;
+			cout << "EXPAND " << best_child_index << endl;
 		}
 		cout << "stage 2 "<< endl;
         // 3. simulate
@@ -90,9 +94,14 @@ float MCTS::run(const Game& current_game) {
 		cout << "stage 3 "<< endl;									   
         // 4. back propagation
         while(true) {
+			cout << "UPDATE" << endl;
+			if ( best_node == root_node) cout << "UPDATE ROOT" << endl;
             best_node->update(reward);
-			if(best_node->parent ==  NULL) break;
-            best_node = best_node->get_parent();
+			if(best_node->parent ==  NULL)  {
+				cout << root_node << " root " << best_node << endl;
+				break;
+			}
+            best_node = best_node->parent;
         }
 		cout << "stage 4 "<< endl;
 	}

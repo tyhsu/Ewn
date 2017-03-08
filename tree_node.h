@@ -13,7 +13,7 @@ public:
 	bool is_expanded = false;
     Game game;
     Tree_node* parent;
-    bool is_legal_list[18];
+    int is_legal_list[18] = {0};
     Movement legal_move_list[18];
 	Tree_node* children_list[18];
 	//Default Constructor
@@ -23,7 +23,7 @@ public:
 	//Copy Constructor
 	Tree_node(Tree_node* _Tree_node);
 	//Copy operator
-	void operator=(Tree_node _Tree_node);
+	void operator=(Tree_node& _Tree_node);
 	//Set Score
     void set_score(float _score);
 	//If the node is a end-gamed node

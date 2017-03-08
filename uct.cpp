@@ -21,7 +21,7 @@ int UCT::select_children_list_index(Tree_node* cur_node)
 	float best_value = 0.0;
 	// calculate every UCT value of the child nodes
 	for (int i=0; i<child_num_; i++) {
-		if (!cur_node->is_legal_list[i])
+		if (!cur_node->is_legal_list[i] == 1)
 			continue;
 
 		Tree_node child_node = cur_node->children_list[i];
