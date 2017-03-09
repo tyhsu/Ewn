@@ -14,21 +14,11 @@ Tree_node::Tree_node (int _game_status, const Game& _game , Tree_node * _parent,
     this->num_visit = 0;
     this->game_status = _game_status;
     this->game = _game;
-
-        // cout << "--------------------------------------" << endl;
-        // cout << "--------IN EXPANDING NODE-------------" << endl;
-        // cout << "--------------------------------------" << endl;
-        //_game.print_status();
-    //this->game.print_status();
     this->parent = _parent;
 	this->depth = _depth;
 	this->is_expanded = true;
-    // _game.print_board();_game.print_status();
     for (int i = 0; i < 18; i++) {
-        //cout << "(" << i/3 << ", " << i%3 << ") at i = " << i << endl;
         Movement movement(i / 3, i % 3);
-        // cout << "movement for i :" << movement.first << movement.second << i << endl;
-        //cout << this->game.check_in_board(movement) << this->game.get_cur_chs_list(i).exist << endl;
         this->is_legal_list[i] = ((this->game.check_in_board(movement) == true) && (this->game.get_cur_chs_list(i/3).exist == true));
 		this->legal_move_list[i] = movement;
 		this->children_list[i] = new Tree_node();
@@ -36,13 +26,6 @@ Tree_node::Tree_node (int _game_status, const Game& _game , Tree_node * _parent,
 		this->children_list[i]->parent = this;
 
 	}
-        // node_status();
-        // cout << "--------------------------------------" << endl;
-        // cout << "--------IN EXPANDING NODE-------------" << endl;
-        // cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << endl;
-        //_game.print_status();
-
-
 }
 Tree_node::Tree_node(Tree_node* _tree_node) {
 	this->score = _tree_node->score;

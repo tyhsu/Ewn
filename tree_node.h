@@ -18,7 +18,7 @@ public:
 	Tree_node* children_list[18];
 	//Default Constructor
 	Tree_node();
-	//Constructor
+	//Constructor for expand
     Tree_node(int _game_status, const Game& _game  , Tree_node * _parent, int _depth);
 	//Copy Constructor
 	Tree_node(Tree_node* _Tree_node);
@@ -32,7 +32,7 @@ public:
     void update(float _score);
 	//Get parent
     Tree_node* get_parent();
-    //Debuging
+    //Debuging console
     void node_status();
 };
 #endif
