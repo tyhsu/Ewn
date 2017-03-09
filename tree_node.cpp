@@ -6,7 +6,6 @@
 	this->score = 0;
     this->num_visit = 0;
     this->game_status = 0;
-    this->game = Game();
 	this->is_expanded = false;
     this->parent = NULL;
 }
@@ -14,30 +13,32 @@ Tree_node::Tree_node (int _game_status, Game _game , Tree_node * _parent, int _d
     this->score = 0;
     this->num_visit = 0;
     this->game_status = _game_status;
-    this->game = _game;
+    this->game = Game(_game);
+
+    // cout << "--------------------------------------" << endl;
+    // cout << "--------IN EXPANDING NODE-------------" << endl;
+    // cout << "--------------------------------------" << endl;
+    //_game.print_status();
+    //this->game.print_status();
     this->parent = _parent;
 	this->depth = _depth;
 	this->is_expanded = true;
-    cout << "--------------------------------------" << endl;
-    cout << "--------IN EXPANDING NODE-------------" << endl;
-    cout << "--------------------------------------" << endl;
-    _game.print_board();_game.print_status();
+    // _game.print_board();_game.print_status();
     for (int i = 0; i < 18; i++) {
-        cout << "(" << i/3 << ", " << i%3 << ") at i = " << i << endl;
+        //cout << "(" << i/3 << ", " << i%3 << ") at i = " << i << endl;
         Movement movement(i / 3, i % 3);
-        cout << this->game.check_in_board(movement) << this->game.get_cur_chs_list(i).exist << endl;
+        // cout << this->game.check_in_board(movement) << this->game.get_cur_chs_list(i).exist << endl;
 
         if (this->game.check_in_board(movement) && this->game.get_cur_chs_list(i).exist ) {
 
-            cout << " THE CHESS : " << i/3 << " move " << i%3 << " IS LEGAL?  i: " << i << endl;
+        //    cout << " THE CHESS : " << i/3 << " move " << i%3 << " IS LEGAL?  i: " << i << endl;
 			is_legal_list[i] = true;
 			legal_move_list[i] = movement;
-			Game child_game = this->game;
 			children_list[i] = new Tree_node();
 			children_list[i]->depth = _depth+1;
 			children_list[i]->parent = this;
 		}
-		else { is_legal_list[i] = false; cout << "F i: " << i << endl;}
+		else { is_legal_list[i] = false;}// cout << "F i: " << i << endl;}
 	}
 
 

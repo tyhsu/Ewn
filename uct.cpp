@@ -21,7 +21,7 @@ int UCT::select_children_list_index(Tree_node* cur_node)
 	float best_value = 0.0;
 	// calculate every UCT value of the child nodes
 	for (int i=0; i<child_num_; i++) {
-		if (!cur_node->is_legal_list[i] == 1)
+		if (cur_node->is_legal_list[i] == 0)
 			continue;
 
 		Tree_node child_node = cur_node->children_list[i];
@@ -31,14 +31,18 @@ int UCT::select_children_list_index(Tree_node* cur_node)
 		if (child_value_list[i] > best_value)
 			best_value = child_value_list[i];
 	}
-	
+
 	// gather the nodes whose UCT values approach best_value
 	int best_children_num = 0;
 	float child_index_list[18] = {0};
 	for (int i=0; i<child_num_; i++) {
+		if (cur_node->is_legal_list[i] == 0)
+			continue;
 		//cout << best_value << " | " << child_value_list[i] <<endl;
-		if ((float)abs(best_value - child_value_list[i]) < eps)
+		if ((float)abs(best_value - child_value_list[i]) < eps) {
 			child_index_list[ best_children_num++ ] = i;
+			//cout << i << " is good " << endl;
+		}
 	}
 	// select a child node index randomly
 	return child_index_list[ rand()%best_children_num ];

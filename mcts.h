@@ -19,7 +19,7 @@ public:
     //Selection selection(eps);
     Movement AI_move(Game& game, int dice);
     // mcts main
-    float run(const Game& current_game);
+    float run(Game& current_game);
 	int simulation(Game simu_game);
 };
 // src: https://github.com/memo/ofxMSAmcts/blob/master/src/ofxMSAmcts.h
