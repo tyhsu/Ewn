@@ -275,12 +275,12 @@ int Game::update_game_status(const Movement& mvmt)
 	Chess blank_chs = next_chs;
 	blank_chs.symbol = 0;
 	this->set_chs_on_board(blank_chs);
-	printf(" side is %s\n", (this->is_switch == (this->cur_chs_list_ptr == this->chs_list_B)) ? "True" : "False");
-	if((this->is_switch == (this->cur_chs_list_ptr == this->chs_list_B)) == false)
-		cout << this->cur_chs_list_ptr << "  " << this->chs_list_A << "  " << this->chs_list_B << "  " << endl;
-	printf("%c turn  ", this->is_switch + 'A');
-	cout << " the chess " << next_chs.symbol << " from " ;
-	cout << "(" << next_chs.x << "," << next_chs.y <<" ) goes to ";
+	// printf(" side is %s\n", (this->is_switch == (this->cur_chs_list_ptr == this->chs_list_B)) ? "True" : "False");
+	// if((this->is_switch == (this->cur_chs_list_ptr == this->chs_list_B)) == false)
+		// cout << this->cur_chs_list_ptr << "  " << this->chs_list_A << "  " << this->chs_list_B << "  " << endl;
+	// printf("%c turn  ", this->is_switch + 'A');
+	// cout << " the chess " << next_chs.symbol << " from " ;
+	// cout << "(" << next_chs.x << "," << next_chs.y <<" ) goes to ";
 	// Update the chosen movement on the board
 	int chs_list_index = 0;
 	if (!this->is_switch)	//chs_list_A
@@ -289,15 +289,15 @@ int Game::update_game_status(const Movement& mvmt)
 		chs_list_index = next_chs.symbol - 'A';
 
 	if (direct == 0)		// move right
-		this->cur_chs_list_ptr[mvmt.first].move_x_one_unit(side);
+		this->cur_chs_list_ptr[chs_list_index].move_x_one_unit(side);
 	else if (direct == 1)	// move down
-		this->cur_chs_list_ptr[mvmt.first].move_y_one_unit(side);
+		this->cur_chs_list_ptr[chs_list_index].move_y_one_unit(side);
 	else if (direct == 2)	// move right down
-		this->cur_chs_list_ptr[mvmt.first].move_x_one_unit(side),
-		this->cur_chs_list_ptr[mvmt.first].move_y_one_unit(side);
+		this->cur_chs_list_ptr[chs_list_index].move_x_one_unit(side),
+		this->cur_chs_list_ptr[chs_list_index].move_y_one_unit(side);
 
-	Chess chs = this->cur_chs_list_ptr[mvmt.first];
-	cout << "(" << chs.x << "," << chs.y <<" )";
+	Chess chs = this->cur_chs_list_ptr[chs_list_index];
+	// cout << "(" << chs.x << "," << chs.y <<" )";
 	eaten_chs_symbol = this->get_symbol_on_board(chs.x, chs.y);
 	this->set_chs_on_board(chs);
 

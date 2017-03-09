@@ -13,17 +13,17 @@ public:
 	bool is_expanded = false;
     Game game;
     Tree_node* parent;
-    int is_legal_list[18] = {0};
+    bool is_legal_list[18] = {0};
     Movement legal_move_list[18];
 	Tree_node* children_list[18];
 	//Default Constructor
 	Tree_node();
 	//Constructor
-    Tree_node(int _game_status, Game _game  , Tree_node * _parent, int _depth);
+    Tree_node(int _game_status, const Game& _game  , Tree_node * _parent, int _depth);
 	//Copy Constructor
 	Tree_node(Tree_node* _Tree_node);
 	//Copy operator
-	void operator=(Tree_node& _Tree_node);
+	void operator=(const Tree_node& _Tree_node);
 	//Set Score
     void set_score(float _score);
 	//If the node is a end-gamed node
@@ -32,5 +32,7 @@ public:
     void update(float _score);
 	//Get parent
     Tree_node* get_parent();
+    //Debuging
+    void node_status();
 };
 #endif

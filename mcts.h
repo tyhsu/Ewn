@@ -17,10 +17,10 @@ public:
     UCT uct;
 	MCTS ();
     //Selection selection(eps);
-    Movement AI_move(Game& game, int dice);
+    Movement AI_move(const Game&  game, int dice);
     // mcts main
-    float run(Game& current_game);
-	int simulation(Game simu_game);
+    float run(const Game& current_game);
+	int simulation(const Game& simu_game);
 };
 // src: https://github.com/memo/ofxMSAmcts/blob/master/src/ofxMSAmcts.h
 

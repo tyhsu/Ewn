@@ -2,9 +2,10 @@
 #include "mcts.h"
 using namespace std;
 MCTS::MCTS(){}
-Movement MCTS::AI_move(Game& cur_game, int dice) {
-    this->max_iterations = 5;
-    this->simulation_depth = 10;
+Movement MCTS::AI_move(const Game& _cur_game, int dice) {
+    Game cur_game = _cur_game;
+    this->max_iterations = 1000;
+    this->simulation_depth = 1000;
     this->ai_side = cur_game.get_is_switch();
     this->ai_symbol = this->ai_side? 'A': '1';
     int best_val = -1e9, child_val;
@@ -41,8 +42,8 @@ Movement MCTS::AI_move(Game& cur_game, int dice) {
 	return answer;
 }
 // mcts main
-float MCTS::run(Game& current_game) {
-    cout << "RUNRUNRUNRUNRUN" << endl;
+float MCTS::run(const Game& current_game) {
+    // cout << "RUNRUNRUNRUNRUN" << endl;
     //current_game.print_status();
 	int iteration = 0;  // nodes
     // initialize root Tree_node with current state
@@ -50,24 +51,24 @@ float MCTS::run(Game& current_game) {
 //	cout << " ROOT :" << root_node << endl;
     //root_node->game.print_status();
     while(iteration++ < max_iterations) {
-		cout << "stage 0 "<< endl;
+		// cout << "stage 0 "<< endl;
         // 1. select. Start at root, dig down into tree using MCTS on all fully expanded nodes
         Tree_node* best_node = root_node;
 		int best_child_index;
-		cout << "OAO" << endl;
+		// cout << "OAO" << endl;
 
         while(!best_node->is_terminate()) {
 
-			cout << "best_node mem : " << best_node << endl;
-			// cout << "dea" << endl;
+			// cout << "best_node mem : " << best_node << endl;
+		//	cout << "dea" << endl;
 			best_child_index = this->uct.select_children_list_index(best_node);
-			if (best_node->is_expanded) cout <<"EXPANDED";
-			else cout << "NOT EXPANDED";
-			cout<< " DEPTH :" << best_node->depth << endl;
-           cout << " Best Child Index:" << best_child_index << endl;
-			cout << "num_visit :" << best_node->num_visit << endl;
-           if (best_node->children_list[best_child_index] == NULL) cout << "CHILD NULL!" << endl;
-           cout << best_child_index << " is legal ?" <<  best_node->is_legal_list[best_child_index] << endl;
+			// if (best_node->is_expanded) cout <<"EXPANDED";
+			// else cout << "NOT EXPANDED";
+			// cout<< " DEPTH :" << best_node->depth << endl;
+        //    cout << " Best Child Index:" << best_child_index << endl;
+			// cout << "num_visit :" << best_node->num_visit << endl;
+        //    if (best_node->children_list[best_child_index] == NULL) cout << "CHILD NULL!" << endl;
+        //    cout << best_child_index << " is legal ?" <<  best_node->is_legal_list[best_child_index] << endl;
 			if(best_node->num_visit == 0 || best_node->children_list[best_child_index]->is_expanded == false ) {
 				break;
 			}
@@ -80,10 +81,11 @@ float MCTS::run(Game& current_game) {
 			//if(best_node == NULL) cout <<"LERRRRR"<<endl;
 			//cout << "dead" << endl;
 		}
-		cout << "stage 1 "<< endl;
+		// cout << "stage 1 "<< endl;
         // 2. expand by adding a single child (if not terminal or not fully expanded)
         if(!best_node->is_terminate()) {
-            best_node->game.print_status();
+            // best_node->node_status();
+            // best_node->game.print_status();
             // cout << "BEST_NODE :" << best_node << endl;
             // cout << " TURN : "; if(best_node->game.get_is_switch()) cout << " BBBB " ; else cout << " AAAA " ; cout << endl;
 			// cout << best_child_index/3<<best_child_index%3 << " is legal ? " <<  best_node->is_legal_list[best_child_index] << endl;
@@ -95,46 +97,48 @@ float MCTS::run(Game& current_game) {
             // best_node->game.print_board();
             // best_node->game.print_status();
             // cout << "[[[[[[[[[[[[ " << (char)('A' + best_node->game.get_is_switch()) << "move" <<best_child_index/3<<best_child_index%3<< "]]]]]]]]]]]]" << endl;
-            int sta = best_node->game.update_game_status(m);
-            // best_node->game.switch_player();
+            Game tmp = best_node->game;
+            int sta = tmp.update_game_status(m);
+            tmp.switch_player();
             // cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << endl;
-            // best_node->game.print_board();
-            // best_node->game.print_status();
+            // tmp.print_board();
+            // tmp.print_status();
             // cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << endl;
 			best_node->children_list[best_child_index] =
 			new Tree_node(sta,
-			best_node->game,
+			tmp,
 			best_node, best_node->depth+1);
 
 			best_node = best_node->children_list[best_child_index] ;
-			cout << "EXPAND " << best_child_index << endl;
+			// cout << "EXPAND " << best_child_index << endl;
 		}
-		cout << "stage 2 "<< endl;
+		// cout << "stage 2 "<< endl;
         // 3. simulate
 		int reward = best_node->is_terminate() ? best_node->game_status == (this->ai_side? 2 : 1)
 											   : this->simulation(best_node->game);
         //ERROR
-		cout << "stage 3 "<< endl;
+		// cout << "stage 3 "<< endl;
         // 4. back propagation
         while(true) {
-			cout << "UPDATE" << endl;
-			if ( best_node == root_node) cout << "UPDATE ROOT" << endl;
+			// cout << "UPDATE" << endl;
+			// if ( best_node == root_node) cout << "UPDATE ROOT" << endl;
             best_node->update(reward);
 			if(best_node->parent ==  NULL)  {
-				cout << root_node << " root " << best_node << endl;
+				// cout << root_node << " root " << best_node << endl;
 				break;
 			}
             best_node = best_node->parent;
         }
-		cout << "stage 4 "<< endl;
+		// cout << "stage 4 "<< endl;
 	}
 	return root_node->score;
 }
 
-int MCTS::simulation(Game simu_game) {
-    cout << "DO SIMU" << endl;
-    simu_game.print_board();
-    simu_game.print_status();
+int MCTS::simulation(const Game& _simu_game) {
+    Game simu_game = _simu_game;
+    // cout << "DO SIMU" << endl;
+    // simu_game.print_board();
+    // simu_game.print_status();
 	char cur_symbol;
 	int game_status = 0, ai_win = this->ai_side ? 2 : 1;
 	if (simu_game.get_is_switch() == this->ai_side)
@@ -145,8 +149,8 @@ int MCTS::simulation(Game simu_game) {
 	while (game_status == 0) {
 		Movement available_mvmt_list[18];
 		int available_mvmt_cnt = 0;
-        simu_game.print_board();
-        simu_game.print_status();
+        // simu_game.print_board();
+        // simu_game.print_status();
 		// find all avaible move (6 dice indices, 3 directions)
 		for(int chs_index = 0; chs_index < 6; chs_index++) {
 			Chess cur_chs = simu_game.get_cur_chs_list(chs_index);
@@ -168,7 +172,7 @@ int MCTS::simulation(Game simu_game) {
 		if(game_status == 0) simu_game.switch_player();
 		else break;
 	}
-    cout << " end simulation " << endl;
+    // cout << " end simulation " << endl;
 	// return the result of game.
 	return (game_status == ai_win? 1 : 0);
 }
