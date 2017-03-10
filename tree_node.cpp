@@ -8,6 +8,10 @@
     this->game_status = 0;
 	this->is_expanded = false;
     this->parent = NULL;
+    for (int i = 0; i < 18; i++) {
+        this->is_legal_list[i] = false;
+		this->children_list[i] = NULL;
+	}
 }
 Tree_node::Tree_node (int _game_status, const Game& _game , Tree_node * _parent, int _depth = 0) {
     this->score = 0;
@@ -24,7 +28,6 @@ Tree_node::Tree_node (int _game_status, const Game& _game , Tree_node * _parent,
 		this->children_list[i] = new Tree_node();
 		this->children_list[i]->depth = _depth+1;
 		this->children_list[i]->parent = this;
-
 	}
 }
 Tree_node::Tree_node(Tree_node* _tree_node) {

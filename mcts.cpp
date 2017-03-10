@@ -41,6 +41,9 @@ Movement MCTS::AI_move(const Game& _cur_game, int dice) {
 	}
 	return answer;
 }
+MCTS::~MCTS() {
+	cout << "leave" << endl;
+}
 // mcts main
 float MCTS::run(const Game& current_game) {
     //current_game.print_status();
@@ -66,11 +69,8 @@ float MCTS::run(const Game& current_game) {
             Game child_game = best_node->game;
             int sta = child_game.update_game_status(m);
             child_game.switch_player();
-			best_node->children_list[best_child_index] =
-			new Tree_node(sta,
-			child_game,
-			best_node, best_node->depth+1);
-
+            delete best_node->children_list[best_child_index];
+			best_node->children_list[best_child_index] = new Tree_node(sta, child_game, best_node, best_node->depth+1);
 			best_node = best_node->children_list[best_child_index] ;
 		}
         // 3. simulate
@@ -84,7 +84,9 @@ float MCTS::run(const Game& current_game) {
             best_node = best_node->parent;
         }
 	}
-	return root_node->score;
+	float result = root_node->score;
+	this->recursive_delete_tree_node(root_node);
+	return result;
 }
 
 int MCTS::simulation(const Game& _simu_game) {
@@ -121,4 +123,13 @@ int MCTS::simulation(const Game& _simu_game) {
 		else break;
 	}
 	return (game_status == ai_win? 1 : 0);
+}
+
+void MCTS::recursive_delete_tree_node(Tree_node* _Tree_node) {
+	for (int i = 0; i < 18; i++) {
+		if (_Tree_node->children_list[i]) {
+			recursive_delete_tree_node(_Tree_node->children_list[i]);
+		}
+	}
+	delete _Tree_node;
 }

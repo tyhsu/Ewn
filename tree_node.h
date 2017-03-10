@@ -16,7 +16,7 @@ public:
     bool is_legal_list[18] = {0};
     Movement legal_move_list[18];
 	Tree_node* children_list[18];
-	//Default Constructor
+	// Default Constructor
 	Tree_node();
 	//Constructor for expand
     Tree_node(int _game_status, const Game& _game  , Tree_node * _parent, int _depth);
