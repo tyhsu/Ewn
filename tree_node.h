@@ -6,34 +6,40 @@
 using namespace std;
 class Tree_node {
 public:
-    float score;
-    int num_visit;
-    int game_status;
-	int depth = -1;
-	bool is_expanded = false;
-    Game game;
-    Tree_node* parent;
-    bool is_legal_list[18] = {0};
-    Movement legal_move_list[18];
-	Tree_node* children_list[18];
+	int win_count;
+	int visit_count;
+	int game_status;
+	Game game;
+	Tree_node* parent_ptr;
+	// List for legal child nodes
+	Tree_node* children_ptr_list[18];
+
 	// Default Constructor
 	Tree_node();
-	//Constructor for expand
-    Tree_node(int _game_status, const Game& _game, Tree_node * _parent, int _depth);
-	//Copy Constructor
-	Tree_node(Tree_node* _Tree_node);
-	//Copy operator
-	void operator=(const Tree_node& _Tree_node);
-	//Set Score
-    void set_score(float _score);
-	//If the node is a end-gamed node
-    bool is_terminate();
-	//Update score and num_visit
-    void update(float _score);
-	//Get parent
-    Tree_node* get_parent();
-    //Debuging console
-    void node_status();
+	// Constructor for expand
+	Tree_node(const Game& game_, Tree_node* parent_);
+	// Copy Constructor
+	Tree_node(Tree_node* Tree_node_);
+	// Copy operator
+	void operator=(const Tree_node& Tree_node_);
+	
+	// If the node is a end-gamed node
+	bool is_terminate();
+	// If the node has been visited (it is expanded)
+	bool is_visit();
+
+	// New and set children nodes in the children_ptr_list
+	void set_child_nodes(const Game& game_, Tree_node* parent_);
+	// Set win_count
+	void set_win_count(float win_count_);
+	// Update win_count and visit_count
+	void update(float win_count_);
+
+	// Get parent
+	Tree_node* get_parent();
+
+	// Debuging console
+	void node_status();
 };
 
 #endif
