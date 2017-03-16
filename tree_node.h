@@ -19,7 +19,7 @@ public:
 	// Default Constructor
 	Tree_node();
 	//Constructor for expand
-    Tree_node(int _game_status, const Game& _game  , Tree_node * _parent, int _depth);
+    Tree_node(int _game_status, const Game& _game, Tree_node * _parent, int _depth);
 	//Copy Constructor
 	Tree_node(Tree_node* _Tree_node);
 	//Copy operator

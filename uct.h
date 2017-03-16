@@ -9,7 +9,7 @@ public:
 	Selection() {}
 	Selection(float eps_) { this->eps = eps_; }
 	~Selection() {}
-	int select_children_list_index(Tree_node* cur_node);
+	virtual int select_children_list_index(Tree_node* cur_node) {}
 };
 
 class UCT: public Selection {
