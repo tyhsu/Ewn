@@ -1,0 +1,35 @@
+chess board position definition
+
+ 1  2  3  4  5
+ 6  7  8  9 10
+11 12 13 14 15
+16 17 18 19 20
+21 22 23 24 25
+
+
+1. Piece position initialization
+
+stdin: 
+ini "your color" ("B" is blue, and "R" is red)
+e.g. ini R
+
+stdout:
+Your pieces position (piece No.1, piece No.2 ...... )
+e.g. 23 19 15 25 24 20
+
+
+2.Get move, zero means that the piece isn't on the chess board
+
+stdin: 
+get (your color) (dice) {blue positions(six numbers)} {red positions(six numbers)}
+e.g. get B 2 23 0 15 13 24 20 1 2 9 6 0 11
+
+stdout:
+(the position of the piece you select) (the destination) 
+e.g. 23 18
+
+
+3. End the program
+
+stdin:
+exit
