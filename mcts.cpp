@@ -1,7 +1,14 @@
 #include <stdlib.h>
 #include "mcts.h"
 using namespace std;
-MCTS::MCTS(){}
+
+MCTS::MCTS() {
+}
+
+MCTS::~MCTS() {
+	//cout << "leave" << endl;
+}
+
 Movement MCTS::AI_move(const Game& _cur_game, int dice) {
 	Game cur_game = _cur_game;
 	this->max_iterations = 1000;
@@ -43,9 +50,6 @@ Movement MCTS::AI_move(const Game& _cur_game, int dice) {
 	return answer;
 }
 
-MCTS::~MCTS() {
-	//cout << "leave" << endl;
-}
 // mcts main
 float MCTS::run(const Game& current_game) {
 	//current_game.print_status();
