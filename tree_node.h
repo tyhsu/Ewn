@@ -1,6 +1,6 @@
 #ifndef TREE_NODE_H
 #define TREE_NODE_H
-#include <vector>
+
 #include "game.h"
 
 using namespace std;
@@ -17,11 +17,11 @@ public:
 	// Default Constructor
 	Tree_node();
 	// Constructor for expand
-	Tree_node(const Game& game_, Tree_node* parent_);
+	Tree_node(const Game& game_, Tree_node* parent_ptr);
 	// Copy Constructor
-	Tree_node(Tree_node* Tree_node_);
+	Tree_node(Tree_node* node);
 	// Copy operator
-	void operator=(const Tree_node& Tree_node_);
+	void operator=(const Tree_node& node);
 	
 	// If the node is a end-gamed node
 	bool is_terminate();
