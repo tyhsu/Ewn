@@ -17,34 +17,30 @@ UCT::UCT(float eps_)
 
 int UCT::select_children_list_index(Tree_node* cur_node)
 {
-	int child_num_ = 18;
 	float child_value_list[18] = {0};
 	float best_value = 0.0;
 
-	// calculate every UCT value of the child nodes
-	for (int i=0; i<child_num_; i++) {
-		if (cur_node->is_legal_list[i] == 0)
-			continue;
+	// calculate every UCT value of the child nodes to find the max
+	for (int i=0; i<18; i++) {
+		if (cur_node->get_children_ptr(i) == NULL) break;
 
-		Tree_node child_node = cur_node->children_list[i];
-		float exploitation = (float)child_node.score / ((float)child_node.num_visit + this->eps);
-		float exploration = this->exploration_param * sqrt( log((float)cur_node->num_visit + this->t_param) / ((float)child_node.num_visit + eps));
+		Tree_node* node_ptr = cur_node->get_children_ptr(i);
+		float exploitation = (float)node_ptr->win_count / ((float)node_ptr->visit_count + this->eps);
+		float exploration = this->exploration_param * sqrt( log((float)cur_node->visit_count + this->t_param) / ((float)node_ptr->visit_count + eps));
 		child_value_list[i] = exploitation + exploration;
 		if (child_value_list[i] > best_value)
 			best_value = child_value_list[i];
 	}
 
-	// gather the nodes whose UCT values approach best_value
+	// gather the nodes whose UCT value approaches best_value
 	int best_children_num = 0;
 	float child_index_list[18];
-	for (int i=0; i<child_num_; i++) {
-		if (cur_node->is_legal_list[i] == 0)
-			continue;
-		if (best_value - child_value_list[i] < eps) {
+	for (int i=0; i<18; i++) {
+		if (cur_node->get_children_ptr(i) == NULL) break;
+		if (best_value - child_value_list[i] < eps)
 			child_index_list[ best_children_num++ ] = i;
-		}
 	}
 	
-	// select a child node index randomly
+	// select one of best child node randomly and return its index
 	return child_index_list[ rand()%best_children_num ];
 }
