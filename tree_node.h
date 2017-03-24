@@ -38,6 +38,8 @@ public:
 
 	// Get parent
 	Tree_node* get_parent();
+	// Get child node pointer from children_ptr_list
+	Tree_node* get_children_ptr(const int& child_index);
 
 	// Debuging console
 	void node_status();

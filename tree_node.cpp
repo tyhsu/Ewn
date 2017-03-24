@@ -88,6 +88,10 @@ Tree_node* Tree_node::get_parent() {
 	return this->parent_ptr;
 }
 
+Tree_node* Tree_node::get_children_ptr(const int& child_index) {
+	return this->children_ptr_list[child_index];
+}
+
 void Tree_node::node_status() {
 	cout << "vvvvvvvvvvvvvvv NODE_STATUS vvvvvvvvvvvvvvv" << endl;
 	cout << "node : " << this << endl;
