@@ -5,11 +5,11 @@
 class Selection
 {
 public:
-	float eps = 1e-6;
+	float eps;
 	Selection() {}
 	Selection(float eps_) { this->eps = eps_; }
 	~Selection() {}
-	virtual int select_children_list_index(Tree_node* cur_node) {}
+	virtual int select_children_list_index(Tree_node* cur_node) { return 0; }
 };
 
 class UCT: public Selection {
