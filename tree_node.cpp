@@ -10,17 +10,13 @@ Tree_node::Tree_node() {
 		this->children_ptr_list[i] = NULL;
 }
 
-Tree_node::Tree_node(const Game& game_, Tree_node* parent_ptr_) {
+Tree_node::Tree_node(const Game& game_) {
 	this->win_count = 0;
 	this->visit_count = 0;
 	this->game_status = 0;
 	this->game = game_;
-	this->parent_ptr = parent_ptr_;	// strange?
-	for (int i = 0; i < 18; i++) {
-		Movement movement(i / 3, i % 3);
-		this->children_ptr_list[i] = new Tree_node();
-		this->children_ptr_list[i]->parent_ptr = this;
-	}
+	this->parent_ptr = NULL;
+	new_child_nodes();
 }
 
 Tree_node::Tree_node(Tree_node* node) {
@@ -32,7 +28,6 @@ Tree_node::Tree_node(Tree_node* node) {
 	for (int i = 0; i < 18; i++) {
 		this->children_ptr_list[i] = node->children_ptr_list[i];
 	}
-
 }
 
 void Tree_node::operator=(const Tree_node& node) {
@@ -54,8 +49,29 @@ bool Tree_node::is_visit() {
 	return visit_count != 0;
 }
 
-void Tree_node::set_child_nodes(const Game& game_, Tree_node* parent_) {
+void Tree_node::new_child_nodes() {
+	int legal_child_num = 0;
+	// new the legal nodes for children_ptr
+	for (int i = 0; i < 18; i++) {
+		// check if the movement is legal
+		int chs_index = i / 3, direction = i % 3;
+		if (!this->game.get_cur_chs_list(chs_index).exist) continue;
+		Movement movement(chs_index, direction);
+		if (!this->game.check_in_board(movement)) continue;
 
+		// new legal child nodes
+		legal_child_num++;
+		this->children_ptr_list[i] = new Tree_node();
+		Tree_node* node_ptr = this->children_ptr_list[i];
+
+		// reset the values of the members
+		node_ptr->game = this->game;
+		node_ptr->game_status = node_ptr->game.update_game_status(movement);
+		node_ptr->parent_ptr = this;
+	}
+	// reset the rest of the children_ptr to NULL
+	for (int i = legal_child_num; i < 18; i++)
+		this->children_ptr_list[i] = NULL;
 }
 
 void Tree_node::set_win_count(float win_count_) {

@@ -8,6 +8,7 @@ class Tree_node {
 public:
 	int win_count;
 	int visit_count;
+	
 	int game_status;
 	Game game;
 	Tree_node* parent_ptr;
@@ -17,7 +18,7 @@ public:
 	// Default Constructor
 	Tree_node();
 	// Constructor for expand
-	Tree_node(const Game& game_, Tree_node* parent_ptr);
+	Tree_node(const Game& game_);
 	// Copy Constructor
 	Tree_node(Tree_node* node);
 	// Copy operator
@@ -28,8 +29,8 @@ public:
 	// If the node has been visited (it is expanded)
 	bool is_visit();
 
-	// New and set children nodes in the children_ptr_list
-	void set_child_nodes(const Game& game_, Tree_node* parent_);
+	// New legal child nodes and reset the values of the members(except children_ptr_list)
+	void new_child_nodes();
 	// Set win_count
 	void set_win_count(float win_count_);
 	// Update win_count and visit_count
