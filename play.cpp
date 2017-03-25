@@ -232,12 +232,13 @@ void Play::contest_AI_mode()
 //Compare two AIs with several games
 void Play::compare_AI_mode()
 {
-    char mode_name[6][25] = { "evaluate_feature", \
-                            "simulate_rand_type1", \
-                            "simulate_rand_type2", \
-                            "simulate_rand_type3", \
-                            "simulate_rand_type4", \
-                            "MCTS"
+    char mode_name[7][25] = { "evaluate_feature",
+                            "simulate_rand_type1",
+                            "simulate_rand_type2",
+                            "simulate_rand_type3",
+                            "simulate_rand_type4",
+                            "MCTS",
+                            "Random"
                            };
 
     int mode_A, mode_B;
@@ -251,7 +252,7 @@ void Play::compare_AI_mode()
     cout << "3)Minimax evaluating with simulation 3" << endl;
     cout << "4)Minimax evaluating with simulation 4" << endl;
     cout << "5)MCTS                               5" << endl;
-    cout << "6)Randomss                           6" << endl;
+    cout << "6)Random                             6" << endl;
     cout << "modeA choose: ";
     cin >> mode_A;
     cout << "modeB choose: ";
