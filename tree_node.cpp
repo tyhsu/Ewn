@@ -92,7 +92,7 @@ Tree_node* Tree_node::get_parent_ptr() {
 	return this->parent_ptr;
 }
 
-Tree_node* Tree_node::get_children_ptr(const int& child_index) {
+Tree_node* Tree_node::get_child_ptr(const int& child_index) {
 	return this->children_ptr_list[child_index];
 }
 
