@@ -67,6 +67,7 @@ void Tree_node::new_child_nodes() {
 		// reset the values of the members
 		node_ptr->game = this->game;
 		node_ptr->game_status = node_ptr->game.update_game_status(movement);
+		node_ptr->game.switch_player();
 		node_ptr->parent_ptr = this;
 	}
 	// reset the rest of the children_ptr to NULL
