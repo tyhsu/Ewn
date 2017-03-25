@@ -36,7 +36,9 @@ public:
 	// Update win_count and visit_count
 	void update(float win_count_);
 
-	// Get parent
+	// Get visit_count
+	int get_visit_count();
+	// Get parent_ptr
 	Tree_node* get_parent_ptr();
 	// Get child node pointer from children_ptr_list
 	Tree_node* get_children_ptr(const int& child_index);
