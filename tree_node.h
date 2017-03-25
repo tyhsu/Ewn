@@ -36,6 +36,8 @@ public:
 	// Update win_count and visit_count
 	void update(float win_count_);
 
+	// Get win_count
+	int get_win_count();
 	// Get visit_count
 	int get_visit_count();
 	// Get game_status

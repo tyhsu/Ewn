@@ -85,6 +85,10 @@ void Tree_node::update(float win_count_) {
 	// cout << " update : " << this->win_count << ", " << this->visit_count << endl;
 }
 
+int Tree_node::get_win_count() {
+	return this->win_count;
+}
+
 int Tree_node::get_visit_count() {
 	return this->visit_count;
 }
