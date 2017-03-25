@@ -3,18 +3,18 @@
 using namespace std;
 
 MCTS::MCTS() {
+	this->selection_ptr = new UCT(eps);
 }
 
 MCTS::~MCTS() {
-	//cout << "leave" << endl;
+	delete this->selection_ptr;
 }
 
-Movement MCTS::AI_move(const Game& _cur_game, int dice) {
-	Game cur_game = _cur_game;
+Movement MCTS::AI_move(Game& cur_game, int dice) {
 	this->max_iterations = 1000;
-	this->simulation_depth = 1000;
 	this->ai_side = cur_game.get_is_switch();
 	this->ai_symbol = this->ai_side? 'A': '1';
+
 	int best_val = -1e9, child_val;
 	int win = this->ai_side? 2: 1;
 	int next_move_cnt = cur_game.count_movable_chs(dice);
@@ -51,52 +51,58 @@ Movement MCTS::AI_move(const Game& _cur_game, int dice) {
 }
 
 // mcts main
-float MCTS::run(const Game& current_game) {
-	//current_game.print_status();
-	int iteration = 0;  // nodes
+float MCTS::run(const Game& cur_game) {
 	// initialize root Tree_node with current state
-	Tree_node* root_node = new Tree_node(0, current_game, NULL, 0);
-	//root_node->game.print_status();
+	Tree_node* root_node_ptr = new Tree_node(cur_game);
+
+	int iteration = 0;  // nodes
 	while(iteration++ < max_iterations) {
-		// 1. select. Start at root, dig down into tree using MCTS on all fully expanded nodes
-		Tree_node* best_node = root_node;
+		// 1. select
+		// Start from the root, digging down until finding an unvistied node
+		Tree_node* node_ptr = root_node_ptr;
 		int best_child_index;
-		while(!best_node->is_terminate()) {
-			best_child_index = this->uct.select_children_list_index(best_node);
-			if(best_node->num_visit == 0 || best_node->children_list[best_child_index]->is_expanded == false ) {
+		while(!node_ptr->is_terminate()) {
+			best_child_index = this->selection_ptr->select_children_list_index(node_ptr);
+			Tree_node* next_child_ptr = node_ptr->get_child_ptr(best_child_index);
+			if(!node_ptr->is_visit() || !next_child_ptr->is_visit()) {
+				// !next_child_ptr->is_visit() => why???
 				break;
 			}
-			best_node = best_node->children_list[best_child_index];
+			node_ptr = next_child_ptr;
 		}
 
 		// 2. expand by adding a single child (if not terminal or not fully expanded)
-		if(!best_node->is_terminate()) {
-			Movement m = best_node->legal_move_list[best_child_index];
-			Game child_game = best_node->game;
-			int sta = child_game.update_game_status(m);
-			child_game.switch_player();
-			delete best_node->children_list[best_child_index];
-			best_node->children_list[best_child_index] = new Tree_node(sta, child_game, best_node, best_node->depth+1);
-			best_node = best_node->children_list[best_child_index] ;
+		if(!node_ptr->is_terminate()) {
+			node_ptr->new_child_nodes();
+			// Movement m = node_ptr->legal_move_list[best_child_index];
+			// Game child_game = node_ptr->game;
+			// int sta = child_game.update_game_status(m);
+			// child_game.switch_player();
+			// delete node_ptr->children_ptr_list[best_child_index];
+			// node_ptr->children_ptr_list[best_child_index] = new Tree_node(sta, child_game, node_ptr, node_ptr->depth+1);
+			node_ptr = node_ptr->get_child_ptr(best_child_index);	// why???
 		}
 		// 3. simulate
-		int reward = best_node->is_terminate() ? best_node->game_status == (this->ai_side? 2 : 1)
-											   : this->simulation(best_node->game);
+		int win_reward;
+		if (node_ptr->is_terminate())
+			win_reward = node_ptr->get_game_status() == (this->ai_side? 2: 1);
+		else
+			win_reward = this->simulation(node_ptr->game);
 
 		// 4. back propagation
 		while(true) {
-			best_node->update(reward);
-			if(best_node->parent ==  NULL)  break;
-			best_node = best_node->parent;
+			node_ptr->update(win_reward);
+			if(node_ptr->get_parent_ptr() == NULL) break;
+			node_ptr = node_ptr->get_parent_ptr();
 		}
 	}
-	float result = root_node->score;
-	this->recursive_delete_tree_node(root_node);
+	float result = (float)root_node_ptr->get_win_count();
+	this->recursive_delete_tree_node(root_node_ptr);
 	return result;
 }
 
-int MCTS::simulation(const Game& _simu_game) {
-    Game simu_game = _simu_game;
+int MCTS::simulation(const Game& cur_game) {
+    Game simu_game = cur_game;
 	char cur_symbol;
 	int game_status = 0, ai_win = this->ai_side ? 2 : 1;
 	if (simu_game.get_is_switch() == this->ai_side)
@@ -128,14 +134,14 @@ int MCTS::simulation(const Game& _simu_game) {
 		if(game_status == 0) simu_game.switch_player();
 		else break;
 	}
-	return (game_status == ai_win? 1 : 0);
+	return (game_status == ai_win? 1: 0);
 }
 
-void MCTS::recursive_delete_tree_node(Tree_node* _Tree_node) {
+void MCTS::recursive_delete_tree_node(Tree_node* node_ptr) {
 	for (int i = 0; i < 18; i++) {
-		if (_Tree_node->children_list[i]) {
-			recursive_delete_tree_node(_Tree_node->children_list[i]);
+		if (node_ptr->get_child_ptr(i)) {
+			recursive_delete_tree_node(node_ptr->get_child_ptr(i));
 		}
 	}
-	delete _Tree_node;
+	delete node_ptr;
 }
