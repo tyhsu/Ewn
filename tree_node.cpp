@@ -89,6 +89,10 @@ int Tree_node::get_visit_count() {
 	return this->visit_count;
 }
 
+int Tree_node::get_game_status() {
+	return this->game_status;
+}
+
 Tree_node* Tree_node::get_parent_ptr() {
 	return this->parent_ptr;
 }

@@ -38,6 +38,8 @@ public:
 
 	// Get visit_count
 	int get_visit_count();
+	// Get game_status
+	int get_game_status();
 	// Get parent_ptr
 	Tree_node* get_parent_ptr();
 	// Get child node pointer from children_ptr_list
