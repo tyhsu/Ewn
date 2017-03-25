@@ -37,7 +37,7 @@ public:
 	void update(float win_count_);
 
 	// Get parent
-	Tree_node* get_parent();
+	Tree_node* get_parent_ptr();
 	// Get child node pointer from children_ptr_list
 	Tree_node* get_children_ptr(const int& child_index);
 
