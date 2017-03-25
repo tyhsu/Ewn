@@ -6,6 +6,8 @@
 #include "minimax3.h"
 #include "minimax4.h"
 #include "mcts.h"
+#include "randomAi.h"
+
 class EwnAI
 {
 private:
@@ -16,6 +18,7 @@ private:
 	Minimax3 minimax3;	//ai = 3
 	Minimax4 minimax4;	//ai = 4
 	MCTS mcts;
+	RandomAi randomAi;
 public:
 	EwnAI();
 	EwnAI(int mode);
