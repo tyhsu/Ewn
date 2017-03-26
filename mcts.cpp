@@ -64,30 +64,23 @@ float MCTS::run(const Game& cur_game) {
 		while(!node_ptr->is_terminate()) {
 			best_child_index = this->selection_ptr->select_children_list_index(node_ptr);
 			Tree_node* next_child_ptr = node_ptr->get_child_ptr(best_child_index);
-			if(!node_ptr->is_visit() || !next_child_ptr->is_visit()) {
-				// !next_child_ptr->is_visit() => why???
+			if(!node_ptr->is_visit()) {
 				break;
 			}
 			node_ptr = next_child_ptr;
 		}
 
-		// 2. expand by adding a single child (if not terminal or not fully expanded)
-		if(!node_ptr->is_terminate()) {
-			node_ptr->new_child_nodes();
-			// Movement m = node_ptr->legal_move_list[best_child_index];
-			// Game child_game = node_ptr->game;
-			// int sta = child_game.update_game_status(m);
-			// child_game.switch_player();
-			// delete node_ptr->children_ptr_list[best_child_index];
-			// node_ptr->children_ptr_list[best_child_index] = new Tree_node(sta, child_game, node_ptr, node_ptr->depth+1);
-			node_ptr = node_ptr->get_child_ptr(best_child_index);	// why???
-		}
-		// 3. simulate
 		int win_reward;
-		if (node_ptr->is_terminate())
+		if (node_ptr->is_terminate()) {
 			win_reward = node_ptr->get_game_status() == (this->ai_side? 2: 1);
-		else
+		}
+		else {
+			// 2. expand by adding a single child (if not terminal or not fully expanded)
+			node_ptr->new_child_nodes();
+			
+			// 3. simulate
 			win_reward = this->simulation(node_ptr->game);
+		}
 
 		// 4. back propagation
 		while(true) {
