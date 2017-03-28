@@ -1,38 +1,54 @@
 #ifndef TREE_NODE_H
 #define TREE_NODE_H
-#include <vector>
+
 #include "game.h"
 
 using namespace std;
 class Tree_node {
 public:
-    float score;
-    int num_visit;
-    int game_status;
-	int depth = -1;
-	bool is_expanded = false;
-    Game game;
-    Tree_node* parent;
-    bool is_legal_list[18] = {0};
-    Movement legal_move_list[18];
-	Tree_node* children_list[18];
+	int win_count;
+	int visit_count;
+	
+	int game_status;
+	Game game;
+	Tree_node* parent_ptr;
+	// List for legal child nodes
+	Tree_node* children_ptr_list[18];
+
 	// Default Constructor
 	Tree_node();
-	//Constructor for expand
-    Tree_node(int _game_status, const Game& _game, Tree_node * _parent, int _depth);
-	//Copy Constructor
-	Tree_node(Tree_node* _Tree_node);
-	//Copy operator
-	void operator=(const Tree_node& _Tree_node);
-	//Set Score
-    void set_score(float _score);
-	//If the node is a end-gamed node
-    bool is_terminate();
-	//Update score and num_visit
-    void update(float _score);
-	//Get parent
-    Tree_node* get_parent();
-    //Debuging console
-    void node_status();
+	// Constructor for expand
+	Tree_node(const Game& game_);
+	// Copy Constructor
+	Tree_node(Tree_node* node);
+	// Copy operator
+	void operator=(const Tree_node& node);
+	
+	// If the node is a end-gamed node
+	bool is_terminate();
+	// If the node has been visited (it is expanded)
+	bool is_visit();
+
+	// New legal child nodes and reset the values of the members(except children_ptr_list)
+	void new_child_nodes();
+	// Set win_count
+	void set_win_count(float win_count_);
+	// Update win_count and visit_count
+	void update(float win_count_);
+
+	// Get win_count
+	int get_win_count();
+	// Get visit_count
+	int get_visit_count();
+	// Get game_status
+	int get_game_status();
+	// Get parent_ptr
+	Tree_node* get_parent_ptr();
+	// Get child node pointer from children_ptr_list
+	Tree_node* get_child_ptr(const int& child_index);
+
+	// Debuging console
+	void node_status();
 };
+
 #endif
