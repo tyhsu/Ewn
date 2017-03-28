@@ -13,7 +13,7 @@ class Minimax3: public Minimax
 {
 public:
 	Minimax3() {
-		HEIGHT = 3;
+		HEIGHT = 2;
 		SIMU_TIMES = 200;
 	}
 	~Minimax3() {}

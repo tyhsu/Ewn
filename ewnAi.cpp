@@ -7,13 +7,15 @@ EwnAI::EwnAI()
 	int cmd;
 	cout << "Please choose an AI:" << endl;
 	cout << "0)Minimax evaluating with feature" << endl;
-	cout << "1)Minimax evaluating with simulation 1" << endl;
-	cout << "2)Minimax evaluating with simulation 2" << endl;
+	cout << "1)QMinimax evaluating with simulation 1" << endl;
+	cout << "2)QMinimax evaluating with simulation 2" << endl;
 	cout << "3)Minimax evaluating with simulation 3" << endl;
 	cout << "4)Minimax evaluating with simulation 4" << endl;
+	cout << "5)MCTS" << endl;
+	cout << "6)Random" << endl;
 	cout << "Choose: ";
 	cin >> cmd;
-	if (cmd >= 0 && cmd <=4) this->ai_mode = cmd;
+	if (cmd >= 0 && cmd <=5) this->ai_mode = cmd;
 	else this->ai_mode = 0;
 }
 
@@ -35,6 +37,10 @@ Movement EwnAI::AI_move(Game cur_game, int dice)
 			return this->minimax3.AI_move(cur_game, dice);
 		case 4:
 			return this->minimax4.AI_move(cur_game, dice);
+		case 5:
+			return this->mcts.AI_move(cur_game, dice);
+		case 6:
+			return this->randomAi.AI_move(cur_game, dice);
 		default:
 			return this->minimax.AI_move(cur_game, dice);		
 	}

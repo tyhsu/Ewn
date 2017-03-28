@@ -50,7 +50,7 @@ Game::Game()
 	this->exist_bitwise_A = 0b111111;
 	this->exist_bitwise_B = 0b111111;
 
-	this->cur_chs_list_ptr = chs_list_A;
+	this->cur_chs_list_ptr = this->chs_list_A;
 	this->cur_exist_bitwise_ptr = exist_bitwise_A;
 	this->is_switch = false;
 
@@ -79,11 +79,11 @@ Game::Game()
 		}
 		chs_pos_index = 0;
 		chs_unuse_bitwise = 0b111111;
-		this->cur_chs_list_ptr = chs_list_B;
+		this->cur_chs_list_ptr = this->chs_list_B;
 		current_chs_pos_ptr = chs_pos_B;
 		symbol_ = 'A';
 	}
-	this->cur_chs_list_ptr = chs_list_A;	//recover the initialization
+	this->cur_chs_list_ptr = this->chs_list_A;	//recover the initialization
 }
 
 Game::Game(const Game& game)
@@ -126,8 +126,10 @@ void Game::operator=(const Game& game)
 	this->exist_bitwise_A = game.exist_bitwise_A;
 	this->exist_bitwise_B = game.exist_bitwise_B;
 	this->is_switch = game.is_switch;
+	this->cur_chs_list_ptr = (game.is_switch) ? this->chs_list_B : this->chs_list_A;
 	this->exist_chs_num_A = game.exist_chs_num_A;
 	this->exist_chs_num_B = game.exist_chs_num_B;
+//	cout << "calling copy : "  << this->is_switch << " " << this->cur_chs_list_ptr << "  " << this->chs_list_A << "  " << this->chs_list_B << "  " << endl;
 }
 
 void Game::set_board(char board_[5][5], int is_switch_)
@@ -273,7 +275,6 @@ int Game::update_game_status(const Movement& mvmt)
 	Chess blank_chs = next_chs;
 	blank_chs.symbol = 0;
 	this->set_chs_on_board(blank_chs);
-
 	// Update the chosen movement on the board
 	int chs_list_index = 0;
 	if (!this->is_switch)	//chs_list_A
@@ -344,6 +345,7 @@ void Game::switch_player()
 
 void Game::print_status()
 {
+	cout << this->is_switch << " " << this->cur_chs_list_ptr << "  " << this->chs_list_A << "  " << this->chs_list_B << "  " << endl;
 	cout << "/*    Player A    */" << endl;
 	for(int i=0; i<6; i++) {
 		printf("%c", '1'+i);
