@@ -251,8 +251,8 @@ void Play::compare_AI_mode()
     cout << "2)Minimax evaluating with simulation 2" << endl;
     cout << "3)Minimax evaluating with simulation 3" << endl;
     cout << "4)Minimax evaluating with simulation 4" << endl;
-    cout << "5)MCTS                               5" << endl;
-    cout << "6)Random                             6" << endl;
+    cout << "5)MCTS                                " << endl;
+    cout << "6)Random                              " << endl;
     cout << "modeA choose: ";
     cin >> mode_A;
     cout << "modeB choose: ";
