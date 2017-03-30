@@ -1,11 +1,6 @@
 #include <iostream>
-#include <cstring>
-#include <cstdlib>
 #include <cstdio>
-#include <ctime>
-#include <sys/types.h>
-#include <unistd.h>
-#include <utility>
+#include <cmath>
 #include "game.h"
 using namespace std;
 
@@ -17,23 +12,40 @@ using namespace std;
 #define ANSI_COLOR_CYAN    "\x1b[36m"
 #define ANSI_COLOR_RESET   "\x1b[0m"
 
-/* -------------------- struct Chess -------------------- */
-void Chess::assign(const char& symbol_, const bool& exist_, const int& x, const int& y)
+/* -------------------- struct Player -------------------- */
+
+void Player::assign(const int& chs_index, const int& x, const int& y)
 {
-	this->symbol = symbol_;
-	this->exist = exist_;
-	this->x = x;
-	this->y = y;
+	unsigned int pos_mask = 1;
+	unsigned int pos_origin, pos_assign;
+
+	// use a loop instead of pow() because it is integer
+	for (int i=0; i<chs_index; i++)
+		pos_mask *= 6*6;	// (x, y)
+	
+	pos_origin = this->chs_pos % (pos_mask * 6*6) / pos_mask;
+	pos_assign = x * 6 + y;
+	this->chs_pos += (pos_assign - pos_origin) * pos_mask;
 }
 
-void Chess::move_x_one_unit(int direct)
+void Player::move_x_one_unit(const int& chs_index, const int& direct)
 {
-	this->x += direct;
+	unsigned int pos_mask = 1;
+	// use a loop instead of pow() because it is integer
+	for (int i=0; i<chs_index; i++)
+		pos_mask *= 6*6;	// (x, y)
+	
+	this->chs_pos += (direct * 6) * pos_mask;
 }
 
-void Chess::move_y_one_unit(int direct)
+void Player::move_y_one_unit(const int& chs_index, const int& direct)
 {
-	this->y += direct;
+	unsigned int pos_mask = 1;
+	// use a loop instead of pow() because it is integer
+	for (int i=0; i<chs_index; i++)
+		pos_mask *= 6*6;	// (x, y)
+	
+	this->chs_pos += direct * pos_mask;
 }
 
 /* -------------------- class Game -------------------- */

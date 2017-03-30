@@ -1,30 +1,19 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include <iostream>
-#include <cstring>
-#include <cstdlib>
-#include <cstdio>
-#include <ctime>
-#include <sys/types.h>
-#include <unistd.h>
-#include <utility>
-#include <map>
 using namespace std;
 
-// <dice, exist_status> maps to <available_chess, available_chess>
-typedef map< pair<int, int>, pair<int, int> > Movable_chs_map;
-// < the index of the currentPlayer (chs), direction >
-typedef pair<int, int> Movement;
-
-struct Chess
+struct Player
 {
-	char symbol;
-	bool exist;
-	int x, y;
-	void assign(const char& symbol_, const bool& exist_, const int& x, const int& y);
-	void move_x_one_unit(int direct);
-	void move_y_one_unit(int direct);
+	// position for a chess: (x, y)
+	// x and y are between 0 ~ 4, and 5 is for non-existence
+	// each x and y are stored by 6's multiples
+	// (x6, y6) (x5, y5) ... (x1, y1) use 6 ^ (2*6) = 2,176,782,336
+	unsigned int chs_pos;					  // 0 to 4,294,967,295
+
+	void assign(const int& chs_index, const int& x, const int& y);
+	void move_x_one_unit(const int& chs_index, const int& direct);
+	void move_y_one_unit(const int& chs_index, const int& direct);
 };
 
 class Game
