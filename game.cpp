@@ -1,5 +1,9 @@
 #include <iostream>
 #include <cstdio>
+#include <cstdlib>
+#include <ctime>
+#include <sys/types.h>
+#include <unistd.h>
 #include "game.h"
 using namespace std;
 
