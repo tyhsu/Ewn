@@ -33,7 +33,7 @@ public:
 	void operator=(const Game& game);
 
 	//Directly set the board
-	void set_board(char board_[5][5], int is_switch_);
+	void set_board(char board[5][5], int is_switch);
 	//Print the board
 	void print_board();
 	//Roll the dice

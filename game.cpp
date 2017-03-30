@@ -1,6 +1,5 @@
 #include <iostream>
 #include <cstdio>
-#include <cmath>
 #include "game.h"
 using namespace std;
 
@@ -114,50 +113,23 @@ void Game::operator=(const Game& game)
 	else this->player_ptr = this->player_B;
 }
 
-void Game::set_board(char board_[5][5], int is_switch_)
+void Game::set_board(char board[5][5], int is_switch)
 {
-	int chs_num_A_ = 0, chs_num_B_ = 0;
-	int exist_bitwise_A_ = 0, exist_bitwise_B_ = 0;
-	for (int i=0; i<6; i++) {
-		this->chs_list_A[i].assign(0, false, 0, 0);
-		this->chs_list_B[i].assign(0, false, 4, 4);
-	}
-
 	for (int i=0; i<5; i++) {
 		for (int j=0; j<5; j++) {
-			char c = board_[j][i];
-
-			//Set the board
-			this->board[i][j] = c;
-
-			//Update other information
-			if (c>='1' && c<='6') {
-				chs_num_A_++;
-				this->chs_list_A[c-'1'].assign(c, true, i, j);
-				exist_bitwise_A_ |= 1 << (c-'1');
-			}
-			else if (c>='A' && c<='f') {
-				chs_num_B_++;
-				this->chs_list_B[c-'A'].assign(c, true, i, j);
-				exist_bitwise_B_ |= 1 << (c-'A');
-			}
+			char c = board[j][i];
+			// Update the information of the chess
+			if (c>='1' && c<='6')
+				this->player_A.assign(c-'1', i, j);
+			else if (c>='A' && c<='f')
+				this->player_B.assign(c-'A', i, j);
 		}
 	}
-	this->exist_chs_num_A = chs_num_A_;
-	this->exist_chs_num_B = chs_num_B_;
-	this->exist_bitwise_A = exist_bitwise_A_;
-	this->exist_bitwise_B = exist_bitwise_B_;
 
-	if (is_switch_) {
-		this->cur_chs_list_ptr = this->chs_list_B;
-		this->cur_exist_bitwise_ptr = this->exist_bitwise_B;
-		this->is_switch = true;
-	}
-	else {
-		this->cur_chs_list_ptr = this->chs_list_A;
-		this->cur_exist_bitwise_ptr = this->exist_bitwise_A;
-		this->is_switch = false;
-	}
+	if (!is_switch)
+		this->player_ptr = this->player_A;
+	else
+		this->player_ptr = this->player_B;
 }
 
 void Game::print_board()
