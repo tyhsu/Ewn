@@ -19,30 +19,18 @@ struct Player
 class Game
 {
 private:
-	char board[5][5];
-	Chess movable_chs_list[2];
-	//How many chessmen are on the board
-	int exist_chs_num_A, exist_chs_num_B;
-	Chess chs_list_A[6], chs_list_B[6];
-	Chess* cur_chs_list_ptr;
-
-	// bitwise: store the existance of the chessman the player has
-	int exist_bitwise_A, exist_bitwise_B;
-	int cur_exist_bitwise_ptr;
-	//false(0): A, true(1): B
-	bool is_switch;
+	Player player_A, player_B;
+	Player* player_ptr;
 
 public:
-	static Movable_chs_map movable_chs_map;
-
 	//Including initializing the positions
 	Game();
 	//Copy constructor
 	Game(const Game& game);
+	//Set board
+	Game(const bool& is_A_first, const int& chs_pos_A, const int& chs_pos_B);
 	//Copy operator
 	void operator=(const Game& game);
-
-	static Movable_chs_map create_movable_chs_map();
 
 	//Directly set the board
 	void set_board(char board_[5][5], int is_switch_);

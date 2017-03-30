@@ -49,99 +49,69 @@ void Player::move_y_one_unit(const int& chs_index, const int& direct)
 }
 
 /* -------------------- class Game -------------------- */
+
 Game::Game()
 {
-	memset(this->board, 0, sizeof(this->board));
-	memset(this->movable_chs_list, 0, sizeof(this->movable_chs_list));
-	this->exist_chs_num_A = 6, this->exist_chs_num_B = 6;
-	for (int i=0; i<6; i++)
-		this->chs_list_A[i].assign('1'+i, true, 0, 0);
-	for (int i=0; i<6; i++)
-		this->chs_list_B[i].assign('A'+i, true, 0, 0);
-
-	this->exist_bitwise_A = 0b111111;
-	this->exist_bitwise_B = 0b111111;
-
-	this->cur_chs_list_ptr = this->chs_list_A;
-	this->cur_exist_bitwise_ptr = exist_bitwise_A;
-	this->is_switch = false;
-
-	//Initialize the positions of the chessmen
-	//A: 1~6	B: A~F
-	int chs_pos_index = 0;
-	int chs_pos_A[6][2] = { {0,0}, {0,1}, {0,2}, {1,0}, {1,1}, {2,0} };
-	int chs_pos_B[6][2] = { {4,4}, {4,3}, {4,2}, {3,4}, {3,3}, {2,4} };
-	int (*current_chs_pos_ptr)[2] = &(chs_pos_A[0]);
+	// Initialize the positions of the chessmen
+	// A: 1~6	B: A~F
+	int chs_pos_list_index = 0;
+	int chs_pos_list_A[6][2] = { {0,0}, {0,1}, {0,2}, {1,0}, {1,1}, {2,0} };
+	int chs_pos_list_B[6][2] = { {4,4}, {4,3}, {4,2}, {3,4}, {3,3}, {2,4} };
+	int (*chs_pos_list_ptr)[2] = &(chs_pos_list_A[0]);
 	int chs_unuse_bitwise = 0b111111;
-	char symbol_ = '1';
+
+	this->player_ptr = this->player_A;
 	srand( time(NULL) + getpid() );
 	for (int i=0; i<2; i++) {
-		//Every position selects a number
-		while (chs_pos_index<6) {
-			int chs_index = rand()%6;	//0~5
-			if ((chs_unuse_bitwise & (1<<chs_index)) >> chs_index) {	//The number hasn't been used
-				int x_ = current_chs_pos_ptr[chs_pos_index][0];
-				int y_ = current_chs_pos_ptr[chs_pos_index][1];
-				this->board[x_][y_] = symbol_ + chs_index;
-				this->cur_chs_list_ptr[chs_index].x = x_;
-				this->cur_chs_list_ptr[chs_index].y = y_;
-				chs_pos_index++;
-				chs_unuse_bitwise = chs_unuse_bitwise ^ (1<<chs_index);	//The used number is discarded
+		// Every position selects a number
+		while (chs_pos_list_index < 6) {
+			int chs_index = rand() % 6;	//0~5
+			// If the number hasn't been used
+			if ((chs_unuse_bitwise & (1<<chs_index)) >> chs_index) {
+				int x_ = chs_pos_list_ptr[chs_pos_list_index][0];
+				int y_ = chs_pos_list_ptr[chs_pos_list_index][1];
+				this->player_ptr.assign(chs_index, x_, y_);
+				
+				chs_pos_list_index++;
+				// The used number is discarded
+				chs_unuse_bitwise = chs_unuse_bitwise ^ (1<<chs_index);
 			}
 		}
-		chs_pos_index = 0;
+
+		// Change to the player B side
+		chs_pos_list_index = 0;
 		chs_unuse_bitwise = 0b111111;
-		this->cur_chs_list_ptr = this->chs_list_B;
-		current_chs_pos_ptr = chs_pos_B;
-		symbol_ = 'A';
+		this->player_ptr = this->player_B;
+		chs_pos_list_ptr = chs_pos_list_B;
 	}
-	this->cur_chs_list_ptr = this->chs_list_A;	//recover the initialization
+	this->player_ptr = this->player_A;	//recover the initialization
 }
 
 Game::Game(const Game& game)
 {
-	for(int i=0; i<5; i++) {
-		for(int j=0; j<5; j++) {
-			this->board[i][j] = game.board[i][j];
-		}
-	}
-	for(int i=0; i<2; i++) {
-		this->movable_chs_list[i] = game.movable_chs_list[i];
-	}
-	for(int i=0; i<6; i++) {
-		this->chs_list_A[i] = game.chs_list_A[i];
-		this->chs_list_B[i] = game.chs_list_B[i];
-	}
-	this->exist_bitwise_A = game.exist_bitwise_A;
-	this->exist_bitwise_B = game.exist_bitwise_B;
-	this->is_switch = game.is_switch;
-	this->cur_chs_list_ptr = (this->is_switch == false) ? this->chs_list_A :  this->chs_list_B;
-	this->cur_exist_bitwise_ptr = (this->is_switch == false) ? this->exist_bitwise_A :  this->exist_bitwise_B;
-	this->exist_chs_num_A = game.exist_chs_num_A;
-	this->exist_chs_num_B = game.exist_chs_num_B;
+	this->player_A = game.player_A;
+	this->player_B = game.player_B;
+	
+	if (game.player_ptr == game.player_A) this->player_ptr = this->player_A;
+	else this->player_ptr = this->player_B;
+}
+
+Game::Game(const bool& is_A_first, const int& chs_pos_A, const int& chs_pos_B)
+{
+	this->player_A.chs_pos = chs_pos_A;
+	this->player_B.chs_pos = chs_pos_B;
+
+	if (is_A_first) this->player_ptr = this->player_A;
+	else this->player_ptr = this->player_B;
 }
 
 void Game::operator=(const Game& game)
 {
-	for(int i=0; i<5; i++) {
-		for(int j=0; j<5; j++) {
-			this->board[i][j] = game.board[i][j];
-		}
-	}
-	for(int i=0; i<2; i++) {
-		this->movable_chs_list[i] = game.movable_chs_list[i];
-	}
-	for(int i=0; i<6; i++) {
-		this->chs_list_A[i] = game.chs_list_A[i];
-		this->chs_list_B[i] = game.chs_list_B[i];
-	}
-	this->exist_bitwise_A = game.exist_bitwise_A;
-	this->exist_bitwise_B = game.exist_bitwise_B;
-	this->is_switch = game.is_switch;
-	this->cur_chs_list_ptr = (game.is_switch) ? this->chs_list_B : this->chs_list_A;
-	this->exist_chs_num_A = game.exist_chs_num_A;
-	this->exist_chs_num_B = game.exist_chs_num_B;
-//	cout << "calling copy : "  << this->is_switch << " " << this->cur_chs_list_ptr << "  " << this->chs_list_A << "  " << this->chs_list_B << "  " << endl;
+	this->player_A = game.player_A;
+	this->player_B = game.player_B;
+
+	if (game.player_ptr == game.player_A) this->player_ptr = this->player_A;
+	else this->player_ptr = this->player_B;
 }
 
 void Game::set_board(char board_[5][5], int is_switch_)
