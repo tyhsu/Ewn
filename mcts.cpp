@@ -56,7 +56,7 @@ float MCTS::run(const Game& cur_game) {
 	Tree_node* root_node_ptr = new Tree_node(cur_game);
 
 	int iteration = 0;  // nodes
-	while(iteration++ < max_iterations) {
+	while(iteration++ < this->max_iterations) {
 		// 1. select
 		// Start from the root, digging down until finding an unvistied node
 		Tree_node* node_ptr = root_node_ptr;
