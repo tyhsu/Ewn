@@ -51,7 +51,7 @@ Movement MCTS::AI_move(Game& cur_game, int dice) {
 }
 
 // mcts main
-float MCTS::run(const Game& cur_game) {
+int MCTS::run(const Game& cur_game) {
 	// initialize root Tree_node with current state
 	Tree_node* root_node_ptr = new Tree_node(cur_game);
 
@@ -89,7 +89,7 @@ float MCTS::run(const Game& cur_game) {
 			node_ptr = node_ptr->get_parent_ptr();
 		}
 	}
-	float result = (float)root_node_ptr->get_win_count();
+	int result = root_node_ptr->get_win_count();
 	this->recursive_delete_tree_node(root_node_ptr);
 	return result;
 }
