@@ -61,13 +61,16 @@ int MCTS::run(const Game& cur_game) {
 		// Start from the root, digging down until finding an unvistied node
 		Tree_node* node_ptr = root_node_ptr;
 		int best_child_index;
-		while(!node_ptr->is_terminate()) {
-			best_child_index = this->selection_ptr->select_children_list_index(node_ptr);
-			Tree_node* next_child_ptr = node_ptr->get_child_ptr(best_child_index);
-			if(!node_ptr->is_visit()) {
-				break;
+		// The root has been visited
+		if (root_node_ptr->is_visit()) {
+			while(!node_ptr->is_terminate()) {
+				best_child_index = this->selection_ptr->select_children_list_index(node_ptr);
+				node_ptr = node_ptr->get_child_ptr(best_child_index);
+				// The next child pointer hasn't been visited
+				if(!node_ptr->is_visit()) {
+					break;
+				}
 			}
-			node_ptr = next_child_ptr;
 		}
 
 		int win_reward;
@@ -89,6 +92,7 @@ int MCTS::run(const Game& cur_game) {
 			node_ptr = node_ptr->get_parent_ptr();
 		}
 	}
+
 	int result = root_node_ptr->get_win_count();
 	this->recursive_delete_tree_node(root_node_ptr);
 	return result;
