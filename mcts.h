@@ -21,7 +21,7 @@ public:
     // Selection selection(eps);
     Movement AI_move(Game& cur_game, int dice);
     // Run 4 stages of MCTS for max_iterations times
-    float run(const Game& cur_game);
+    int run(const Game& cur_game);
     // Run one time sumulation
 	int simulation(const Game& cur_game);
     // Used for destructor

@@ -60,9 +60,9 @@ void Tree_node::new_child_nodes() {
 		if (!this->game.check_in_board(movement)) continue;
 
 		// new legal child nodes
+		this->children_ptr_list[legal_child_num] = new Tree_node();
+		Tree_node* node_ptr = this->children_ptr_list[legal_child_num];
 		legal_child_num++;
-		this->children_ptr_list[i] = new Tree_node();
-		Tree_node* node_ptr = this->children_ptr_list[i];
 
 		// reset the values of the members
 		node_ptr->game = this->game;

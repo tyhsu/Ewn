@@ -25,8 +25,8 @@ int UCT::select_children_list_index(Tree_node* cur_node)
 		if (cur_node->get_child_ptr(i) == NULL) break;
 
 		Tree_node* node_ptr = cur_node->get_child_ptr(i);
-		float exploitation = (float)node_ptr->win_count / ((float)node_ptr->visit_count + this->eps);
-		float exploration = this->exploration_param * sqrt( log((float)cur_node->visit_count + this->t_param) / ((float)node_ptr->visit_count + eps));
+		float exploitation = (float)node_ptr->get_win_count() / ((float)node_ptr->get_visit_count() + this->eps);
+		float exploration = this->exploration_param * sqrt( log((float)cur_node->get_visit_count() + this->t_param) / ((float)node_ptr->get_visit_count() + this->eps));
 		child_value_list[i] = exploitation + exploration;
 		if (child_value_list[i] > best_value)
 			best_value = child_value_list[i];
@@ -37,7 +37,7 @@ int UCT::select_children_list_index(Tree_node* cur_node)
 	float child_index_list[18];
 	for (int i=0; i<18; i++) {
 		if (cur_node->get_child_ptr(i) == NULL) break;
-		if (best_value - child_value_list[i] < eps)
+		if (best_value - child_value_list[i] < this->eps)
 			child_index_list[ best_children_num++ ] = i;
 	}
 	
