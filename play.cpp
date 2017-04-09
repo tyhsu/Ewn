@@ -237,8 +237,8 @@ void Play::compare_AI_mode()
                             "simulate_rand_type2", \
                             "simulate_rand_type3", \
                             "simulate_rand_type4", \
-                            "MCTS_simulate_rand_type1", \
-                            "MCTS_simulate_rand_type2", \
+                            "MCTS", \
+                            "Random", \
                             "MCTS_simulate_rand_type3", \
                             "MCTS_simulate_rand_type4"};
 
@@ -254,10 +254,9 @@ void Play::compare_AI_mode()
     cout << "2)Minimax evaluating with simulation 2" << endl;
     cout << "3)Minimax evaluating with simulation 3" << endl;
     cout << "4)Minimax evaluating with simulation 4" << endl;
-    cout << "5)MCTS evaluating with simulation 1" << endl;
-    cout << "6)MCTS evaluating with simulation 2" << endl;
-    cout << "7)MCTS evaluating with simulation 3" << endl;
-    cout << "8)MCTS evaluating with simulation 4" << endl;
+    cout << "5)MCTS" << endl;
+    cout << "6)Random" << endl;
+    cout << "Choose: ";
     cout << "modeA choose: ";
     cin >> mode_A;
     cout << "modeB choose: ";
@@ -376,3 +375,4 @@ void Play::compare_AI_mode()
     printf("%-30s%-10d%-15lf%-20lf%-20lf%lf\n", mode_name[mode_A], win_cnt_A2, max_time_cost_A, total_time_cost_A, avg_move_timer_A2, total_time_cost_A/avg_move_timer_A2);
     printf("%-30s%-10d%-15lf%-20lf%-20lf%lf\n", mode_name[mode_B], win_cnt_B2, max_time_cost_B, total_time_cost_B, avg_move_timer_B2, total_time_cost_B/avg_move_timer_B2);
 }
+	
