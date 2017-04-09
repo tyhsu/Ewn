@@ -9,7 +9,7 @@ main.o: main.cpp play.o play.h
 	g++ main.cpp -c -o main.o
 play.o: play.cpp play.h ewnAi.o ewnAi.h game.o game.h
 	g++ play.cpp -c -o play.o
-ewnAi.o: ewnAi.cpp ewnAi.h minimax.o minimax.h minimax1.h minimax2.h minimax3.h minimax4.h mcts.o mcts.h randomAi.o randomAi.h
+ewnAi.o: ewnAi.cpp ewnAi.h minimax.o minimax.h minimax1.h minimax2.h minimax3.h minimax4.h mcts.o mcts.h mcts2.h mcts3.h mcts4.h randomAi.o randomAi.h
 	g++ ewnAi.cpp -c -o ewnAi.o
 randomAi.o: randomAi.cpp randomAi.h game.o game.h
 	g++ randomAi.cpp -c -o randomAi.o
