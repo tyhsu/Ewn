@@ -23,6 +23,9 @@ public:
 	EwnAI();
 	EwnAI(int mode);
 	Movement AI_move(Game cur_game, int dice);
+
+	void set_height(const int& height_);
+	void set_simu_times(const int& simu_times_);
 };
 
 #endif

@@ -28,6 +28,8 @@ public:
 
 	Minimax();
 	~Minimax() {}
+	void set_height(const int& height_);
+	void set_simu_times(const int& simu_times_);
 	Movement AI_move(Game& cur_game, int dice);
 	virtual int minimax(Game& cur_game, int height);
 	int evaluate_feature(Game& cur_game);

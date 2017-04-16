@@ -9,8 +9,6 @@
 Minimax::Minimax() {
 	HEIGHT = 5;
 	SIMU_TIMES = 100;
-
-
  
 	// pos: a <int,int> , <x,y> coord;
 	for (int i = 0; i < 5; i++) {
@@ -33,6 +31,16 @@ Minimax::Minimax() {
 			this->feature_map_B.insert(make_pair(chs_pos, k));
 		}
 	}
+}
+
+void Minimax::set_height(const int& height_)
+{
+	this->HEIGHT = height_;
+}
+
+void Minimax::set_simu_times(const int& simu_times_)
+{
+	this->SIMU_TIMES = simu_times_;
 }
 
 Movement Minimax::AI_move(Game& cur_game, int dice)

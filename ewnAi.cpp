@@ -45,3 +45,21 @@ Movement EwnAI::AI_move(Game cur_game, int dice)
             return this->minimax.AI_move(cur_game, dice);
     }
 }
+
+void EwnAI::set_height(const int& height_)
+{
+	if (this->ai_mode == 3) {
+		this->minimax3.set_height(height_);
+	}
+	else
+		cout << "Error: Only minimax3 can set height currently." << endl;
+}
+void EwnAI::set_simu_times(const int& simu_times_)
+{
+	if (this->ai_mode == 3) {
+		this->minimax3.set_simu_times(simu_times_);
+	}
+	else
+		cout << "Error: Only minimax3 can set simu_times currently." << endl;
+}
+

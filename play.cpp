@@ -276,6 +276,7 @@ void Play::compare_AI_mode()
                             "MCTS_simulate_rand_type4"};
 
     int mode_A, mode_B;
+    int height_A, height_B, simu_times_A, simu_times_B;
     int game_cnt;
     int win_cnt_A1 = 0, win_cnt_A2 = 0, win_cnt_B1 = 0, win_cnt_B2 = 0;
     double max_time_cost_A1 = 0, max_time_cost_B1 = 0, max_time_cost_A2 = 0, max_time_cost_B2 = 0;
@@ -304,10 +305,26 @@ void Play::compare_AI_mode()
 		whole_console << "modeA choose: ";
     cin >> mode_A;
 		whole_console << mode_A << endl;
+	if (mode_A >=0 && mode_A<=4) {
+		cout << "Please enter the height: ";
+		cin >> height_A;
+		if (mode_A != 0) {
+			cout << "Please enter the simu_times: ";
+			cin >> simu_times_A;
+		}
+	}
     cout << "modeB choose: ";
 		whole_console << "modeB choose: ";
     cin >> mode_B;
 		whole_console << mode_B <<endl;
+	if (mode_B >=0 && mode_B<=4) {
+		cout << "Please enter the height: ";
+		cin >> height_B;
+		if (mode_B != 0) {
+			cout << "Please enter the simu_times: ";
+			cin >> simu_times_B;
+		}
+	}
     cout << "Please enter the count of the games: ";
 		whole_console << "Please enter the count of the games: ";
     cin >> game_cnt;
@@ -317,9 +334,16 @@ void Play::compare_AI_mode()
     cout << "========== modeA then modeB ==========" << endl;
 		whole_console << "========== modeA then modeB ==========" << endl;
     for(int i = 0; i < game_cnt ; i++){
-        Game init_game = this->game;
-        EwnAI ewnAI1(mode_A);
-        EwnAI ewnAI2(mode_B);
+		Game init_game = this->game;
+
+		EwnAI ewnAI1(mode_A);
+		ewnAI1.set_height(height_A);
+		ewnAI1.set_simu_times(simu_times_A);
+		
+		EwnAI ewnAI2(mode_B);
+		ewnAI2.set_height(height_B);
+		ewnAI2.set_simu_times(simu_times_B);
+
         while (1) {
             int debug = 0;
             int dice = init_game.roll_dice();
