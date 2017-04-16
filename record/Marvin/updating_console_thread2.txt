@@ -1,0 +1,11 @@
+running to 300th game in part 2.
+
+==================================================
+========== modeA then modeB ==========
+mode                          wins      max_time_cost  total_time_cost     move_count          time_cost_per_move(avg)
+Random                        162       0.000073       0.010564            3382.000000         0.000003
+Random                        138       0.000106       0.013347            3220.000000         0.000004
+========== modeB then modeA ==========
+mode                          wins      max_time_cost  total_time_cost     move_count          time_cost_per_move(avg)
+Random                        138       0.000060       0.009856            3175.000000         0.000003
+Random                        162       0.000064       0.009986            3337.000000         0.000003
