@@ -1,8 +1,6 @@
 #include <iostream>
 #include <algorithm>
-#include <iomanip>  
 #include "play.h"
-#include "file.h"
 using namespace std;
 
 Movement Play::player_move(const int& dice)
@@ -234,6 +232,11 @@ void Play::contest_AI_mode()
 //Compare two AIs with several games
 void Play::compare_AI_mode()
 {
+	char buffer[100];
+	ofstream whole_console;
+	whole_console = std::ofstream("whole_console.txt", std::ofstream::out);
+	
+
     char mode_name[9][25] = { "evaluate_feature", \
                             "simulate_rand_type1", \
                             "simulate_rand_type2", \
@@ -247,36 +250,43 @@ void Play::compare_AI_mode()
     int mode_A, mode_B;
     int game_cnt;
     int win_cnt_A1 = 0, win_cnt_A2 = 0, win_cnt_B1 = 0, win_cnt_B2 = 0;
-    double max_time_cost_A = 0, max_time_cost_B = 0;
-    double total_time_cost_A = 0, total_time_cost_B = 0;
+    double max_time_cost_A1 = 0, max_time_cost_B1 = 0, max_time_cost_A2 = 0, max_time_cost_B2 = 0;
+    double total_time_cost_A1 = 0, total_time_cost_B1 = 0, total_time_cost_A2 = 0, total_time_cost_B2 = 0;
     double avg_move_timer_A1 = 0, avg_move_timer_B1 = 0, avg_move_timer_A2 = 0, avg_move_timer_B2 = 0;
-
-	this->ewn_file.set_file_name();
-    cout << "[record] start write file to record/" << this->ewn_file.file_name << endl;
-    this->ewn_file.write_to_file("------ record start ------");
-
-
     cout << "Please choose two AIs:" << endl;
+		whole_console <<"Please choose two AIs:" << endl;
     cout << "0)Minimax evaluating with feature" << endl;
+		whole_console << "0)Minimax evaluating with feature" << endl;
     cout << "1)Minimax evaluating with simulation 1" << endl;
+		whole_console << "1)Minimax evaluating with simulation 1" << endl;
     cout << "2)Minimax evaluating with simulation 2" << endl;
+		whole_console << "2)Minimax evaluating with simulation 2" << endl;
     cout << "3)Minimax evaluating with simulation 3" << endl;
+		whole_console << "3)Minimax evaluating with simulation 3" << endl;
     cout << "4)Minimax evaluating with simulation 4" << endl;
+		whole_console << "4)Minimax evaluating with simulation 4" << endl;
     cout << "5)MCTS" << endl;
+		whole_console << "5)MCTS" << endl;
     cout << "6)Random" << endl;
-    cout << "Choose: ";
+		whole_console << "6)Random" << endl;
+    cout << "Choose: " << endl;
+		whole_console << "Choose: ";
     cout << "modeA choose: ";
+		whole_console << "modeA choose: ";
     cin >> mode_A;
-    this->ewn_file.write_to_file("modeA choose:" + to_string(mode_A));
+		whole_console << mode_A << endl;
     cout << "modeB choose: ";
+		whole_console << "modeB choose: ";
     cin >> mode_B;
-    this->ewn_file.write_to_file("modeB choose:" + to_string(mode_B));
+		whole_console << mode_B <<endl;
     cout << "Please enter the count of the games: ";
+		whole_console << "Please enter the count of the games: ";
     cin >> game_cnt;
+		whole_console << game_cnt << endl;
 
     // modeA plays first, then modeB
-    this->ewn_file.write_to_file("========== modeA then modeB ==========");
     cout << "========== modeA then modeB ==========" << endl;
+		whole_console << "========== modeA then modeB ==========" << endl;
     for(int i = 0; i < game_cnt ; i++){
         Game init_game = this->game;
         EwnAI ewnAI1(mode_A);
@@ -288,26 +298,26 @@ void Play::compare_AI_mode()
             int game_status;
             if (!init_game.get_is_switch()) {	// the first AI (A)
                 cerr << "-";
-                this->ewn_file.write_to_file("-", false);
+					whole_console <<"-";
                 cerr.flush();
                 clock_t init_time = clock();
                 Movement mvmt = ewnAI1.AI_move(init_game, dice);
                 game_status = init_game.update_game_status(mvmt);
                 double time_cost = (double)(clock() - init_time) / CLOCKS_PER_SEC;
-                max_time_cost_A = max(max_time_cost_A, time_cost);
-                total_time_cost_A += time_cost;
+                max_time_cost_A1 = max(max_time_cost_A1, time_cost);
+                total_time_cost_A1 += time_cost;
                 avg_move_timer_A1 += 1;
             }
             else {								// the second AI (B)
                 cerr << "-";
-                this->ewn_file.write_to_file("-", false);
+					whole_console <<"-";
                 cerr.flush();
                 clock_t init_time = clock();
                 Movement mvmt = ewnAI2.AI_move(init_game, dice);
                 game_status = init_game.update_game_status(mvmt);
                 double time_cost = (double)(clock() - init_time) / CLOCKS_PER_SEC;
-                max_time_cost_B = max(max_time_cost_B, time_cost);
-                total_time_cost_B += time_cost;
+                max_time_cost_B1 = max(max_time_cost_B1, time_cost);
+                total_time_cost_B1 += time_cost;
                 avg_move_timer_B1 += 1;
             }
             //update: 0(game continues), 1(A wins), 2(B wins)
@@ -315,27 +325,41 @@ void Play::compare_AI_mode()
                 if (game_status==1) {
                     win_cnt_A1 ++ ;
                     cout << "A wins.  " << win_cnt_A1 + win_cnt_B1 << " games." << endl;
-                    this->ewn_file.write_to_file("A wins.  " + to_string(win_cnt_A1 + win_cnt_B1) + " games.");
+						whole_console << "A wins.  " << win_cnt_A1 + win_cnt_B1 << " games." << endl;
                 }
 
                 else {
                     win_cnt_B1 ++;
                     cout << "B wins.  " << win_cnt_A1 + win_cnt_B1 << " games." << endl;
-                    this->ewn_file.write_to_file("B wins.  " + to_string(win_cnt_A1 + win_cnt_B1) + " games.");
+						whole_console << "B wins.  " << win_cnt_A1 + win_cnt_B1 << " games." << endl;
                 }
                 break;
             }
             init_game.switch_player();
         }
+		if ( (i+1) % 100 == 0) {
+			ofstream updating = std::ofstream("updating.txt", std::ofstream::out);
+			updating << "running to " << i+1 << "th game in part 1." << endl;
+			updating << endl << "==================================================" << endl;
+			updating << "========== modeA then modeB ==========" << endl;
+			sprintf(buffer, "%-30s%-10s%-15s%-20s%-20s%s\n", "mode", "wins", "max_time_cost", "total_time_cost", "move_count", "time_cost_per_move(avg)");
+			updating << buffer;
+			sprintf(buffer, "%-30s%-10d%-15lf%-20lf%-20lf%lf\n", mode_name[mode_A], win_cnt_A1, max_time_cost_A1, total_time_cost_A1, avg_move_timer_A1, total_time_cost_A1/avg_move_timer_A1);
+			updating << buffer;
+			sprintf(buffer, "%-30s%-10d%-15lf%-20lf%-20lf%lf\n", mode_name[mode_B], win_cnt_B1, max_time_cost_B1, total_time_cost_B1, avg_move_timer_B1, total_time_cost_B1/avg_move_timer_B1);
+			updating << buffer;
+			updating << "========== modeB then modeA ==========" << endl;
+			sprintf(buffer, "%-30s%-10s%-15s%-20s%-20s%s\n", "mode", "wins", "max_time_cost", "total_time_cost", "move_count", "time_cost_per_move(avg)");
+			updating << buffer;
+			sprintf(buffer, "%-30s%-10d%-15lf%-20lf%-20lf%lf\n", mode_name[mode_A], win_cnt_A2, max_time_cost_A2, total_time_cost_A2, avg_move_timer_A2, total_time_cost_A2/avg_move_timer_A2);
+			updating << buffer;
+			sprintf(buffer, "%-30s%-10d%-15lf%-20lf%-20lf%lf\n", mode_name[mode_B], win_cnt_B2, max_time_cost_B2, total_time_cost_B2, avg_move_timer_B2, total_time_cost_B2/avg_move_timer_B2);
+			updating << buffer;
+		}
     }
-    printf("%-25s%-10s%-10s%-10s\n", "mode", "wins", "max_time_cost", "total_time_cost");
-    printf("%-25s%-10d%-10lf%-10lf\n", mode_name[mode_A], win_cnt_A1, max_time_cost_A, total_time_cost_A);
-    printf("%-25s%-10d%-10lf%-10lf\n", mode_name[mode_B], win_cnt_B1, max_time_cost_B, total_time_cost_B);
-
-
     // modeB plays first, then modeA
-    this->ewn_file.write_to_file("========== modeB then modeA ==========");
     cout << "========== modeB then modeA ==========" << endl;
+		whole_console << "========== modeB then modeA ==========" << endl;
     for (int i = 0; i < game_cnt ; i++){
         Game init_game = this->game;
         EwnAI ewnAI1(mode_B);
@@ -347,24 +371,26 @@ void Play::compare_AI_mode()
             int game_status;
             if (!init_game.get_is_switch()) {	// the first AI (B)
                 cerr << "-";
-                this->ewn_file.write_to_file("-", false);
+					whole_console << "-";
                 cerr.flush();
                 clock_t init_time = clock();
                 Movement mvmt = ewnAI1.AI_move(init_game, dice);
                 game_status = init_game.update_game_status(mvmt);
                 double time_cost = (double)(clock() - init_time) / CLOCKS_PER_SEC;
-                max_time_cost_B = max(max_time_cost_B, time_cost);
+                max_time_cost_B2 = max(max_time_cost_B2, time_cost);
+				total_time_cost_B2 += time_cost;
                 avg_move_timer_B2 += 1;
             }
             else {							// the second AI (A)
                 cerr << "-";
-                this->ewn_file.write_to_file("-", false);
+					whole_console << "-";
                 cerr.flush();
                 clock_t init_time = clock();
                 Movement mvmt = ewnAI2.AI_move(init_game, dice);
                 game_status = init_game.update_game_status(mvmt);
                 double time_cost = (double)(clock() - init_time) / CLOCKS_PER_SEC;
-                max_time_cost_A = max(max_time_cost_A, time_cost);
+                max_time_cost_A2 = max(max_time_cost_A2, time_cost);
+				total_time_cost_A2 += time_cost;
                 avg_move_timer_A2 += 1;
             }
             //update: 0(game continues), 1(B wins), 2(A wins)
@@ -372,42 +398,63 @@ void Play::compare_AI_mode()
                 if (game_status==1) {
                     win_cnt_B2 ++ ;
                     cout << "B wins.  " << win_cnt_A2 + win_cnt_B2 << " games." << endl;
-                    this->ewn_file.write_to_file("A wins.  " + to_string(win_cnt_A2 + win_cnt_B2) + " games.");
+						whole_console << "B wins.  " << win_cnt_A2 + win_cnt_B2 << " games." << endl;
                 }
 
                 else {
                     win_cnt_A2 ++;
                     cout << "A win.  " << win_cnt_A2 + win_cnt_B2 << " games." <<endl;
-                    this->ewn_file.write_to_file("A wins.  " + to_string(win_cnt_A2 + win_cnt_B2) + " games.");
+						whole_console << "A win.  " << win_cnt_A2 + win_cnt_B2 << " games." <<endl;
                 }
                 break;
             }
             init_game.switch_player();
         }
+		if ( (i+1) % 100 == 0) {
+			ofstream updating = std::ofstream("updating.txt", std::ofstream::out);
+			updating << "running to " << i+1 << "th game in part 2." << endl;
+			updating << endl << "==================================================" << endl;
+			updating << "========== modeA then modeB ==========" << endl;
+			sprintf(buffer, "%-30s%-10s%-15s%-20s%-20s%s\n", "mode", "wins", "max_time_cost", "total_time_cost", "move_count", "time_cost_per_move(avg)");
+			updating << buffer;
+			sprintf(buffer, "%-30s%-10d%-15lf%-20lf%-20lf%lf\n", mode_name[mode_A], win_cnt_A1, max_time_cost_A1, total_time_cost_A1, avg_move_timer_A1, total_time_cost_A1/avg_move_timer_A1);
+			updating << buffer;
+			sprintf(buffer, "%-30s%-10d%-15lf%-20lf%-20lf%lf\n", mode_name[mode_B], win_cnt_B1, max_time_cost_B1, total_time_cost_B1, avg_move_timer_B1, total_time_cost_B1/avg_move_timer_B1);
+			updating << buffer;
+			updating << "========== modeB then modeA ==========" << endl;
+			sprintf(buffer, "%-30s%-10s%-15s%-20s%-20s%s\n", "mode", "wins", "max_time_cost", "total_time_cost", "move_count", "time_cost_per_move(avg)");
+			updating << buffer;
+			sprintf(buffer, "%-30s%-10d%-15lf%-20lf%-20lf%lf\n", mode_name[mode_A], win_cnt_A2, max_time_cost_A2, total_time_cost_A2, avg_move_timer_A2, total_time_cost_A2/avg_move_timer_A2);
+			updating << buffer;
+			sprintf(buffer, "%-30s%-10d%-15lf%-20lf%-20lf%lf\n", mode_name[mode_B], win_cnt_B2, max_time_cost_B2, total_time_cost_B2, avg_move_timer_B2, total_time_cost_B2/avg_move_timer_B2);
+			updating << buffer;
+		}
     }
-    this->ewn_file.write_to_file("==================================================");
     cout << endl << "==================================================" << endl;
-
-    this->ewn_file.write_to_file("========== modeA then modeB ==========");
-    cout << "========== modeA then modeB ==========" << endl;
-    this->ewn_file.write_to_file("mode\twims\tmax_time_cost\ttotal_time_cost\tmove_count\ttime_cost_per_move(avg)");
-    string s = string(mode_name[mode_A]) + "\t" + to_string(win_cnt_A1) + "\t" + to_string(max_time_cost_A) + "\t" + to_string(total_time_cost_A) + "\t" + to_string(avg_move_timer_A1) + "\t" + to_string(total_time_cost_A/avg_move_timer_A1);
-    this->ewn_file.write_to_file(s);
-    s = string(mode_name[mode_B]) + "\t" + to_string(win_cnt_B1) + "\t" + to_string(max_time_cost_B) + "\t" + to_string(total_time_cost_B) + "\t" + to_string(avg_move_timer_B1) + "\t" + to_string(total_time_cost_B/avg_move_timer_B1);
-    this->ewn_file.write_to_file(s);
-    printf("%-30s%-10s%-15s%-20s%-20s%s\n", "mode", "wins", "max_time_cost", "total_time_cost", "move_count", "time_cost_per_move(avg)");
-    printf("%-30s%-10d%-15lf%-20lf%-20lf%lf\n", mode_name[mode_A], win_cnt_A1, max_time_cost_A, total_time_cost_A, avg_move_timer_A1, total_time_cost_A/avg_move_timer_A1);
-    printf("%-30s%-10d%-15lf%-20lf%-20lf%lf\n", mode_name[mode_B], win_cnt_B1, max_time_cost_B, total_time_cost_B, avg_move_timer_B1, total_time_cost_B/avg_move_timer_B1);
-
-    this->ewn_file.write_to_file("========== modeB then modeA ==========");
-    cout << "========== modeB then modeA ==========" << endl;
-    this->ewn_file.write_to_file("mode\twims\tmax_time_cost\ttotal_time_cost\tmove_count\ttime_cost_per_move(avg)");
-    s = string(mode_name[mode_A]) + "\t" + to_string(win_cnt_A2) + "\t" + to_string(max_time_cost_A) + "\t" + to_string(total_time_cost_A) + "\t" + to_string(avg_move_timer_A2) + "\t" + to_string(total_time_cost_A/avg_move_timer_A2);
-    this->ewn_file.write_to_file(s);
-    s = string(mode_name[mode_B]) + "\t" + to_string(win_cnt_B2) + "\t" + to_string(max_time_cost_B) + "\t" + to_string(total_time_cost_B) + "\t" + to_string(avg_move_timer_B2) + "\t" + to_string(total_time_cost_B/avg_move_timer_B2);
-    this->ewn_file.write_to_file(s);
-    printf("%-30s%-10s%-15s%-20s%-20s%s\n", "mode", "wins", "max_time_cost", "total_time_cost", "move_count", "time_cost_per_move(avg)");
-    printf("%-30s%-10d%-15lf%-20lf%-20lf%lf\n", mode_name[mode_A], win_cnt_A2, max_time_cost_A, total_time_cost_A, avg_move_timer_A2, total_time_cost_A/avg_move_timer_A2);
-    printf("%-30s%-10d%-15lf%-20lf%-20lf%lf\n", mode_name[mode_B], win_cnt_B2, max_time_cost_B, total_time_cost_B, avg_move_timer_B2, total_time_cost_B/avg_move_timer_B2);
+		whole_console << endl << "==================================================" << endl;
+	cout << "========== modeA then modeB ==========" << endl;
+			whole_console << "========== modeA then modeB ==========" << endl;
+	printf("%-30s%-10s%-15s%-20s%-20s%s\n", "mode", "wins", "max_time_cost", "total_time_cost", "move_count", "time_cost_per_move(avg)");
+		sprintf(buffer, "%-30s%-10s%-15s%-20s%-20s%s\n", "mode", "wins", "max_time_cost", "total_time_cost", "move_count", "time_cost_per_move(avg)");
+		whole_console << buffer;
+	printf("%-30s%-10d%-15lf%-20lf%-20lf%lf\n", mode_name[mode_A], win_cnt_A1, max_time_cost_A1, total_time_cost_A1, avg_move_timer_A1, total_time_cost_A1/avg_move_timer_A1);
+		sprintf(buffer, "%-30s%-10d%-15lf%-20lf%-20lf%lf\n", mode_name[mode_A], win_cnt_A1, max_time_cost_A1, total_time_cost_A1, avg_move_timer_A1, total_time_cost_A1/avg_move_timer_A1);
+		whole_console << buffer;
+	printf("%-30s%-10d%-15lf%-20lf%-20lf%lf\n", mode_name[mode_B], win_cnt_B1, max_time_cost_B1, total_time_cost_B1, avg_move_timer_B1, total_time_cost_B1/avg_move_timer_B1);
+		sprintf(buffer, "%-30s%-10d%-15lf%-20lf%-20lf%lf\n", mode_name[mode_B], win_cnt_B1, max_time_cost_B1, total_time_cost_B1, avg_move_timer_B1, total_time_cost_B1/avg_move_timer_B1);
+		whole_console << buffer;
+		
+	cout << "========== modeB then modeA ==========" << endl;
+		whole_console << "========== modeB then modeA ==========" << endl;
+	printf("%-30s%-10s%-15s%-20s%-20s%s\n", "mode", "wins", "max_time_cost", "total_time_cost", "move_count", "time_cost_per_move(avg)");
+		sprintf(buffer, "%-30s%-10s%-15s%-20s%-20s%s\n", "mode", "wins", "max_time_cost", "total_time_cost", "move_count", "time_cost_per_move(avg)");
+		whole_console << buffer;
+	printf("%-30s%-10d%-15lf%-20lf%-20lf%lf\n", mode_name[mode_A], win_cnt_A2, max_time_cost_A2, total_time_cost_A2, avg_move_timer_A2, total_time_cost_A2/avg_move_timer_A2);
+		sprintf(buffer, "%-30s%-10d%-15lf%-20lf%-20lf%lf\n", mode_name[mode_A], win_cnt_A2, max_time_cost_A2, total_time_cost_A2, avg_move_timer_A2, total_time_cost_A2/avg_move_timer_A2);
+		whole_console << buffer;
+	printf("%-30s%-10d%-15lf%-20lf%-20lf%lf\n", mode_name[mode_B], win_cnt_B2, max_time_cost_B2, total_time_cost_B2, avg_move_timer_B2, total_time_cost_B2/avg_move_timer_B2);
+		sprintf(buffer, "%-30s%-10d%-15lf%-20lf%-20lf%lf\n", mode_name[mode_B], win_cnt_B2, max_time_cost_B2, total_time_cost_B2, avg_move_timer_B2, total_time_cost_B2/avg_move_timer_B2);
+		whole_console << buffer;
 }
+
 	

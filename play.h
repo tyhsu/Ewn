@@ -4,8 +4,11 @@
 #include <iostream>
 #include "game.h"
 #include "ewnAi.h"
-#include "file.h"
 #include <string>
+#include <fstream>
+#include <iomanip>
+#include <ctime>
+#include <stdio.h>
 using namespace std;
 
 class Play
@@ -14,7 +17,6 @@ private:
 	Game game;
 
 public:
-	Ewnfile ewn_file;
 	//One player plays the game (the integration)
 	Movement player_move(const int& dice);
 
