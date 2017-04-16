@@ -1,0 +1,34 @@
+------ record start ------
+modeA choose:6
+modeB choose:6
+========== modeA then modeB ==========
+-------------------A wins.  1 games.
+----------------B wins.  2 games.
+-----------------A wins.  3 games.
+----------------B wins.  4 games.
+----------------B wins.  5 games.
+----------------------B wins.  6 games.
+-------------------------A wins.  7 games.
+---------------------A wins.  8 games.
+---------------------A wins.  9 games.
+-----------------------A wins.  10 games.
+========== modeB then modeA ==========
+-------------A wins.  1 games.
+----------------------A wins.  2 games.
+----------------A wins.  3 games.
+---------------------A wins.  4 games.
+--------------------A wins.  5 games.
+----------------------------A wins.  6 games.
+----------------------------A wins.  7 games.
+-----------------------A wins.  8 games.
+-----------------------A wins.  9 games.
+-----------------------A wins.  10 games.
+==================================================
+========== modeA then modeB ==========
+mode	wims	max_time_cost	total_time_cost	move_count	time_cost_per_move(avg)
+Random	6	0.000018	0.000462	101.000000	0.000005
+Random	4	0.000019	0.000414	95.000000	0.000004
+========== modeB then modeA ==========
+mode	wims	max_time_cost	total_time_cost	move_count	time_cost_per_move(avg)
+Random	5	0.000018	0.000462	106.000000	0.000004
+Random	5	0.000019	0.000414	111.000000	0.000004
