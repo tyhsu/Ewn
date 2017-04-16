@@ -255,7 +255,7 @@ void Play::compare_AI_mode()
 	ofstream whole_console;
 	string whole_file_name = string("whole_console_" + thread);
 	string updating_file_name = string("updating_console_" + thread);
-	whole_console = std::ofstream(whole_file_name, std::ofstream::out);
+	whole_console = std::ofstream(whole_file_name.c_str(), std::ofstream::out);
 	
 
     char mode_name[9][25] = { "evaluate_feature", \
@@ -361,7 +361,7 @@ void Play::compare_AI_mode()
             init_game.switch_player();
         }
 		if ( (i+1) % 100 == 0) {
-			ofstream updating = std::ofstream(updating_file_name, std::ofstream::out);
+			ofstream updating = std::ofstream(updating_file_name.c_str(), std::ofstream::out);
 			updating << "running to " << i+1 << "th game in part 1." << endl;
 			updating << endl << "==================================================" << endl;
 			updating << "========== modeA then modeB ==========" << endl;
@@ -434,7 +434,7 @@ void Play::compare_AI_mode()
             init_game.switch_player();
         }
 		if ( (i+1) % 100 == 0) {
-			ofstream updating = std::ofstream(updating_file_name, std::ofstream::out);
+			ofstream updating = std::ofstream(updating_file_name.c_str(), std::ofstream::out);
 			updating << "running to " << i+1 << "th game in part 2." << endl;
 			updating << endl << "==================================================" << endl;
 			updating << "========== modeA then modeB ==========" << endl;
