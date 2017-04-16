@@ -13,7 +13,7 @@ class Minimax2: public Minimax
 {
 public:
 	Minimax2() {
-		HEIGHT = 3;
+		HEIGHT = 0;
 		SIMU_TIMES = 180;
 	}
 	~Minimax2() {}
@@ -142,7 +142,7 @@ public:
 			game_status = simu_game.update_game_status(next_mvmt);
 			//simu_game.print_status();
 			//cout << "Status:" << game_status << endl;
-			
+
 			// check game status => if the game keep going, switch the player.
 			if (game_status == 0) simu_game.switch_player();
 			else break;

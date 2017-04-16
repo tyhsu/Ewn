@@ -10,6 +10,8 @@ Minimax::Minimax() {
 	HEIGHT = 5;
 	SIMU_TIMES = 100;
 
+
+ 
 	// pos: a <int,int> , <x,y> coord;
 	for (int i = 0; i < 5; i++) {
 		for (int j = 0;j < 5; j++) {

@@ -231,8 +231,8 @@ void Play::contest_AI_mode()
 
 //Compare two AIs with several games
 void Play::compare_AI_mode()
-{	
-	
+{
+
 	int author;
 	cout << " Please choose Author :" << endl;
 	cout << "0)Li-Chin" << endl;
@@ -240,23 +240,23 @@ void Play::compare_AI_mode()
 	cout << "2)Marvin" << endl;
 	cout << "Choose: ";
 	cin >> author;
-	
+
 	if( author == 0)
 		chdir("./record/Li-Chin");
 	else if ( author == 1)
 		chdir("./record/Tia");
-	else 
+	else
 		chdir("./record/Marvin");
 	cout << "input thread number (format 1~8) : ";
 	string thread_number;
 	cin >> thread_number;
 	string thread = string("thread") + thread_number + string(".txt");
-	char buffer[100];
+	char buffer[4096];
 	ofstream whole_console;
 	string whole_file_name = string("whole_console_" + thread);
 	string updating_file_name = string("updating_console_" + thread);
-	whole_console = std::ofstream(whole_file_name.c_str(), std::ofstream::out);
-	
+	whole_console = ofstream(whole_file_name.c_str(), std::ofstream::out);
+
 
     char mode_name[9][25] = { "evaluate_feature", \
                             "simulate_rand_type1", \
@@ -275,7 +275,7 @@ void Play::compare_AI_mode()
     double total_time_cost_A1 = 0, total_time_cost_B1 = 0, total_time_cost_A2 = 0, total_time_cost_B2 = 0;
     double avg_move_timer_A1 = 0, avg_move_timer_B1 = 0, avg_move_timer_A2 = 0, avg_move_timer_B2 = 0;
 	whole_console << "input thread number (format 1~8) : " << thread_number << endl;
-	
+
     cout << "Please choose two AIs:" << endl;
 		whole_console <<"Please choose two AIs:" << endl;
     cout << "0)Minimax evaluating with feature" << endl;
@@ -466,7 +466,7 @@ void Play::compare_AI_mode()
 	printf("%-30s%-10d%-15lf%-20lf%-20lf%lf\n", mode_name[mode_B], win_cnt_B1, max_time_cost_B1, total_time_cost_B1, avg_move_timer_B1, total_time_cost_B1/avg_move_timer_B1);
 		sprintf(buffer, "%-30s%-10d%-15lf%-20lf%-20lf%lf\n", mode_name[mode_B], win_cnt_B1, max_time_cost_B1, total_time_cost_B1, avg_move_timer_B1, total_time_cost_B1/avg_move_timer_B1);
 		whole_console << buffer;
-		
+
 	cout << "========== modeB then modeA ==========" << endl;
 		whole_console << "========== modeB then modeA ==========" << endl;
 	printf("%-30s%-10s%-15s%-20s%-20s%s\n", "mode", "wins", "max_time_cost", "total_time_cost", "move_count", "time_cost_per_move(avg)");
@@ -478,14 +478,13 @@ void Play::compare_AI_mode()
 	printf("%-30s%-10d%-15lf%-20lf%-20lf%lf\n", mode_name[mode_B], win_cnt_B2, max_time_cost_B2, total_time_cost_B2, avg_move_timer_B2, total_time_cost_B2/avg_move_timer_B2);
 		sprintf(buffer, "%-30s%-10d%-15lf%-20lf%-20lf%lf\n", mode_name[mode_B], win_cnt_B2, max_time_cost_B2, total_time_cost_B2, avg_move_timer_B2, total_time_cost_B2/avg_move_timer_B2);
 		whole_console << buffer;
-		
-	cout << "Record file [thread " << thread_number << "] save at record/";
+
+	cout << endl << "Record files [thread " << thread_number << "] are saved at record/";
 	if( author == 0)
 		cout << "Li-Chin";
 	else if ( author == 1)
 		cout << "Tia";
-	else 
+	else
 		cout << "Marvin";
+    cout << endl;
 }
-
-	
