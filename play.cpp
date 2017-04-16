@@ -416,7 +416,13 @@ void Play::compare_AI_mode()
     for (int i = 0; i < game_cnt ; i++){
         Game init_game = this->game;
         EwnAI ewnAI1(mode_B);
+        ewnAI1.set_height(height_A);
+        ewnAI1.set_simu_times(simu_times_A);
+
         EwnAI ewnAI2(mode_A);
+        ewnAI2.set_height(height_B);
+        ewnAI2.set_simu_times(simu_times_B);
+
         while (1) {
             int debug = 0;
             int dice = init_game.roll_dice();
@@ -509,7 +515,7 @@ void Play::compare_AI_mode()
 		sprintf(buffer, "%-30s%-10d%-15lf%-20lf%-20lf%lf\n", mode_name[mode_B], win_cnt_B2, max_time_cost_B2, total_time_cost_B2, avg_move_timer_B2, total_time_cost_B2/avg_move_timer_B2);
 		whole_console << buffer;
 
-	cout << endl << "Record files at" << time_str << " are saved at record/";
+	cout << endl << "Record files at " << time_str << " are saved at record/";
 	if( author == 0)
 		cout << "Li-Chin";
 	else if ( author == 1)
