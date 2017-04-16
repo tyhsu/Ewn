@@ -247,14 +247,21 @@ void Play::compare_AI_mode()
 		chdir("./record/Tia");
 	else
 		chdir("./record/Marvin");
-	cout << "input thread number (format 1~8) : ";
-	string thread_number;
-	cin >> thread_number;
-	string thread = string("thread") + thread_number + string(".txt");
+	
+	time_t rawtime;
+	struct tm * timeinfo;
+	char cur_time[80];
+
+	time (&rawtime);
+	timeinfo = localtime(&rawtime);
+
+	strftime(cur_time, sizeof(cur_time), "%Y-%m-%d-%I-%M-%S",timeinfo);
+	string time_str(cur_time);
+
 	char buffer[4096];
 	ofstream whole_console;
-	string whole_file_name = string("whole_console_" + thread);
-	string updating_file_name = string("updating_console_" + thread);
+	string whole_file_name = string("whole_console_" + time_str + ".txt");
+	string updating_file_name = string("updating_console_" + time_str + ".txt");
 	whole_console = ofstream(whole_file_name.c_str(), std::ofstream::out);
 
 
@@ -274,7 +281,6 @@ void Play::compare_AI_mode()
     double max_time_cost_A1 = 0, max_time_cost_B1 = 0, max_time_cost_A2 = 0, max_time_cost_B2 = 0;
     double total_time_cost_A1 = 0, total_time_cost_B1 = 0, total_time_cost_A2 = 0, total_time_cost_B2 = 0;
     double avg_move_timer_A1 = 0, avg_move_timer_B1 = 0, avg_move_timer_A2 = 0, avg_move_timer_B2 = 0;
-	whole_console << "input thread number (format 1~8) : " << thread_number << endl;
 
     cout << "Please choose two AIs:" << endl;
 		whole_console <<"Please choose two AIs:" << endl;
@@ -479,7 +485,7 @@ void Play::compare_AI_mode()
 		sprintf(buffer, "%-30s%-10d%-15lf%-20lf%-20lf%lf\n", mode_name[mode_B], win_cnt_B2, max_time_cost_B2, total_time_cost_B2, avg_move_timer_B2, total_time_cost_B2/avg_move_timer_B2);
 		whole_console << buffer;
 
-	cout << endl << "Record files [thread " << thread_number << "] are saved at record/";
+	cout << endl << "Record files at" << time_str << " are saved at record/";
 	if( author == 0)
 		cout << "Li-Chin";
 	else if ( author == 1)
