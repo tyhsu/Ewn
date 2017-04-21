@@ -10,6 +10,11 @@ MCTS::~MCTS() {
 	delete this->selection_ptr;
 }
 
+void MCTS::set_max_iterations(const int& max_iterations_)
+{
+	this->max_iterations = max_iterations_;
+}
+
 Movement MCTS::AI_move(Game& cur_game, int dice) {
 	this->max_iterations = 1000;
 	this->ai_side = cur_game.get_is_switch();

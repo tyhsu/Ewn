@@ -26,6 +26,7 @@ public:
 
 	void set_height(const int& height_);
 	void set_simu_times(const int& simu_times_);
+	void set_max_iterations(const int& max_iterations_);
 };
 
 #endif

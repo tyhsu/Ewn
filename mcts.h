@@ -17,7 +17,9 @@ public:
 
 	MCTS ();
 	~MCTS ();
-    
+
+	void set_max_iterations(const int& max_iterations_);
+
     // Selection selection(eps);
     Movement AI_move(Game& cur_game, int dice);
     // Run 4 stages of MCTS for max_iterations times

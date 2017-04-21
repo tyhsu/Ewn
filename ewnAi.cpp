@@ -86,3 +86,11 @@ void EwnAI::set_simu_times(const int& simu_times_)
 	}
 }
 
+void EwnAI::set_max_iterations(const int& max_iterations_)
+{
+	// only MCTS can call this function (mode = 5)
+	if (this->ai_mode == 5)
+		this->mcts.set_max_iterations(max_iterations_);
+	else
+		cout << "Error: Only MCTS can set max_iterations currently." << endl;
+}
