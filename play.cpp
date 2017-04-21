@@ -301,6 +301,7 @@ void Play::compare_AI_mode()
 		whole_console << "6)Random" << endl;
     cout << "Choose: " << endl;
 		whole_console << "Choose: ";
+
     cout << "modeA choose: ";
 		whole_console << "modeA choose: ";
     cin >> mode_A;
@@ -309,12 +310,21 @@ void Play::compare_AI_mode()
 		cout << "  Please enter the height: ";
 			whole_console << "  Please enter the height: ";
 		cin >> height_A;
+			whole_console << height_A << endl;
 		if (mode_A != 0) {
 			cout << "  Please enter the simu_times: ";
 				whole_console << "  Please enter the simu_times: ";
 			cin >> simu_times_A;
+				whole_console << simu_times_A << endl;
 		}
 	}
+	else if (mode_A == 5) {
+		cout << "  Please enter the max_iterations: ";
+			whole_console << "  Please enter the max_iterations: ";
+		cin >> simu_times_A;
+			whole_console << simu_times_A << endl;
+	}
+
     cout << "modeB choose: ";
 		whole_console << "modeB choose: ";
     cin >> mode_B;
@@ -323,12 +333,21 @@ void Play::compare_AI_mode()
 		cout << "  Please enter the height: ";
 			whole_console << "  Please enter the height: ";
 		cin >> height_B;
+			whole_console << height_B << endl;
 		if (mode_B != 0) {
 			cout << "  Please enter the simu_times: ";
 				whole_console << "  Please enter the simu_times: ";
 			cin >> simu_times_B;
+				whole_console << simu_times_B << endl;
 		}
 	}
+	else if (mode_B == 5) {
+		cout << "  Please enter the max_iterations: ";
+			whole_console << "  Please enter the max_iterations: ";
+		cin >> simu_times_B;
+			whole_console << simu_times_B << endl;
+	}
+
     cout << "Please enter the count of the games: ";
 		whole_console << "Please enter the count of the games: ";
     cin >> game_cnt;
@@ -345,12 +364,16 @@ void Play::compare_AI_mode()
 			ewnAI1.set_height(height_A);
 			ewnAI1.set_simu_times(simu_times_A);
 		}
+		else if (mode_A == 5)
+			ewnAI1.set_max_iterations(simu_times_A);
 
 		EwnAI ewnAI2(mode_B);
 		if (mode_B >=0 && mode_B<=4) {
 			ewnAI2.set_height(height_B);
 			ewnAI2.set_simu_times(simu_times_B);
 		}
+		else if (mode_B == 5)
+			ewnAI2.set_max_iterations(simu_times_B);
 
         while (1) {
             int debug = 0;
@@ -423,16 +446,22 @@ void Play::compare_AI_mode()
 		whole_console << "========== modeB then modeA ==========" << endl;
     for (int i = 0; i < game_cnt ; i++){
         Game init_game = this->game;
+
 		EwnAI ewnAI1(mode_B);
 		if (mode_B >=0 && mode_B<=4) {
 			ewnAI1.set_height(height_B);
 			ewnAI1.set_simu_times(simu_times_B);
 		}
+		else if (mode_B == 5)
+			ewnAI1.set_max_iterations(simu_times_B);
+
  		EwnAI ewnAI2(mode_A);
 		if (mode_A >=0 && mode_A<=4) {
 			ewnAI2.set_height(height_A);
 			ewnAI2.set_simu_times(simu_times_A);
 		}
+		else if (mode_A == 5)
+			ewnAI2.set_max_iterations(simu_times_A);
 
         while (1) {
             int debug = 0;
