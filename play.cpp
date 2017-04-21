@@ -306,10 +306,12 @@ void Play::compare_AI_mode()
     cin >> mode_A;
 		whole_console << mode_A << endl;
 	if (mode_A >=0 && mode_A<=4) {
-		cout << "Please enter the height: ";
+		cout << "  Please enter the height: ";
+			whole_console << "  Please enter the height: ";
 		cin >> height_A;
 		if (mode_A != 0) {
-			cout << "Please enter the simu_times: ";
+			cout << "  Please enter the simu_times: ";
+				whole_console << "  Please enter the simu_times: ";
 			cin >> simu_times_A;
 		}
 	}
@@ -318,10 +320,12 @@ void Play::compare_AI_mode()
     cin >> mode_B;
 		whole_console << mode_B <<endl;
 	if (mode_B >=0 && mode_B<=4) {
-		cout << "Please enter the height: ";
+		cout << "  Please enter the height: ";
+			whole_console << "  Please enter the height: ";
 		cin >> height_B;
 		if (mode_B != 0) {
-			cout << "Please enter the simu_times: ";
+			cout << "  Please enter the simu_times: ";
+				whole_console << "  Please enter the simu_times: ";
 			cin >> simu_times_B;
 		}
 	}
@@ -337,12 +341,16 @@ void Play::compare_AI_mode()
 		Game init_game = this->game;
 
 		EwnAI ewnAI1(mode_A);
-		ewnAI1.set_height(height_A);
-		ewnAI1.set_simu_times(simu_times_A);
-		
+		if (mode_A >=0 && mode_A<=4) {
+			ewnAI1.set_height(height_A);
+			ewnAI1.set_simu_times(simu_times_A);
+		}
+
 		EwnAI ewnAI2(mode_B);
-		ewnAI2.set_height(height_B);
-		ewnAI2.set_simu_times(simu_times_B);
+		if (mode_B >=0 && mode_B<=4) {
+			ewnAI2.set_height(height_B);
+			ewnAI2.set_simu_times(simu_times_B);
+		}
 
         while (1) {
             int debug = 0;
@@ -415,13 +423,16 @@ void Play::compare_AI_mode()
 		whole_console << "========== modeB then modeA ==========" << endl;
     for (int i = 0; i < game_cnt ; i++){
         Game init_game = this->game;
-        EwnAI ewnAI1(mode_B);
-        ewnAI1.set_height(height_A);
-        ewnAI1.set_simu_times(simu_times_A);
-
-        EwnAI ewnAI2(mode_A);
-        ewnAI2.set_height(height_B);
-        ewnAI2.set_simu_times(simu_times_B);
+		EwnAI ewnAI1(mode_B);
+		if (mode_B >=0 && mode_B<=4) {
+			ewnAI1.set_height(height_B);
+			ewnAI1.set_simu_times(simu_times_B);
+		}
+ 		EwnAI ewnAI2(mode_A);
+		if (mode_A >=0 && mode_A<=4) {
+			ewnAI2.set_height(height_A);
+			ewnAI2.set_simu_times(simu_times_A);
+		}
 
         while (1) {
             int debug = 0;
