@@ -3,6 +3,7 @@
 using namespace std;
 
 MCTS::MCTS() {
+	this->max_iterations = 1000;
 	this->selection_ptr = new UCT(eps);
 }
 
@@ -16,7 +17,6 @@ void MCTS::set_max_iterations(const int& max_iterations_)
 }
 
 Movement MCTS::AI_move(Game& cur_game, int dice) {
-	this->max_iterations = 1000;
 	this->ai_side = cur_game.get_is_switch();
 	this->ai_symbol = this->ai_side? 'A': '1';
 
