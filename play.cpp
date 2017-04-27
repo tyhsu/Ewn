@@ -246,8 +246,10 @@ void Play::compare_AI_mode()
 
     int mode_A, mode_B;
     int game_cnt;
+    double avg_move_timer_A1 = 0, avg_move_timer_A2 = 0, avg_move_timer_B1 = 0, avg_move_timer_B2 = 0;
     int win_cnt_A1 = 0, win_cnt_A2 = 0, win_cnt_B1 = 0, win_cnt_B2 = 0;
     double max_time_cost_A = 0, max_time_cost_B = 0;
+    double total_time_cost_A = 0, total_time_cost_B = 0;
     cout << "Please choose two AIs:" << endl;
     cout << "0)Minimax evaluating with feature" << endl;
     cout << "1)Minimax evaluating with simulation 1" << endl;
@@ -259,6 +261,7 @@ void Play::compare_AI_mode()
     cout << "7)MCTS evaluating with simulation 3" << endl;
     cout << "8)MCTS evaluating with simulation 4" << endl;
     cout << "9)Random                              " << endl;
+    cout << "Choose: ";
     cout << "modeA choose: ";
     cin >> mode_A;
     cout << "modeB choose: ";
@@ -285,6 +288,8 @@ void Play::compare_AI_mode()
                 game_status = init_game.update_game_status(mvmt);
                 double time_cost = (double)(clock() - init_time) / CLOCKS_PER_SEC;
                 max_time_cost_A = max(max_time_cost_A, time_cost);
+                total_time_cost_A += time_cost;
+                avg_move_timer_A1 += 1;
             }
             else {								// the second AI (B)
                 cerr << "-";
@@ -294,6 +299,8 @@ void Play::compare_AI_mode()
                 game_status = init_game.update_game_status(mvmt);
                 double time_cost = (double)(clock() - init_time) / CLOCKS_PER_SEC;
                 max_time_cost_B = max(max_time_cost_B, time_cost);
+                total_time_cost_B += time_cost;
+                avg_move_timer_B1 += 1;
             }
             //update: 0(game continues), 1(A wins), 2(B wins)
             if (game_status!=0) {
@@ -311,9 +318,9 @@ void Play::compare_AI_mode()
             init_game.switch_player();
         }
     }
-    printf("%-25s%-10s%s\n", "mode", "wins", "max_time_cost");
-    printf("%-25s%-10d%lf\n", mode_name[mode_A], win_cnt_A1, max_time_cost_A);
-    printf("%-25s%-10d%lf\n", mode_name[mode_B], win_cnt_B1, max_time_cost_B);
+    printf("%-25s%-10s%-10s%-10s\n", "mode", "wins", "max_time_cost", "total_time_cost");
+    printf("%-25s%-10d%-10lf%-10lf\n", mode_name[mode_A], win_cnt_A1, max_time_cost_A, total_time_cost_A);
+    printf("%-25s%-10d%-10lf%-10lf\n", mode_name[mode_B], win_cnt_B1, max_time_cost_B, total_time_cost_B);
 
     // modeB plays first, then modeA
     cout << "========== modeB then modeA ==========" << endl;
@@ -334,6 +341,7 @@ void Play::compare_AI_mode()
                 game_status = init_game.update_game_status(mvmt);
                 double time_cost = (double)(clock() - init_time) / CLOCKS_PER_SEC;
                 max_time_cost_B = max(max_time_cost_B, time_cost);
+                avg_move_timer_B2 += 1;
             }
             else {							// the second AI (A)
                 cerr << "-";
@@ -343,6 +351,7 @@ void Play::compare_AI_mode()
                 game_status = init_game.update_game_status(mvmt);
                 double time_cost = (double)(clock() - init_time) / CLOCKS_PER_SEC;
                 max_time_cost_A = max(max_time_cost_A, time_cost);
+                avg_move_timer_A2 += 1;
             }
             //update: 0(game continues), 1(B wins), 2(A wins)
             if (game_status!=0) {
@@ -362,12 +371,12 @@ void Play::compare_AI_mode()
     }
     cout << endl << "==================================================" << endl;
     cout << "========== modeA then modeB ==========" << endl;
-    printf("%-25s%-10s%s\n", "mode", "wins", "max_time_cost");
-    printf("%-25s%-10d%lf\n", mode_name[mode_A], win_cnt_A1, max_time_cost_A);
-    printf("%-25s%-10d%lf\n", mode_name[mode_B], win_cnt_B1, max_time_cost_B);
+    printf("%-30s%-10s%-15s%-20s%-20s%s\n", "mode", "wins", "max_time_cost", "total_time_cost", "move_count", "time_cost_per_move(avg)");
+    printf("%-30s%-10d%-15lf%-20lf%-20lf%lf\n", mode_name[mode_A], win_cnt_A1, max_time_cost_A, total_time_cost_A, avg_move_timer_A1, total_time_cost_A/avg_move_timer_A1);
+    printf("%-30s%-10d%-15lf%-20lf%-20lf%lf\n", mode_name[mode_B], win_cnt_B1, max_time_cost_B, total_time_cost_B, avg_move_timer_B1, total_time_cost_B/avg_move_timer_B1);
 
     cout << "========== modeB then modeA ==========" << endl;
-    printf("%-25s%-10s%s\n", "mode", "wins", "max_time_cost");
-    printf("%-25s%-10d%lf\n", mode_name[mode_A], win_cnt_A2, max_time_cost_A);
-    printf("%-25s%-10d%lf\n", mode_name[mode_B], win_cnt_B2, max_time_cost_B);
+    printf("%-30s%-10s%-15s%-20s%-20s%s\n", "mode", "wins", "max_time_cost", "total_time_cost", "move_count", "time_cost_per_move(avg)");
+    printf("%-30s%-10d%-15lf%-20lf%-20lf%lf\n", mode_name[mode_A], win_cnt_A2, max_time_cost_A, total_time_cost_A, avg_move_timer_A2, total_time_cost_A/avg_move_timer_A2);
+    printf("%-30s%-10d%-15lf%-20lf%-20lf%lf\n", mode_name[mode_B], win_cnt_B2, max_time_cost_B, total_time_cost_B, avg_move_timer_B2, total_time_cost_B/avg_move_timer_B2);
 }

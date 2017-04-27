@@ -17,7 +17,7 @@ public:
     // }
 
     Movement AI_move(Game& cur_game, int dice) {
-        this->max_iterations = 100;
+        this->max_iterations = 1000;
         this->ai_side = cur_game.get_is_switch();
         this->ai_symbol = this->ai_side? 'A': '1';
 
